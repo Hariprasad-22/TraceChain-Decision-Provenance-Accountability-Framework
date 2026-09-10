@@ -13,6 +13,7 @@ venv/
 # Local databases
 chroma_db/
 chroma_data/
+tracechain_cibil_db/
 *.sqlite
 *.db
 
