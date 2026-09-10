@@ -1,0 +1,1672 @@
+[
+  {
+    "user": {
+      "user_id": "100001",
+      "created_at": "2026-09-09T03:27:54.976089+00:00"
+    },
+    "application": {
+      "application_id": "APP-100001",
+      "user_id": "100001",
+      "loan_amount": 150000,
+      "application_date": "2026-09-09T03:27:54.976089+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "d46f51da-0cde-43d0-ab85-d0ee0964266c",
+      "orchestration_id": "WF-APP-100001",
+      "agent_id": "P001",
+      "input_data": {
+        "application_id": "APP-100001",
+        "applicant_ref_id": "100001",
+        "account_id": "100001",
+        "applicant_name": "Udyati Seth",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 55000.0,
+        "payslip_file": "payslip_01_Udyati_Seth.pdf",
+        "extracted": {
+          "name": "Udyati Seth",
+          "dob": "1995-03-16",
+          "gender": "Female",
+          "address": "79/21, Mitter Chowk, Mysore-967929",
+          "aadhaar_number": "877893287920"
+        },
+        "payslip": {
+          "name": "Udyati Seth",
+          "dob": "1995-03-16",
+          "employee_id": "TCD-001-7920",
+          "gross_salary": 62000.0,
+          "total_deductions": 7000.0,
+          "net_salary": 55000.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "everything_correct"
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "payslip_policy_v1",
+      "start_time": "2026-09-09T03:27:54.976089+00:00",
+      "end_time": "2026-09-09T03:27:54.976332+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "14e9b298e74980d1e2dbae57888391b03c17bbdd28d1adaa52e96f1913fd5dfc"
+    },
+    "decision": {
+      "decision_id": "fba677d5-18e4-4bb0-be8b-6f761b824ecd",
+      "execution_id": "d46f51da-0cde-43d0-ab85-d0ee0964266c",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+      "timestamp": "2026-09-09T03:27:54.976332+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "a308b743-d72b-4469-a786-3297ba5b156a",
+        "execution_id": "d46f51da-0cde-43d0-ab85-d0ee0964266c",
+        "source": "Payslip ChromaDB",
+        "document_reference": "payslip_validation_policy.md",
+        "retrieval_score": 0.6273,
+        "timestamp": "2026-09-09T03:27:56.388907+00:00"
+      },
+      {
+        "evidence_id": "d3befe1f-4dac-4203-a421-886082c27eca",
+        "execution_id": "d46f51da-0cde-43d0-ab85-d0ee0964266c",
+        "source": "Payslip ChromaDB",
+        "document_reference": "identity_verification_policy.md",
+        "retrieval_score": 0.5704,
+        "timestamp": "2026-09-09T03:27:56.388949+00:00"
+      },
+      {
+        "evidence_id": "da9728a3-4220-4d92-ba9f-bb2cf50c8ef3",
+        "execution_id": "d46f51da-0cde-43d0-ab85-d0ee0964266c",
+        "source": "Payslip ChromaDB",
+        "document_reference": "income_verification_policy.md",
+        "retrieval_score": 0.5626,
+        "timestamp": "2026-09-09T03:27:56.388964+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "1ef4dabe-0cd8-4280-a94c-665803c7375b",
+      "execution_id": "d46f51da-0cde-43d0-ab85-d0ee0964266c",
+      "impact_score": 3,
+      "irreversibility_score": 2,
+      "explainability_score": 10,
+      "composite_risk_score": 1.67,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-09T03:27:54.976332+00:00"
+    },
+    "provenance": {
+      "record_id": "6e3ab1c1-2df2-45dd-a057-88203ab67826",
+      "orchestration_id": "WF-APP-100001",
+      "execution_id": "d46f51da-0cde-43d0-ab85-d0ee0964266c",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100001",
+        "applicant_ref_id": "100001",
+        "account_id": "100001",
+        "applicant_name": "Udyati Seth",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 55000.0,
+        "payslip_file": "payslip_01_Udyati_Seth.pdf",
+        "extracted": {
+          "name": "Udyati Seth",
+          "dob": "1995-03-16",
+          "gender": "Female",
+          "address": "79/21, Mitter Chowk, Mysore-967929",
+          "aadhaar_number": "877893287920"
+        },
+        "payslip": {
+          "name": "Udyati Seth",
+          "dob": "1995-03-16",
+          "employee_id": "TCD-001-7920",
+          "gross_salary": 62000.0,
+          "total_deductions": 7000.0,
+          "net_salary": 55000.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "everything_correct"
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-09T03:27:54.976332+00:00",
+      "input_hash": "14e9b298e74980d1e2dbae57888391b03c17bbdd28d1adaa52e96f1913fd5dfc",
+      "output_hash": "7ec5a3c95a0df5db907b357cec5d9c77249fb9996a4b97dbc9b32d75734c2d72",
+      "record_hash": "6fdf6519f2add90ab85a87cf3caeaff081b19f41a4f5b37844666c26bd8c432a",
+      "tamper_check_passed": true
+    }
+  },
+  {
+    "user": {
+      "user_id": "100002",
+      "created_at": "2026-09-09T03:27:56.434735+00:00"
+    },
+    "application": {
+      "application_id": "APP-100002",
+      "user_id": "100002",
+      "loan_amount": 150000,
+      "application_date": "2026-09-09T03:27:56.434735+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "c6f716ff-67a4-43b1-bc35-e69a60a01ad7",
+      "orchestration_id": "WF-APP-100002",
+      "agent_id": "P001",
+      "input_data": {
+        "application_id": "APP-100002",
+        "applicant_ref_id": "100002",
+        "account_id": "100002",
+        "applicant_name": "Dev Bhargava",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 75800.0,
+        "payslip_file": "payslip_02_Dev_Bhargava.pdf",
+        "extracted": {
+          "name": "Dev Bhargava",
+          "dob": "1963-01-27",
+          "gender": "Male",
+          "address": "07/57, Hayre, Durg-017468",
+          "aadhaar_number": "742180967929"
+        },
+        "payslip": {
+          "name": "Dev Bhargava",
+          "dob": "1963-01-27",
+          "employee_id": "TCD-002-7929",
+          "gross_salary": 74500.0,
+          "total_deductions": 8700.0,
+          "net_salary": 65800.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "income_overstated"
+      },
+      "output_data": {
+        "decision_output": "rejected",
+        "confidence_score": 0.97,
+        "reasoning": "The declared monthly income is higher than the payslip-supported net income of ₹65,800.00.",
+        "risk_factors": {
+          "irreversibility": 6,
+          "impact": 7,
+          "explainability": 9
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "payslip_policy_v1",
+      "start_time": "2026-09-09T03:27:56.434735+00:00",
+      "end_time": "2026-09-09T03:27:56.434903+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "6cc44cba154f54b0200d4c1981e6bd83265dd607559e2fc21e9997086086fbae"
+    },
+    "decision": {
+      "decision_id": "800572cb-a992-4fc2-8e2c-4b7158f13859",
+      "execution_id": "c6f716ff-67a4-43b1-bc35-e69a60a01ad7",
+      "decision_output": "rejected",
+      "confidence_score": 0.97,
+      "reasoning": "The declared monthly income is higher than the payslip-supported net income of ₹65,800.00.",
+      "timestamp": "2026-09-09T03:27:56.434903+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "2affa6ae-19d5-4fef-ba7e-0e063d42bd79",
+        "execution_id": "c6f716ff-67a4-43b1-bc35-e69a60a01ad7",
+        "source": "Payslip ChromaDB",
+        "document_reference": "income_verification_policy.md",
+        "retrieval_score": 0.5796,
+        "timestamp": "2026-09-09T03:27:57.146705+00:00"
+      },
+      {
+        "evidence_id": "9daade81-2fb7-4e2f-a072-d0d9a79ee255",
+        "execution_id": "c6f716ff-67a4-43b1-bc35-e69a60a01ad7",
+        "source": "Payslip ChromaDB",
+        "document_reference": "payslip_validation_policy.md",
+        "retrieval_score": 0.4586,
+        "timestamp": "2026-09-09T03:27:57.146738+00:00"
+      },
+      {
+        "evidence_id": "bf7a0462-17fa-4f97-9164-8773f0a33223",
+        "execution_id": "c6f716ff-67a4-43b1-bc35-e69a60a01ad7",
+        "source": "Payslip ChromaDB",
+        "document_reference": "identity_verification_policy.md",
+        "retrieval_score": 0.3887,
+        "timestamp": "2026-09-09T03:27:57.146751+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "65dd781f-7819-49fa-9165-61542f8b9b2d",
+      "execution_id": "c6f716ff-67a4-43b1-bc35-e69a60a01ad7",
+      "impact_score": 7,
+      "irreversibility_score": 6,
+      "explainability_score": 9,
+      "composite_risk_score": 4.67,
+      "risk_level": "Medium",
+      "review_required": true,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-09T03:27:56.434903+00:00"
+    },
+    "provenance": {
+      "record_id": "29b1ebaa-c1eb-4a88-9bfb-3b6f70f4f388",
+      "orchestration_id": "WF-APP-100002",
+      "execution_id": "c6f716ff-67a4-43b1-bc35-e69a60a01ad7",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100002",
+        "applicant_ref_id": "100002",
+        "account_id": "100002",
+        "applicant_name": "Dev Bhargava",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 75800.0,
+        "payslip_file": "payslip_02_Dev_Bhargava.pdf",
+        "extracted": {
+          "name": "Dev Bhargava",
+          "dob": "1963-01-27",
+          "gender": "Male",
+          "address": "07/57, Hayre, Durg-017468",
+          "aadhaar_number": "742180967929"
+        },
+        "payslip": {
+          "name": "Dev Bhargava",
+          "dob": "1963-01-27",
+          "employee_id": "TCD-002-7929",
+          "gross_salary": 74500.0,
+          "total_deductions": 8700.0,
+          "net_salary": 65800.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "income_overstated"
+      },
+      "output_data": {
+        "decision_output": "rejected",
+        "confidence_score": 0.97,
+        "reasoning": "The declared monthly income is higher than the payslip-supported net income of ₹65,800.00.",
+        "risk_factors": {
+          "irreversibility": 6,
+          "impact": 7,
+          "explainability": 9
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-09T03:27:56.434903+00:00",
+      "input_hash": "6cc44cba154f54b0200d4c1981e6bd83265dd607559e2fc21e9997086086fbae",
+      "output_hash": "26a74f4876ac9a4bc70855a4a855caecc966baffba351e54e28d16adc9ac227b",
+      "record_hash": "2665513f591327e47f5197917439d26ab3993ea47f8391d46c6905a1d00fe36f",
+      "tamper_check_passed": true
+    }
+  },
+  {
+    "user": {
+      "user_id": "100003",
+      "created_at": "2026-09-09T03:27:57.196564+00:00"
+    },
+    "application": {
+      "application_id": "APP-100003",
+      "user_id": "100003",
+      "loan_amount": 150000,
+      "application_date": "2026-09-09T03:27:57.196564+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "b370c2bf-4ccf-4b7f-a1d3-f12bb8b9e83c",
+      "orchestration_id": "WF-APP-100003",
+      "agent_id": "P001",
+      "input_data": {
+        "application_id": "APP-100003",
+        "applicant_ref_id": "100003",
+        "account_id": "100003",
+        "applicant_name": "Different Applicant",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 49800.0,
+        "payslip_file": "payslip_03_Aachal_Murty.pdf",
+        "extracted": {
+          "name": "Aachal Murty",
+          "dob": "1976-04-10",
+          "gender": "Male",
+          "address": "H.No. 916, Mannan Zila, Jabalpur 033076",
+          "aadhaar_number": "810033907575"
+        },
+        "payslip": {
+          "name": "Aachal Murty",
+          "dob": "1976-04-10",
+          "employee_id": "TCD-003-7575",
+          "gross_salary": 55800.0,
+          "total_deductions": 6000.0,
+          "net_salary": 49800.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "name_mismatch"
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.9,
+        "reasoning": "The applicant name does not match the employee name on the submitted payslip/Aadhaar reference. Manual review is required to rule out identity mismatch or document manipulation.",
+        "risk_factors": {
+          "irreversibility": 5,
+          "impact": 7,
+          "explainability": 8
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "payslip_policy_v1",
+      "start_time": "2026-09-09T03:27:57.196564+00:00",
+      "end_time": "2026-09-09T03:27:57.196713+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "01b480093e8a6a06a8e7b8870dfce0af31c7cd59e95c727699fe8335bb254d9e"
+    },
+    "decision": {
+      "decision_id": "a0f89674-8ce2-48aa-9b1e-c4fefb6f7597",
+      "execution_id": "b370c2bf-4ccf-4b7f-a1d3-f12bb8b9e83c",
+      "decision_output": "needs_review",
+      "confidence_score": 0.9,
+      "reasoning": "The applicant name does not match the employee name on the submitted payslip/Aadhaar reference. Manual review is required to rule out identity mismatch or document manipulation.",
+      "timestamp": "2026-09-09T03:27:57.196713+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "aa3869c7-8163-4a74-84a3-887f375124d8",
+        "execution_id": "b370c2bf-4ccf-4b7f-a1d3-f12bb8b9e83c",
+        "source": "Payslip ChromaDB",
+        "document_reference": "identity_verification_policy.md",
+        "retrieval_score": 0.6208,
+        "timestamp": "2026-09-09T03:27:57.871263+00:00"
+      },
+      {
+        "evidence_id": "1e21a71c-174a-442f-802f-ca7279e1b574",
+        "execution_id": "b370c2bf-4ccf-4b7f-a1d3-f12bb8b9e83c",
+        "source": "Payslip ChromaDB",
+        "document_reference": "payslip_validation_policy.md",
+        "retrieval_score": 0.5022,
+        "timestamp": "2026-09-09T03:27:57.871297+00:00"
+      },
+      {
+        "evidence_id": "4729ef75-b134-4d6d-9359-5a051ac50e3f",
+        "execution_id": "b370c2bf-4ccf-4b7f-a1d3-f12bb8b9e83c",
+        "source": "Payslip ChromaDB",
+        "document_reference": "income_verification_policy.md",
+        "retrieval_score": 0.4533,
+        "timestamp": "2026-09-09T03:27:57.871309+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "1c74bee9-2bbd-4f11-948b-8c60e90d4c04",
+      "execution_id": "b370c2bf-4ccf-4b7f-a1d3-f12bb8b9e83c",
+      "impact_score": 7,
+      "irreversibility_score": 5,
+      "explainability_score": 8,
+      "composite_risk_score": 4.67,
+      "risk_level": "Medium",
+      "review_required": true,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-09T03:27:57.196713+00:00"
+    },
+    "provenance": {
+      "record_id": "dff70625-6c18-45ed-a09e-cb0486507b6d",
+      "orchestration_id": "WF-APP-100003",
+      "execution_id": "b370c2bf-4ccf-4b7f-a1d3-f12bb8b9e83c",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100003",
+        "applicant_ref_id": "100003",
+        "account_id": "100003",
+        "applicant_name": "Different Applicant",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 49800.0,
+        "payslip_file": "payslip_03_Aachal_Murty.pdf",
+        "extracted": {
+          "name": "Aachal Murty",
+          "dob": "1976-04-10",
+          "gender": "Male",
+          "address": "H.No. 916, Mannan Zila, Jabalpur 033076",
+          "aadhaar_number": "810033907575"
+        },
+        "payslip": {
+          "name": "Aachal Murty",
+          "dob": "1976-04-10",
+          "employee_id": "TCD-003-7575",
+          "gross_salary": 55800.0,
+          "total_deductions": 6000.0,
+          "net_salary": 49800.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "name_mismatch"
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.9,
+        "reasoning": "The applicant name does not match the employee name on the submitted payslip/Aadhaar reference. Manual review is required to rule out identity mismatch or document manipulation.",
+        "risk_factors": {
+          "irreversibility": 5,
+          "impact": 7,
+          "explainability": 8
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-09T03:27:57.196713+00:00",
+      "input_hash": "01b480093e8a6a06a8e7b8870dfce0af31c7cd59e95c727699fe8335bb254d9e",
+      "output_hash": "e5bf6e2ededbc4ea98153554b370dd31df78f0037d68a9d9e2e522ffcfab4b9b",
+      "record_hash": "761fde5ad7a374239216a971d52e98eeda1ef3bc347d27f54ccd7b4be0745fa8",
+      "tamper_check_passed": true
+    }
+  },
+  {
+    "user": {
+      "user_id": "100004",
+      "created_at": "2026-09-09T03:27:57.918733+00:00"
+    },
+    "application": {
+      "application_id": "APP-100004",
+      "user_id": "100004",
+      "loan_amount": 150000,
+      "application_date": "2026-09-09T03:27:57.918733+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "2c68c86f-164c-4811-a2d9-2bd7f2268e27",
+      "orchestration_id": "WF-APP-100004",
+      "agent_id": "P001",
+      "input_data": {
+        "application_id": "APP-100004",
+        "applicant_ref_id": "100004",
+        "account_id": "100004",
+        "applicant_name": "Oni Bora",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 60500.0,
+        "payslip_file": "payslip_04_Oni_Bora.pdf",
+        "extracted": {
+          "name": "Oni Bora",
+          "dob": "1999-03-07",
+          "gender": "Male",
+          "address": "H.No. 14, Aurora Path, Kochi-310077",
+          "aadhaar_number": "834701746818"
+        },
+        "payslip": {
+          "name": "Oni Bora",
+          "dob": "1999-03-07",
+          "employee_id": "TCD-004-6818",
+          "gross_salary": 68100.0,
+          "total_deductions": 7600.0,
+          "net_salary": 60500.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "payslip_too_old"
+      },
+      "output_data": {
+        "decision_output": "rejected",
+        "confidence_score": 0.96,
+        "reasoning": "The submitted payslip is outside the permitted verification period and should be rejected or reviewed according to policy.",
+        "risk_factors": {
+          "irreversibility": 5,
+          "impact": 6,
+          "explainability": 9
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "payslip_policy_v1",
+      "start_time": "2026-09-09T03:27:57.918733+00:00",
+      "end_time": "2026-09-09T03:27:57.918960+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "0b81628c8dd85eb4903d117ea8a3203a0d4caa324eea10a37485e61ae19eaae6"
+    },
+    "decision": {
+      "decision_id": "51d5c7a6-0321-44b9-a2c0-657606280eab",
+      "execution_id": "2c68c86f-164c-4811-a2d9-2bd7f2268e27",
+      "decision_output": "rejected",
+      "confidence_score": 0.96,
+      "reasoning": "The submitted payslip is outside the permitted verification period and should be rejected or reviewed according to policy.",
+      "timestamp": "2026-09-09T03:27:57.918960+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "0014cfce-7357-4f08-9dcf-3072e50a9e55",
+        "execution_id": "2c68c86f-164c-4811-a2d9-2bd7f2268e27",
+        "source": "Payslip ChromaDB",
+        "document_reference": "payslip_validation_policy.md",
+        "retrieval_score": 0.5761,
+        "timestamp": "2026-09-09T03:27:58.584064+00:00"
+      },
+      {
+        "evidence_id": "a6a1a49e-46e1-4e1a-a443-98feb08a4c1f",
+        "execution_id": "2c68c86f-164c-4811-a2d9-2bd7f2268e27",
+        "source": "Payslip ChromaDB",
+        "document_reference": "income_verification_policy.md",
+        "retrieval_score": 0.5035,
+        "timestamp": "2026-09-09T03:27:58.584098+00:00"
+      },
+      {
+        "evidence_id": "809798be-58e5-4d6a-b15e-4b01580dea89",
+        "execution_id": "2c68c86f-164c-4811-a2d9-2bd7f2268e27",
+        "source": "Payslip ChromaDB",
+        "document_reference": "identity_verification_policy.md",
+        "retrieval_score": 0.4945,
+        "timestamp": "2026-09-09T03:27:58.584113+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "3dc44825-569c-4b4c-adfe-2d7cc8d37202",
+      "execution_id": "2c68c86f-164c-4811-a2d9-2bd7f2268e27",
+      "impact_score": 6,
+      "irreversibility_score": 5,
+      "explainability_score": 9,
+      "composite_risk_score": 4.0,
+      "risk_level": "Medium",
+      "review_required": true,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-09T03:27:57.918960+00:00"
+    },
+    "provenance": {
+      "record_id": "61948f70-c801-4893-8b02-60f2ea078787",
+      "orchestration_id": "WF-APP-100004",
+      "execution_id": "2c68c86f-164c-4811-a2d9-2bd7f2268e27",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100004",
+        "applicant_ref_id": "100004",
+        "account_id": "100004",
+        "applicant_name": "Oni Bora",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 60500.0,
+        "payslip_file": "payslip_04_Oni_Bora.pdf",
+        "extracted": {
+          "name": "Oni Bora",
+          "dob": "1999-03-07",
+          "gender": "Male",
+          "address": "H.No. 14, Aurora Path, Kochi-310077",
+          "aadhaar_number": "834701746818"
+        },
+        "payslip": {
+          "name": "Oni Bora",
+          "dob": "1999-03-07",
+          "employee_id": "TCD-004-6818",
+          "gross_salary": 68100.0,
+          "total_deductions": 7600.0,
+          "net_salary": 60500.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "payslip_too_old"
+      },
+      "output_data": {
+        "decision_output": "rejected",
+        "confidence_score": 0.96,
+        "reasoning": "The submitted payslip is outside the permitted verification period and should be rejected or reviewed according to policy.",
+        "risk_factors": {
+          "irreversibility": 5,
+          "impact": 6,
+          "explainability": 9
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-09T03:27:57.918960+00:00",
+      "input_hash": "0b81628c8dd85eb4903d117ea8a3203a0d4caa324eea10a37485e61ae19eaae6",
+      "output_hash": "db7265b4902a93875dee097636e59d044e32513498fca4c6fb0c4eda47b37c80",
+      "record_hash": "688962bbbbfa3ff160edbc36e68eed5b0103a071bdea1b8c33bc699f4d0116ab",
+      "tamper_check_passed": true
+    }
+  },
+  {
+    "user": {
+      "user_id": "100005",
+      "created_at": "2026-09-09T03:27:58.633799+00:00"
+    },
+    "application": {
+      "application_id": "APP-100005",
+      "user_id": "100005",
+      "loan_amount": 150000,
+      "application_date": "2026-09-09T03:27:58.633799+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "22944e4a-6d0d-4299-b67a-119c5688abef",
+      "orchestration_id": "WF-APP-100005",
+      "agent_id": "P001",
+      "input_data": {
+        "application_id": "APP-100005",
+        "applicant_ref_id": "100005",
+        "account_id": "100005",
+        "applicant_name": "Raghav Sem",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 45820.0,
+        "payslip_file": "payslip_05_Raghav_Sem.pdf",
+        "extracted": {
+          "name": "Raghav Sem",
+          "dob": "1995-04-10",
+          "gender": "Female",
+          "address": "61, Salvi Marg, Mumbai-940326",
+          "aadhaar_number": "538401916144"
+        },
+        "payslip": {
+          "name": "Raghav Sem",
+          "dob": "1995-04-10",
+          "employee_id": "TCD-005-6144",
+          "gross_salary": 51200.0,
+          "total_deductions": 5380.0,
+          "net_salary": 45820.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "everything_correct"
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "payslip_policy_v1",
+      "start_time": "2026-09-09T03:27:58.633799+00:00",
+      "end_time": "2026-09-09T03:27:58.633950+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "3e0db33927e423c6178a07bc1c3e4313c54a8eb1b6119e495d465317298620e7"
+    },
+    "decision": {
+      "decision_id": "b0d1e569-2b5c-40a5-ba86-54ed67cb9f63",
+      "execution_id": "22944e4a-6d0d-4299-b67a-119c5688abef",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+      "timestamp": "2026-09-09T03:27:58.633950+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "a4070eab-fd1a-4271-860d-b41cf32c62d6",
+        "execution_id": "22944e4a-6d0d-4299-b67a-119c5688abef",
+        "source": "Payslip ChromaDB",
+        "document_reference": "payslip_validation_policy.md",
+        "retrieval_score": 0.6273,
+        "timestamp": "2026-09-09T03:27:59.269750+00:00"
+      },
+      {
+        "evidence_id": "64135841-223b-4ac8-92dd-12b023e9b1d1",
+        "execution_id": "22944e4a-6d0d-4299-b67a-119c5688abef",
+        "source": "Payslip ChromaDB",
+        "document_reference": "identity_verification_policy.md",
+        "retrieval_score": 0.5704,
+        "timestamp": "2026-09-09T03:27:59.269785+00:00"
+      },
+      {
+        "evidence_id": "3b0224a5-ae2a-4dbc-b162-d7c533fe326f",
+        "execution_id": "22944e4a-6d0d-4299-b67a-119c5688abef",
+        "source": "Payslip ChromaDB",
+        "document_reference": "income_verification_policy.md",
+        "retrieval_score": 0.5626,
+        "timestamp": "2026-09-09T03:27:59.269798+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "d56ae1a8-6549-4de1-9dbc-cb25288521f1",
+      "execution_id": "22944e4a-6d0d-4299-b67a-119c5688abef",
+      "impact_score": 3,
+      "irreversibility_score": 2,
+      "explainability_score": 10,
+      "composite_risk_score": 1.67,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-09T03:27:58.633950+00:00"
+    },
+    "provenance": {
+      "record_id": "26a877ce-4063-4679-97f9-2ca319bc8588",
+      "orchestration_id": "WF-APP-100005",
+      "execution_id": "22944e4a-6d0d-4299-b67a-119c5688abef",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100005",
+        "applicant_ref_id": "100005",
+        "account_id": "100005",
+        "applicant_name": "Raghav Sem",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 45820.0,
+        "payslip_file": "payslip_05_Raghav_Sem.pdf",
+        "extracted": {
+          "name": "Raghav Sem",
+          "dob": "1995-04-10",
+          "gender": "Female",
+          "address": "61, Salvi Marg, Mumbai-940326",
+          "aadhaar_number": "538401916144"
+        },
+        "payslip": {
+          "name": "Raghav Sem",
+          "dob": "1995-04-10",
+          "employee_id": "TCD-005-6144",
+          "gross_salary": 51200.0,
+          "total_deductions": 5380.0,
+          "net_salary": 45820.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "everything_correct"
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-09T03:27:58.633950+00:00",
+      "input_hash": "3e0db33927e423c6178a07bc1c3e4313c54a8eb1b6119e495d465317298620e7",
+      "output_hash": "7ec5a3c95a0df5db907b357cec5d9c77249fb9996a4b97dbc9b32d75734c2d72",
+      "record_hash": "8c0406be96e75e688b855ba61a640edfa0dcdc9ec09e94cc40b0b7d3b64a08b9",
+      "tamper_check_passed": true
+    }
+  },
+  {
+    "user": {
+      "user_id": "100006",
+      "created_at": "2026-09-09T03:27:59.314419+00:00"
+    },
+    "application": {
+      "application_id": "APP-100006",
+      "user_id": "100006",
+      "loan_amount": 150000,
+      "application_date": "2026-09-09T03:27:59.314419+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "729504fe-08e1-4bc1-9ad6-142e7606b8e6",
+      "orchestration_id": "WF-APP-100006",
+      "agent_id": "P001",
+      "input_data": {
+        "application_id": "APP-100006",
+        "applicant_ref_id": "100006",
+        "account_id": "100006",
+        "applicant_name": "Brijesh Dhingra",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 70000.0,
+        "payslip_file": "payslip_06_Brijesh_Dhingra.pdf",
+        "extracted": {
+          "name": "Brijesh Dhingra",
+          "dob": "1975-02-27",
+          "gender": "Female",
+          "address": "H.No. 954, Borah Marg, Mysore-930955",
+          "aadhaar_number": "100330766617"
+        },
+        "payslip": {
+          "name": "Brijesh Dhingra",
+          "dob": "1975-02-27",
+          "employee_id": "TCD-006-6617",
+          "gross_salary": 79500.0,
+          "total_deductions": 9500.0,
+          "net_salary": 70000.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "everything_correct"
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "payslip_policy_v1",
+      "start_time": "2026-09-09T03:27:59.314419+00:00",
+      "end_time": "2026-09-09T03:27:59.314568+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "abfc931b264b7f8bb08d007f41f81c460cf669e97e599bb0b943d4eaa3df1b71"
+    },
+    "decision": {
+      "decision_id": "17441d4e-d2cd-4ba2-9128-7d126ab5208f",
+      "execution_id": "729504fe-08e1-4bc1-9ad6-142e7606b8e6",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+      "timestamp": "2026-09-09T03:27:59.314568+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "0b67f52c-cf1c-4bd9-b9cd-19b05f9ca0a3",
+        "execution_id": "729504fe-08e1-4bc1-9ad6-142e7606b8e6",
+        "source": "Payslip ChromaDB",
+        "document_reference": "payslip_validation_policy.md",
+        "retrieval_score": 0.6273,
+        "timestamp": "2026-09-09T03:27:59.959738+00:00"
+      },
+      {
+        "evidence_id": "93a8633b-3f77-4a4b-8175-cdbb7ea5f8e4",
+        "execution_id": "729504fe-08e1-4bc1-9ad6-142e7606b8e6",
+        "source": "Payslip ChromaDB",
+        "document_reference": "identity_verification_policy.md",
+        "retrieval_score": 0.5704,
+        "timestamp": "2026-09-09T03:27:59.959771+00:00"
+      },
+      {
+        "evidence_id": "e3dcb110-3a52-4343-b1eb-8b74a3fac7ab",
+        "execution_id": "729504fe-08e1-4bc1-9ad6-142e7606b8e6",
+        "source": "Payslip ChromaDB",
+        "document_reference": "income_verification_policy.md",
+        "retrieval_score": 0.5626,
+        "timestamp": "2026-09-09T03:27:59.959784+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "2bc487ef-ae8b-4acc-a24d-ef535391a0b7",
+      "execution_id": "729504fe-08e1-4bc1-9ad6-142e7606b8e6",
+      "impact_score": 3,
+      "irreversibility_score": 2,
+      "explainability_score": 10,
+      "composite_risk_score": 1.67,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-09T03:27:59.314568+00:00"
+    },
+    "provenance": {
+      "record_id": "92aa2a56-68d9-40fe-9bae-1e6719981925",
+      "orchestration_id": "WF-APP-100006",
+      "execution_id": "729504fe-08e1-4bc1-9ad6-142e7606b8e6",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100006",
+        "applicant_ref_id": "100006",
+        "account_id": "100006",
+        "applicant_name": "Brijesh Dhingra",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 70000.0,
+        "payslip_file": "payslip_06_Brijesh_Dhingra.pdf",
+        "extracted": {
+          "name": "Brijesh Dhingra",
+          "dob": "1975-02-27",
+          "gender": "Female",
+          "address": "H.No. 954, Borah Marg, Mysore-930955",
+          "aadhaar_number": "100330766617"
+        },
+        "payslip": {
+          "name": "Brijesh Dhingra",
+          "dob": "1975-02-27",
+          "employee_id": "TCD-006-6617",
+          "gross_salary": 79500.0,
+          "total_deductions": 9500.0,
+          "net_salary": 70000.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "everything_correct"
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-09T03:27:59.314568+00:00",
+      "input_hash": "abfc931b264b7f8bb08d007f41f81c460cf669e97e599bb0b943d4eaa3df1b71",
+      "output_hash": "7ec5a3c95a0df5db907b357cec5d9c77249fb9996a4b97dbc9b32d75734c2d72",
+      "record_hash": "41332390ede78a356532fbe58d7b2a10acc3b26b7dc51f3b8a41134ae4208aa2",
+      "tamper_check_passed": true
+    }
+  },
+  {
+    "user": {
+      "user_id": "100007",
+      "created_at": "2026-09-09T03:28:00.009728+00:00"
+    },
+    "application": {
+      "application_id": "APP-100007",
+      "user_id": "100007",
+      "loan_amount": 150000,
+      "application_date": "2026-09-09T03:28:00.009728+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "03988be8-4cd3-4945-921e-4df139650d6f",
+      "orchestration_id": "WF-APP-100007",
+      "agent_id": "P001",
+      "input_data": {
+        "application_id": "APP-100007",
+        "applicant_ref_id": "100007",
+        "account_id": "100007",
+        "applicant_name": "Joshua Sule",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 63640.0,
+        "payslip_file": "payslip_07_Joshua_Sule.pdf",
+        "extracted": {
+          "name": "Joshua Sule",
+          "dob": "1999-09-30",
+          "gender": "Male",
+          "address": "243, Krish, Kozhikode-679160",
+          "aadhaar_number": "451450612316"
+        },
+        "payslip": {
+          "name": "Joshua Sule",
+          "dob": "1999-09-30",
+          "employee_id": "TCD-007-2316",
+          "gross_salary": 60300.0,
+          "total_deductions": 6660.0,
+          "net_salary": 53640.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "income_overstated"
+      },
+      "output_data": {
+        "decision_output": "rejected",
+        "confidence_score": 0.97,
+        "reasoning": "The declared monthly income is higher than the payslip-supported net income of ₹53,640.00.",
+        "risk_factors": {
+          "irreversibility": 6,
+          "impact": 7,
+          "explainability": 9
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "payslip_policy_v1",
+      "start_time": "2026-09-09T03:28:00.009728+00:00",
+      "end_time": "2026-09-09T03:28:00.009901+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "cae9144714aa1687fbd58e535a84ddac98b60848234b0d729131d41acfcbcb40"
+    },
+    "decision": {
+      "decision_id": "419ea6a4-6ddc-4a20-94c8-231d88b3e1ee",
+      "execution_id": "03988be8-4cd3-4945-921e-4df139650d6f",
+      "decision_output": "rejected",
+      "confidence_score": 0.97,
+      "reasoning": "The declared monthly income is higher than the payslip-supported net income of ₹53,640.00.",
+      "timestamp": "2026-09-09T03:28:00.009901+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "35b45f42-14e4-4e52-b430-ddf7e81c2885",
+        "execution_id": "03988be8-4cd3-4945-921e-4df139650d6f",
+        "source": "Payslip ChromaDB",
+        "document_reference": "income_verification_policy.md",
+        "retrieval_score": 0.5796,
+        "timestamp": "2026-09-09T03:28:00.651466+00:00"
+      },
+      {
+        "evidence_id": "d4ab8950-20e1-4be0-a25a-4f6cf642ba4e",
+        "execution_id": "03988be8-4cd3-4945-921e-4df139650d6f",
+        "source": "Payslip ChromaDB",
+        "document_reference": "payslip_validation_policy.md",
+        "retrieval_score": 0.4586,
+        "timestamp": "2026-09-09T03:28:00.651501+00:00"
+      },
+      {
+        "evidence_id": "b5e63bb8-1f10-4308-9382-dd56f013f73a",
+        "execution_id": "03988be8-4cd3-4945-921e-4df139650d6f",
+        "source": "Payslip ChromaDB",
+        "document_reference": "identity_verification_policy.md",
+        "retrieval_score": 0.3887,
+        "timestamp": "2026-09-09T03:28:00.651515+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "21eebcf9-25df-4056-a873-7b7e5e84c3c5",
+      "execution_id": "03988be8-4cd3-4945-921e-4df139650d6f",
+      "impact_score": 7,
+      "irreversibility_score": 6,
+      "explainability_score": 9,
+      "composite_risk_score": 4.67,
+      "risk_level": "Medium",
+      "review_required": true,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-09T03:28:00.009901+00:00"
+    },
+    "provenance": {
+      "record_id": "2e5f4318-7590-4628-b736-a5d465c74d2c",
+      "orchestration_id": "WF-APP-100007",
+      "execution_id": "03988be8-4cd3-4945-921e-4df139650d6f",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100007",
+        "applicant_ref_id": "100007",
+        "account_id": "100007",
+        "applicant_name": "Joshua Sule",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 63640.0,
+        "payslip_file": "payslip_07_Joshua_Sule.pdf",
+        "extracted": {
+          "name": "Joshua Sule",
+          "dob": "1999-09-30",
+          "gender": "Male",
+          "address": "243, Krish, Kozhikode-679160",
+          "aadhaar_number": "451450612316"
+        },
+        "payslip": {
+          "name": "Joshua Sule",
+          "dob": "1999-09-30",
+          "employee_id": "TCD-007-2316",
+          "gross_salary": 60300.0,
+          "total_deductions": 6660.0,
+          "net_salary": 53640.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "income_overstated"
+      },
+      "output_data": {
+        "decision_output": "rejected",
+        "confidence_score": 0.97,
+        "reasoning": "The declared monthly income is higher than the payslip-supported net income of ₹53,640.00.",
+        "risk_factors": {
+          "irreversibility": 6,
+          "impact": 7,
+          "explainability": 9
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-09T03:28:00.009901+00:00",
+      "input_hash": "cae9144714aa1687fbd58e535a84ddac98b60848234b0d729131d41acfcbcb40",
+      "output_hash": "a37ef11fb46bcfa187fbc0e3a5d62530de92f70f3c3ef9275b8d11811578d040",
+      "record_hash": "d9d49986f28187fc82049c340b8de7c4c081e4e298185fbe29a58eccd866ea10",
+      "tamper_check_passed": true
+    }
+  },
+  {
+    "user": {
+      "user_id": "100008",
+      "created_at": "2026-09-09T03:28:00.697012+00:00"
+    },
+    "application": {
+      "application_id": "APP-100008",
+      "user_id": "100008",
+      "loan_amount": 150000,
+      "application_date": "2026-09-09T03:28:00.697012+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "a127f98f-ebfc-4015-af9c-ad905d35fbc8",
+      "orchestration_id": "WF-APP-100008",
+      "agent_id": "P001",
+      "input_data": {
+        "application_id": "APP-100008",
+        "applicant_ref_id": "100008",
+        "account_id": "100008",
+        "applicant_name": "Different Applicant",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 43750.0,
+        "payslip_file": "payslip_08_Ikbal_Barad.pdf",
+        "extracted": {
+          "name": "Ikbal Barad",
+          "dob": "1995-07-06",
+          "gender": "Male",
+          "address": "64/697, Venkatesh Road, Coimbatore 378991",
+          "aadhaar_number": "077283783269"
+        },
+        "payslip": {
+          "name": "Ikbal Barad",
+          "dob": "1995-07-06",
+          "employee_id": "TCD-008-3269",
+          "gross_salary": 48700.0,
+          "total_deductions": 4950.0,
+          "net_salary": 43750.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "name_mismatch"
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.9,
+        "reasoning": "The applicant name does not match the employee name on the submitted payslip/Aadhaar reference. Manual review is required to rule out identity mismatch or document manipulation.",
+        "risk_factors": {
+          "irreversibility": 5,
+          "impact": 7,
+          "explainability": 8
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "payslip_policy_v1",
+      "start_time": "2026-09-09T03:28:00.697012+00:00",
+      "end_time": "2026-09-09T03:28:00.697158+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "cbc0d920cbb337d6a156563cedf6e938ef49a0f47669b249e98e8f46b37cda1a"
+    },
+    "decision": {
+      "decision_id": "54a3bab4-a89b-45f7-b4e9-2ed591a09b88",
+      "execution_id": "a127f98f-ebfc-4015-af9c-ad905d35fbc8",
+      "decision_output": "needs_review",
+      "confidence_score": 0.9,
+      "reasoning": "The applicant name does not match the employee name on the submitted payslip/Aadhaar reference. Manual review is required to rule out identity mismatch or document manipulation.",
+      "timestamp": "2026-09-09T03:28:00.697158+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "27a9745e-f3e1-44af-9148-0577b9de9e23",
+        "execution_id": "a127f98f-ebfc-4015-af9c-ad905d35fbc8",
+        "source": "Payslip ChromaDB",
+        "document_reference": "identity_verification_policy.md",
+        "retrieval_score": 0.6208,
+        "timestamp": "2026-09-09T03:28:01.350657+00:00"
+      },
+      {
+        "evidence_id": "5835ff69-6641-40e8-8ecc-8c25ab8e6cc4",
+        "execution_id": "a127f98f-ebfc-4015-af9c-ad905d35fbc8",
+        "source": "Payslip ChromaDB",
+        "document_reference": "payslip_validation_policy.md",
+        "retrieval_score": 0.5022,
+        "timestamp": "2026-09-09T03:28:01.350724+00:00"
+      },
+      {
+        "evidence_id": "4c019e0a-1eed-4f59-9bf7-3c7b3cdaee8f",
+        "execution_id": "a127f98f-ebfc-4015-af9c-ad905d35fbc8",
+        "source": "Payslip ChromaDB",
+        "document_reference": "income_verification_policy.md",
+        "retrieval_score": 0.4533,
+        "timestamp": "2026-09-09T03:28:01.350766+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "cae23fe2-0988-4106-85dc-ab2d63f688db",
+      "execution_id": "a127f98f-ebfc-4015-af9c-ad905d35fbc8",
+      "impact_score": 7,
+      "irreversibility_score": 5,
+      "explainability_score": 8,
+      "composite_risk_score": 4.67,
+      "risk_level": "Medium",
+      "review_required": true,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-09T03:28:00.697158+00:00"
+    },
+    "provenance": {
+      "record_id": "a1a38c14-4f21-4f07-9c78-6bdbc055da24",
+      "orchestration_id": "WF-APP-100008",
+      "execution_id": "a127f98f-ebfc-4015-af9c-ad905d35fbc8",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100008",
+        "applicant_ref_id": "100008",
+        "account_id": "100008",
+        "applicant_name": "Different Applicant",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 43750.0,
+        "payslip_file": "payslip_08_Ikbal_Barad.pdf",
+        "extracted": {
+          "name": "Ikbal Barad",
+          "dob": "1995-07-06",
+          "gender": "Male",
+          "address": "64/697, Venkatesh Road, Coimbatore 378991",
+          "aadhaar_number": "077283783269"
+        },
+        "payslip": {
+          "name": "Ikbal Barad",
+          "dob": "1995-07-06",
+          "employee_id": "TCD-008-3269",
+          "gross_salary": 48700.0,
+          "total_deductions": 4950.0,
+          "net_salary": 43750.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "name_mismatch"
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.9,
+        "reasoning": "The applicant name does not match the employee name on the submitted payslip/Aadhaar reference. Manual review is required to rule out identity mismatch or document manipulation.",
+        "risk_factors": {
+          "irreversibility": 5,
+          "impact": 7,
+          "explainability": 8
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-09T03:28:00.697158+00:00",
+      "input_hash": "cbc0d920cbb337d6a156563cedf6e938ef49a0f47669b249e98e8f46b37cda1a",
+      "output_hash": "e5bf6e2ededbc4ea98153554b370dd31df78f0037d68a9d9e2e522ffcfab4b9b",
+      "record_hash": "a9a3aa698963772a0b488434bb8ad0c703795f33e28ef0833b6794633ca4aaf2",
+      "tamper_check_passed": true
+    }
+  },
+  {
+    "user": {
+      "user_id": "100009",
+      "created_at": "2026-09-09T03:28:01.394347+00:00"
+    },
+    "application": {
+      "application_id": "APP-100009",
+      "user_id": "100009",
+      "loan_amount": 150000,
+      "application_date": "2026-09-09T03:28:01.394347+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "d4d83458-8c3d-4039-99f5-c99fa2cfa3ab",
+      "orchestration_id": "WF-APP-100009",
+      "agent_id": "P001",
+      "input_data": {
+        "application_id": "APP-100009",
+        "applicant_ref_id": "100009",
+        "account_id": "100009",
+        "applicant_name": "Simon Jani",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 64980.0,
+        "payslip_file": "payslip_09_Simon_Jani.pdf",
+        "extracted": {
+          "name": "Simon Jani",
+          "dob": "1961-10-09",
+          "gender": "Female",
+          "address": "73, Batra Nagar, Ichalkaranji 892152",
+          "aadhaar_number": "166304940323"
+        },
+        "payslip": {
+          "name": "Simon Jani",
+          "dob": "1961-10-09",
+          "employee_id": "TCD-009-0323",
+          "gross_salary": 73200.0,
+          "total_deductions": 8220.0,
+          "net_salary": 64980.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "payslip_too_old"
+      },
+      "output_data": {
+        "decision_output": "rejected",
+        "confidence_score": 0.96,
+        "reasoning": "The submitted payslip is outside the permitted verification period and should be rejected or reviewed according to policy.",
+        "risk_factors": {
+          "irreversibility": 5,
+          "impact": 6,
+          "explainability": 9
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "payslip_policy_v1",
+      "start_time": "2026-09-09T03:28:01.394347+00:00",
+      "end_time": "2026-09-09T03:28:01.394558+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "c101ee9450ed4a72554d63dcae46f4cf9843d375a4a299a59406cd2f54e08ef8"
+    },
+    "decision": {
+      "decision_id": "977ea12a-b94e-4811-a45c-97d111421559",
+      "execution_id": "d4d83458-8c3d-4039-99f5-c99fa2cfa3ab",
+      "decision_output": "rejected",
+      "confidence_score": 0.96,
+      "reasoning": "The submitted payslip is outside the permitted verification period and should be rejected or reviewed according to policy.",
+      "timestamp": "2026-09-09T03:28:01.394558+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "fa269e78-51fb-442a-be95-0ff10ca68801",
+        "execution_id": "d4d83458-8c3d-4039-99f5-c99fa2cfa3ab",
+        "source": "Payslip ChromaDB",
+        "document_reference": "payslip_validation_policy.md",
+        "retrieval_score": 0.5761,
+        "timestamp": "2026-09-09T03:28:02.061218+00:00"
+      },
+      {
+        "evidence_id": "96b225f1-781b-4e36-831c-3c0741a9ad6e",
+        "execution_id": "d4d83458-8c3d-4039-99f5-c99fa2cfa3ab",
+        "source": "Payslip ChromaDB",
+        "document_reference": "income_verification_policy.md",
+        "retrieval_score": 0.5035,
+        "timestamp": "2026-09-09T03:28:02.061255+00:00"
+      },
+      {
+        "evidence_id": "da55b458-eb44-40af-8b9c-efb13a899056",
+        "execution_id": "d4d83458-8c3d-4039-99f5-c99fa2cfa3ab",
+        "source": "Payslip ChromaDB",
+        "document_reference": "identity_verification_policy.md",
+        "retrieval_score": 0.4945,
+        "timestamp": "2026-09-09T03:28:02.061272+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "abc0c975-54f6-45da-ac77-91e762d5584f",
+      "execution_id": "d4d83458-8c3d-4039-99f5-c99fa2cfa3ab",
+      "impact_score": 6,
+      "irreversibility_score": 5,
+      "explainability_score": 9,
+      "composite_risk_score": 4.0,
+      "risk_level": "Medium",
+      "review_required": true,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-09T03:28:01.394558+00:00"
+    },
+    "provenance": {
+      "record_id": "7cfed93a-4a92-4741-a2e7-cf2f4ade74c3",
+      "orchestration_id": "WF-APP-100009",
+      "execution_id": "d4d83458-8c3d-4039-99f5-c99fa2cfa3ab",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100009",
+        "applicant_ref_id": "100009",
+        "account_id": "100009",
+        "applicant_name": "Simon Jani",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 64980.0,
+        "payslip_file": "payslip_09_Simon_Jani.pdf",
+        "extracted": {
+          "name": "Simon Jani",
+          "dob": "1961-10-09",
+          "gender": "Female",
+          "address": "73, Batra Nagar, Ichalkaranji 892152",
+          "aadhaar_number": "166304940323"
+        },
+        "payslip": {
+          "name": "Simon Jani",
+          "dob": "1961-10-09",
+          "employee_id": "TCD-009-0323",
+          "gross_salary": 73200.0,
+          "total_deductions": 8220.0,
+          "net_salary": 64980.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "payslip_too_old"
+      },
+      "output_data": {
+        "decision_output": "rejected",
+        "confidence_score": 0.96,
+        "reasoning": "The submitted payslip is outside the permitted verification period and should be rejected or reviewed according to policy.",
+        "risk_factors": {
+          "irreversibility": 5,
+          "impact": 6,
+          "explainability": 9
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-09T03:28:01.394558+00:00",
+      "input_hash": "c101ee9450ed4a72554d63dcae46f4cf9843d375a4a299a59406cd2f54e08ef8",
+      "output_hash": "db7265b4902a93875dee097636e59d044e32513498fca4c6fb0c4eda47b37c80",
+      "record_hash": "aac4410e4aba1eadd31511d0a3cbe23b511eb886fb81dc1eb9a071d93a21eb43",
+      "tamper_check_passed": true
+    }
+  },
+  {
+    "user": {
+      "user_id": "100010",
+      "created_at": "2026-09-09T03:28:02.108009+00:00"
+    },
+    "application": {
+      "application_id": "APP-100010",
+      "user_id": "100010",
+      "loan_amount": 150000,
+      "application_date": "2026-09-09T03:28:02.108009+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "8588dfa5-0489-43b7-9a19-7bbde1cfb94d",
+      "orchestration_id": "WF-APP-100010",
+      "agent_id": "P001",
+      "input_data": {
+        "application_id": "APP-100010",
+        "applicant_ref_id": "100010",
+        "account_id": "100010",
+        "applicant_name": "Ganga Vig",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 57720.0,
+        "payslip_file": "payslip_10_Ganga_Vig.pdf",
+        "extracted": {
+          "name": "Ganga Vig",
+          "dob": "2000-06-01",
+          "gender": "Female",
+          "address": "H.No. 754, Bail Nagar, Ongole-452117",
+          "aadhaar_number": "991023740955"
+        },
+        "payslip": {
+          "name": "Ganga Vig",
+          "dob": "2000-06-01",
+          "employee_id": "TCD-010-0955",
+          "gross_salary": 64900.0,
+          "total_deductions": 7180.0,
+          "net_salary": 57720.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "everything_correct"
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "payslip_policy_v1",
+      "start_time": "2026-09-09T03:28:02.108009+00:00",
+      "end_time": "2026-09-09T03:28:02.108213+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "7fe2cddc8e6d7653db68e7034ce600385c9c565a2a774cd2f843ccd386f1d409"
+    },
+    "decision": {
+      "decision_id": "1697fddb-1fbe-4266-a525-c5e31e7ec183",
+      "execution_id": "8588dfa5-0489-43b7-9a19-7bbde1cfb94d",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+      "timestamp": "2026-09-09T03:28:02.108213+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "c78df3ec-d06e-4169-8bcd-5b44a5c9769b",
+        "execution_id": "8588dfa5-0489-43b7-9a19-7bbde1cfb94d",
+        "source": "Payslip ChromaDB",
+        "document_reference": "payslip_validation_policy.md",
+        "retrieval_score": 0.6273,
+        "timestamp": "2026-09-09T03:28:02.737841+00:00"
+      },
+      {
+        "evidence_id": "6f56b2a1-30be-455a-81a0-47bccd2c17dc",
+        "execution_id": "8588dfa5-0489-43b7-9a19-7bbde1cfb94d",
+        "source": "Payslip ChromaDB",
+        "document_reference": "identity_verification_policy.md",
+        "retrieval_score": 0.5704,
+        "timestamp": "2026-09-09T03:28:02.737877+00:00"
+      },
+      {
+        "evidence_id": "fd0be5f6-d279-4307-b42b-0af401b88073",
+        "execution_id": "8588dfa5-0489-43b7-9a19-7bbde1cfb94d",
+        "source": "Payslip ChromaDB",
+        "document_reference": "income_verification_policy.md",
+        "retrieval_score": 0.5626,
+        "timestamp": "2026-09-09T03:28:02.737890+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "38348a94-6dca-40c1-9f8e-4e2a8f74f300",
+      "execution_id": "8588dfa5-0489-43b7-9a19-7bbde1cfb94d",
+      "impact_score": 3,
+      "irreversibility_score": 2,
+      "explainability_score": 10,
+      "composite_risk_score": 1.67,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-09T03:28:02.108213+00:00"
+    },
+    "provenance": {
+      "record_id": "dd03533d-bcd2-4bce-8661-a91c9506c548",
+      "orchestration_id": "WF-APP-100010",
+      "execution_id": "8588dfa5-0489-43b7-9a19-7bbde1cfb94d",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100010",
+        "applicant_ref_id": "100010",
+        "account_id": "100010",
+        "applicant_name": "Ganga Vig",
+        "loan_amount": 150000.0,
+        "declared_monthly_income": 57720.0,
+        "payslip_file": "payslip_10_Ganga_Vig.pdf",
+        "extracted": {
+          "name": "Ganga Vig",
+          "dob": "2000-06-01",
+          "gender": "Female",
+          "address": "H.No. 754, Bail Nagar, Ongole-452117",
+          "aadhaar_number": "991023740955"
+        },
+        "payslip": {
+          "name": "Ganga Vig",
+          "dob": "2000-06-01",
+          "employee_id": "TCD-010-0955",
+          "gross_salary": 64900.0,
+          "total_deductions": 7180.0,
+          "net_salary": 57720.0,
+          "pay_period": "01-Aug-2026 to 31-Aug-2026",
+          "pay_date": "31-Aug-2026"
+        },
+        "validation": {
+          "name_match": true,
+          "dob_match": true,
+          "salary_math_valid": true
+        },
+        "scenario": "everything_correct"
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The employee name and date of birth match the Aadhaar reference, the salary calculation is internally consistent, and no verification discrepancy was detected.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-09T03:28:02.108213+00:00",
+      "input_hash": "7fe2cddc8e6d7653db68e7034ce600385c9c565a2a774cd2f843ccd386f1d409",
+      "output_hash": "7ec5a3c95a0df5db907b357cec5d9c77249fb9996a4b97dbc9b32d75734c2d72",
+      "record_hash": "b6aaa476dda53832881a70a21dba0ad9408c373761fa0bbcf8cc85e26664b907",
+      "tamper_check_passed": true
+    }
+  }
+]
