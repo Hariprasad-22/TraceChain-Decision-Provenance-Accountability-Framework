@@ -1,0 +1,13 @@
+Guardrails & Oversight
+Because agents make autonomous decisions, you can't manually review every single action in advance
+— so production systems build in guardrails instead:
+• Approval gates: high-risk actions (e.g. sending money, deleting data) pause for explicit human
+confirmation before executing
+• Tool validation: checking that a tool call's parameters are sane/safe before execution (e.g.
+rejecting an obviously malformed or out-of-range request)
+• Scoped permissions: giving an agent access to only the tools/data it actually needs for its task,
+not broad system access
+• Monitoring/observability: logging every reasoning step and tool call so failures can be traced and
+debugged after the fact
+
+

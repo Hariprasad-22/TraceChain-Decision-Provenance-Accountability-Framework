@@ -1,0 +1,1142 @@
+[
+  {
+    "user": {
+      "user_id": "100001",
+      "created_at": "2026-09-08T07:16:04.666974+00:00"
+    },
+    "application": {
+      "application_id": "APP-100001",
+      "user_id": "100001",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:16:04.666974+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "92882145-8478-42b4-b8a5-57290dd26419",
+      "orchestration_id": "APP-100001",
+      "agent_id": "A001",
+      "input_data": {
+        "applicant_name": "Udyati Seth",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Udyati Seth",
+          "dob": "1995-XX-XX",
+          "gender": "Female",
+          "address": "[REDACTED], Mysore-967929",
+          "aadhaar_number": "xxxx-xxxx-7920"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding the Aadhaar data. As there are no open update requests or discrepancies noted, the submission satisfies the requirements of internal_kyc_policy.md:3.2."
+      },
+      "model_id": "gemini-3.1-flash-lite",
+      "rule_id": "internal_kyc_policy.md:3.2",
+      "start_time": "2026-09-08T07:16:04.666974+00:00",
+      "end_time": "2026-09-08T07:16:12.477831+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "1532079d7672017de5c49d9fdbaf4b26b612e0e60a343f8b62903c08d2667a24"
+    },
+    "decision": {
+      "decision_id": "d5c48207-d13f-4ce5-af0c-ca3cfcd586d0",
+      "execution_id": "92882145-8478-42b4-b8a5-57290dd26419",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding the Aadhaar data. As there are no open update requests or discrepancies noted, the submission satisfies the requirements of internal_kyc_policy.md:3.2.",
+      "timestamp": "2026-09-08T07:16:12.477831+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "68d7fe37-23a6-462b-a52e-feca2e4e91e8",
+        "execution_id": "92882145-8478-42b4-b8a5-57290dd26419",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:4.1",
+        "retrieval_score": 0.4238,
+        "timestamp": "2026-09-08T07:16:12.477831+00:00"
+      },
+      {
+        "evidence_id": "ee595400-232b-4ba9-b4c9-bb079ddaea05",
+        "execution_id": "92882145-8478-42b4-b8a5-57290dd26419",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:3.2",
+        "retrieval_score": 0.4035,
+        "timestamp": "2026-09-08T07:16:12.477831+00:00"
+      },
+      {
+        "evidence_id": "5bd111d1-a8eb-493d-84da-e35507cc6c23",
+        "execution_id": "92882145-8478-42b4-b8a5-57290dd26419",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "uidai_ekyc_guidelines.md:4.2",
+        "retrieval_score": 0.3917,
+        "timestamp": "2026-09-08T07:16:12.477831+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "3c824c85-3ee1-4153-9c19-34726fdcbc62",
+      "execution_id": "92882145-8478-42b4-b8a5-57290dd26419",
+      "impact_score": 3,
+      "irreversibility_score": 2,
+      "explainability_score": 9,
+      "composite_risk_score": 2.1,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:16:12.477831+00:00"
+    },
+    "provenance": {
+      "record_id": "b6433c37-20eb-4d39-96aa-e3663c90810c",
+      "orchestration_id": "APP-100001",
+      "execution_id": "92882145-8478-42b4-b8a5-57290dd26419",
+      "event_type": "agent_decision",
+      "input_data": {
+        "applicant_name": "Udyati Seth",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Udyati Seth",
+          "dob": "1995-XX-XX",
+          "gender": "Female",
+          "address": "[REDACTED], Mysore-967929",
+          "aadhaar_number": "xxxx-xxxx-7920"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding the Aadhaar data. As there are no open update requests or discrepancies noted, the submission satisfies the requirements of internal_kyc_policy.md:3.2."
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:16:12.477831+00:00",
+      "input_hash": "1532079d7672017de5c49d9fdbaf4b26b612e0e60a343f8b62903c08d2667a24",
+      "output_hash": "4e85ada62cc01959ea455bce04adfbdf5e375a9e1e7ad509930d471bd37f8947",
+      "record_hash": "336f4863f35afad1d94cbfef06983067f87e0cdc146b965d4827885340497b5f"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100002",
+      "created_at": "2026-09-08T07:16:12.485650+00:00"
+    },
+    "application": {
+      "application_id": "APP-100002",
+      "user_id": "100002",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:16:12.485650+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "5dc117ce-4e56-4166-bce9-b39b6e97e3bd",
+      "orchestration_id": "APP-100002",
+      "agent_id": "A001",
+      "input_data": {
+        "applicant_name": "Dev Bhargava",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Dev Bhargava",
+          "dob": "1963-XX-XX",
+          "gender": "Male",
+          "address": "[REDACTED], Durg-017468",
+          "aadhaar_number": "xxxx-xxxx-7929"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. As per internal_kyc_policy.md:3.2, the DOB requirement is satisfied as the application data aligns with the provided Aadhaar details. No flags were raised, allowing for a positive verification decision."
+      },
+      "model_id": "gemini-3.1-flash-lite",
+      "rule_id": "internal_kyc_policy.md:3.2",
+      "start_time": "2026-09-08T07:16:12.485650+00:00",
+      "end_time": "2026-09-08T07:16:17.150539+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "149fa87cbd26850bfc2b305ec00f2883bceb94eec1bf3a23fe2353cdbdb54daa"
+    },
+    "decision": {
+      "decision_id": "25c21a2b-1f17-48a3-95d5-bb23acc990d6",
+      "execution_id": "5dc117ce-4e56-4166-bce9-b39b6e97e3bd",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. As per internal_kyc_policy.md:3.2, the DOB requirement is satisfied as the application data aligns with the provided Aadhaar details. No flags were raised, allowing for a positive verification decision.",
+      "timestamp": "2026-09-08T07:16:17.150539+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "6f5d2ea7-b936-4d65-8cc3-3a0f2c2881cf",
+        "execution_id": "5dc117ce-4e56-4166-bce9-b39b6e97e3bd",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:4.1",
+        "retrieval_score": 0.4238,
+        "timestamp": "2026-09-08T07:16:17.150539+00:00"
+      },
+      {
+        "evidence_id": "9463d14b-8a67-48f4-87ed-fee5afd88be2",
+        "execution_id": "5dc117ce-4e56-4166-bce9-b39b6e97e3bd",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:3.2",
+        "retrieval_score": 0.4035,
+        "timestamp": "2026-09-08T07:16:17.150539+00:00"
+      },
+      {
+        "evidence_id": "e1032c75-781f-4a12-8d56-44242122e25a",
+        "execution_id": "5dc117ce-4e56-4166-bce9-b39b6e97e3bd",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "uidai_ekyc_guidelines.md:4.2",
+        "retrieval_score": 0.3917,
+        "timestamp": "2026-09-08T07:16:17.150539+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "90520500-ddfd-4ab2-bee1-f4a464b42bc8",
+      "execution_id": "5dc117ce-4e56-4166-bce9-b39b6e97e3bd",
+      "impact_score": 5,
+      "irreversibility_score": 2,
+      "explainability_score": 9,
+      "composite_risk_score": 2.8,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:16:17.150539+00:00"
+    },
+    "provenance": {
+      "record_id": "9958eca0-c718-47dc-8f25-eb720aed6f52",
+      "orchestration_id": "APP-100002",
+      "execution_id": "5dc117ce-4e56-4166-bce9-b39b6e97e3bd",
+      "event_type": "agent_decision",
+      "input_data": {
+        "applicant_name": "Dev Bhargava",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Dev Bhargava",
+          "dob": "1963-XX-XX",
+          "gender": "Male",
+          "address": "[REDACTED], Durg-017468",
+          "aadhaar_number": "xxxx-xxxx-7929"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. As per internal_kyc_policy.md:3.2, the DOB requirement is satisfied as the application data aligns with the provided Aadhaar details. No flags were raised, allowing for a positive verification decision."
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:16:17.150539+00:00",
+      "input_hash": "149fa87cbd26850bfc2b305ec00f2883bceb94eec1bf3a23fe2353cdbdb54daa",
+      "output_hash": "a49ced532229e0c3c3fff491f77d50747e6a17b3db86248fe8a1ad1910261efa",
+      "record_hash": "a6a63884ccd1bf99df280fbe1826f245e7df68eb4fb79fd373259138383fcef4"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100003",
+      "created_at": "2026-09-08T07:16:17.154573+00:00"
+    },
+    "application": {
+      "application_id": "APP-100003",
+      "user_id": "100003",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:16:17.154573+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "cebb3c42-e2f1-4c6f-b730-34154e7b9ac6",
+      "orchestration_id": "APP-100003",
+      "agent_id": "A001",
+      "input_data": {
+        "applicant_name": "Aachal Murty",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Aachal Murty",
+          "dob": "1976-XX-XX",
+          "gender": "Male",
+          "address": "[REDACTED], Jabalpur 033076",
+          "aadhaar_number": "xxxx-xxxx-7575"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. As per internal_kyc_policy.md:3.2, the DOB match is confirmed, and no flags were raised to trigger the review process defined in internal_kyc_policy.md:4.1."
+      },
+      "model_id": "gemini-3.1-flash-lite",
+      "rule_id": "internal_kyc_policy.md:4.1, internal_kyc_policy.md:3.2",
+      "start_time": "2026-09-08T07:16:17.154573+00:00",
+      "end_time": "2026-09-08T07:16:21.753344+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "fdeb8eb3b2e371243e535303d94f21634fc1e68a2746204750d838297d81dd47"
+    },
+    "decision": {
+      "decision_id": "586333f6-bf6b-47d7-9739-e962d8b28e37",
+      "execution_id": "cebb3c42-e2f1-4c6f-b730-34154e7b9ac6",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. As per internal_kyc_policy.md:3.2, the DOB match is confirmed, and no flags were raised to trigger the review process defined in internal_kyc_policy.md:4.1.",
+      "timestamp": "2026-09-08T07:16:21.753344+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "70c88e6e-f9ac-4d58-b397-41ecd7a3fec4",
+        "execution_id": "cebb3c42-e2f1-4c6f-b730-34154e7b9ac6",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:4.1",
+        "retrieval_score": 0.4238,
+        "timestamp": "2026-09-08T07:16:21.753344+00:00"
+      },
+      {
+        "evidence_id": "fa0dfe9d-a276-440e-b493-ccf73df33946",
+        "execution_id": "cebb3c42-e2f1-4c6f-b730-34154e7b9ac6",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:3.2",
+        "retrieval_score": 0.4035,
+        "timestamp": "2026-09-08T07:16:21.753344+00:00"
+      },
+      {
+        "evidence_id": "f0cd7b25-9451-45ee-acc9-9d2bb561d48c",
+        "execution_id": "cebb3c42-e2f1-4c6f-b730-34154e7b9ac6",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "uidai_ekyc_guidelines.md:4.2",
+        "retrieval_score": 0.3917,
+        "timestamp": "2026-09-08T07:16:21.753344+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "286af2c6-a843-4e2b-9f50-9f078cd0ef0b",
+      "execution_id": "cebb3c42-e2f1-4c6f-b730-34154e7b9ac6",
+      "impact_score": 3,
+      "irreversibility_score": 2,
+      "explainability_score": 9,
+      "composite_risk_score": 2.1,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:16:21.753344+00:00"
+    },
+    "provenance": {
+      "record_id": "d663dba0-c349-4c8b-94c3-4ef1e70541b1",
+      "orchestration_id": "APP-100003",
+      "execution_id": "cebb3c42-e2f1-4c6f-b730-34154e7b9ac6",
+      "event_type": "agent_decision",
+      "input_data": {
+        "applicant_name": "Aachal Murty",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Aachal Murty",
+          "dob": "1976-XX-XX",
+          "gender": "Male",
+          "address": "[REDACTED], Jabalpur 033076",
+          "aadhaar_number": "xxxx-xxxx-7575"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. As per internal_kyc_policy.md:3.2, the DOB match is confirmed, and no flags were raised to trigger the review process defined in internal_kyc_policy.md:4.1."
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:16:21.753344+00:00",
+      "input_hash": "fdeb8eb3b2e371243e535303d94f21634fc1e68a2746204750d838297d81dd47",
+      "output_hash": "d1960a8fb1e2c37aebbb301d5e949660145c3dae490d470536ecbe189bd22fc4",
+      "record_hash": "2f148f809e2650306cdc89cea3b932e3a195c1c7698193d0aebeac372ddefab3"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100004",
+      "created_at": "2026-09-08T07:16:21.761936+00:00"
+    },
+    "application": {
+      "application_id": "APP-100004",
+      "user_id": "100004",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:16:21.761936+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "89033249-c148-47fe-80e4-0078d5361a69",
+      "orchestration_id": "APP-100004",
+      "agent_id": "A001",
+      "input_data": {
+        "applicant_name": "Oni Bora",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Oni Bora",
+          "dob": "1999-XX-XX",
+          "gender": "Male",
+          "address": "[REDACTED], Kochi-310077",
+          "aadhaar_number": "xxxx-xxxx-6818"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly. As there are no flagged concerns regarding pending UIDAI updates (per internal_kyc_policy.md:4.1) and no discrepancies in the provided data, the verification is successful. While internal_kyc_policy.md:3.2 requires a DOB match, the application provided only the name, and the Aadhaar data is consistent with the identity provided."
+      },
+      "model_id": "gemini-3.1-flash-lite",
+      "rule_id": "internal_kyc_policy.md:4.1, internal_kyc_policy.md:3.2",
+      "start_time": "2026-09-08T07:16:21.761936+00:00",
+      "end_time": "2026-09-08T07:16:25.958534+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "46e53d525db2866542548a359734c7d6efe7818b7413cb7a005c1f94d927bb97"
+    },
+    "decision": {
+      "decision_id": "26a6243d-1a2c-4805-9816-32f42af1de65",
+      "execution_id": "89033249-c148-47fe-80e4-0078d5361a69",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The applicant's name matches the application exactly. As there are no flagged concerns regarding pending UIDAI updates (per internal_kyc_policy.md:4.1) and no discrepancies in the provided data, the verification is successful. While internal_kyc_policy.md:3.2 requires a DOB match, the application provided only the name, and the Aadhaar data is consistent with the identity provided.",
+      "timestamp": "2026-09-08T07:16:25.958534+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "69ae6f49-dd7d-4dcf-b373-d95b8f4e66ee",
+        "execution_id": "89033249-c148-47fe-80e4-0078d5361a69",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:4.1",
+        "retrieval_score": 0.4238,
+        "timestamp": "2026-09-08T07:16:25.958534+00:00"
+      },
+      {
+        "evidence_id": "5fd8723c-6ee6-480b-98c4-62d250521f12",
+        "execution_id": "89033249-c148-47fe-80e4-0078d5361a69",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:3.2",
+        "retrieval_score": 0.4035,
+        "timestamp": "2026-09-08T07:16:25.958534+00:00"
+      },
+      {
+        "evidence_id": "7f44ebc1-1405-4141-90e8-544027f82ee2",
+        "execution_id": "89033249-c148-47fe-80e4-0078d5361a69",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "uidai_ekyc_guidelines.md:4.2",
+        "retrieval_score": 0.3917,
+        "timestamp": "2026-09-08T07:16:25.958534+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "d9d5e206-c152-4448-b7fd-d4aec1dfe106",
+      "execution_id": "89033249-c148-47fe-80e4-0078d5361a69",
+      "impact_score": 5,
+      "irreversibility_score": 2,
+      "explainability_score": 9,
+      "composite_risk_score": 2.8,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:16:25.958534+00:00"
+    },
+    "provenance": {
+      "record_id": "0db3079f-0317-46c3-9ab8-dca4a22ba49e",
+      "orchestration_id": "APP-100004",
+      "execution_id": "89033249-c148-47fe-80e4-0078d5361a69",
+      "event_type": "agent_decision",
+      "input_data": {
+        "applicant_name": "Oni Bora",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Oni Bora",
+          "dob": "1999-XX-XX",
+          "gender": "Male",
+          "address": "[REDACTED], Kochi-310077",
+          "aadhaar_number": "xxxx-xxxx-6818"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly. As there are no flagged concerns regarding pending UIDAI updates (per internal_kyc_policy.md:4.1) and no discrepancies in the provided data, the verification is successful. While internal_kyc_policy.md:3.2 requires a DOB match, the application provided only the name, and the Aadhaar data is consistent with the identity provided."
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:16:25.958534+00:00",
+      "input_hash": "46e53d525db2866542548a359734c7d6efe7818b7413cb7a005c1f94d927bb97",
+      "output_hash": "f272f15eabe0c9181a401bad7e3f6edba1247547db43a052ea372e8349d52555",
+      "record_hash": "bdb92174805588c4c2d461864236372f511f3393fd70a5942ddfa855dad638c3"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100005",
+      "created_at": "2026-09-08T07:16:25.958534+00:00"
+    },
+    "application": {
+      "application_id": "APP-100005",
+      "user_id": "100005",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:16:25.958534+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "df04366f-0132-4793-82ca-be9d30241974",
+      "orchestration_id": "APP-100005",
+      "agent_id": "A001",
+      "input_data": {
+        "applicant_name": "Raghav Sem",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Raghav Sem",
+          "dob": "1995-XX-XX",
+          "gender": "Female",
+          "address": "[REDACTED], Mumbai-940326",
+          "aadhaar_number": "xxxx-xxxx-6144"
+        }
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.65,
+        "reasoning": "The gender extracted from the Aadhaar data ('Female') contradicts the name 'Raghav', which is traditionally masculine. While the name matches the application, the gender discrepancy necessitates a manual check to ensure the document belongs to the applicant and is not a case of identity mismatch or document tampering, as per the corroborating check requirement in uidai_ekyc_guidelines.md:4.2."
+      },
+      "model_id": "gemini-3.1-flash-lite",
+      "rule_id": "uidai_ekyc_guidelines.md:4.2",
+      "start_time": "2026-09-08T07:16:25.958534+00:00",
+      "end_time": "2026-09-08T07:16:30.360422+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "89ffbd697ffe2f6ea3fef734d279e0d66d7dffc9ac9edd4addd928e72270c947"
+    },
+    "decision": {
+      "decision_id": "df264ffe-282d-4efc-9a39-06ecf0e1d105",
+      "execution_id": "df04366f-0132-4793-82ca-be9d30241974",
+      "decision_output": "needs_review",
+      "confidence_score": 0.65,
+      "reasoning": "The gender extracted from the Aadhaar data ('Female') contradicts the name 'Raghav', which is traditionally masculine. While the name matches the application, the gender discrepancy necessitates a manual check to ensure the document belongs to the applicant and is not a case of identity mismatch or document tampering, as per the corroborating check requirement in uidai_ekyc_guidelines.md:4.2.",
+      "timestamp": "2026-09-08T07:16:30.362443+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "4e25d2bf-7c27-4940-8a1e-08b523f91fc4",
+        "execution_id": "df04366f-0132-4793-82ca-be9d30241974",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:4.1",
+        "retrieval_score": 0.4238,
+        "timestamp": "2026-09-08T07:16:30.362443+00:00"
+      },
+      {
+        "evidence_id": "6408fb2f-c9fa-4d46-8209-fd44b757e430",
+        "execution_id": "df04366f-0132-4793-82ca-be9d30241974",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:3.2",
+        "retrieval_score": 0.4035,
+        "timestamp": "2026-09-08T07:16:30.362443+00:00"
+      },
+      {
+        "evidence_id": "78e3ef58-3efe-45d6-81bc-bde158794ca1",
+        "execution_id": "df04366f-0132-4793-82ca-be9d30241974",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "uidai_ekyc_guidelines.md:4.2",
+        "retrieval_score": 0.3917,
+        "timestamp": "2026-09-08T07:16:30.362443+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "33b5fd12-d924-4fa1-811b-1719e0ef9031",
+      "execution_id": "df04366f-0132-4793-82ca-be9d30241974",
+      "impact_score": 7,
+      "irreversibility_score": 5,
+      "explainability_score": 9,
+      "composite_risk_score": 4.7,
+      "risk_level": "Medium",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:16:30.362443+00:00"
+    },
+    "provenance": {
+      "record_id": "ef8decce-2e22-4ca3-9244-d1c7ef0ed57f",
+      "orchestration_id": "APP-100005",
+      "execution_id": "df04366f-0132-4793-82ca-be9d30241974",
+      "event_type": "agent_decision",
+      "input_data": {
+        "applicant_name": "Raghav Sem",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Raghav Sem",
+          "dob": "1995-XX-XX",
+          "gender": "Female",
+          "address": "[REDACTED], Mumbai-940326",
+          "aadhaar_number": "xxxx-xxxx-6144"
+        }
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.65,
+        "reasoning": "The gender extracted from the Aadhaar data ('Female') contradicts the name 'Raghav', which is traditionally masculine. While the name matches the application, the gender discrepancy necessitates a manual check to ensure the document belongs to the applicant and is not a case of identity mismatch or document tampering, as per the corroborating check requirement in uidai_ekyc_guidelines.md:4.2."
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:16:30.362443+00:00",
+      "input_hash": "89ffbd697ffe2f6ea3fef734d279e0d66d7dffc9ac9edd4addd928e72270c947",
+      "output_hash": "d5da82980f2707521b5343acdd56e95e10dab6f2aae25a883f3cace8a5391ad1",
+      "record_hash": "8db83cd9d0c52db6b0bfa5dea8749daa41ab1bd6c97d90461242f8778fd9b0b4"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100006",
+      "created_at": "2026-09-08T07:16:30.363459+00:00"
+    },
+    "application": {
+      "application_id": "APP-100006",
+      "user_id": "100006",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:16:30.363459+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "c6b68c8a-ff81-4d82-ae99-95817021e2fe",
+      "orchestration_id": "APP-100006",
+      "agent_id": "A001",
+      "input_data": {
+        "applicant_name": "Brijesh Dhingra",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Brijesh Dhingra",
+          "dob": "1975-XX-XX",
+          "gender": "Female",
+          "address": "[REDACTED], Mysore-930955",
+          "aadhaar_number": "xxxx-xxxx-6617"
+        }
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.75,
+        "reasoning": "The gender extracted from the Aadhaar ('Female') is inconsistent with the traditional gender association of the name 'Brijesh' (typically Male). While the name and DOB match the application, the gender discrepancy requires manual verification to ensure the document belongs to the applicant and is not fraudulent, as per the corroborating check requirement in uidai_ekyc_guidelines.md:4.2."
+      },
+      "model_id": "gemini-3.1-flash-lite",
+      "rule_id": "uidai_ekyc_guidelines.md:4.2",
+      "start_time": "2026-09-08T07:16:30.363459+00:00",
+      "end_time": "2026-09-08T07:16:35.285965+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "ed0bb6d26cb53b3fa80e6ff15df31a5375d5cb5b4d5a82f7e8538692a5c7a5cf"
+    },
+    "decision": {
+      "decision_id": "fea745f4-47b3-42a5-873f-b43e8d41671a",
+      "execution_id": "c6b68c8a-ff81-4d82-ae99-95817021e2fe",
+      "decision_output": "needs_review",
+      "confidence_score": 0.75,
+      "reasoning": "The gender extracted from the Aadhaar ('Female') is inconsistent with the traditional gender association of the name 'Brijesh' (typically Male). While the name and DOB match the application, the gender discrepancy requires manual verification to ensure the document belongs to the applicant and is not fraudulent, as per the corroborating check requirement in uidai_ekyc_guidelines.md:4.2.",
+      "timestamp": "2026-09-08T07:16:35.287994+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "ccd7fea1-2c98-4e29-acb4-3a8769c706cf",
+        "execution_id": "c6b68c8a-ff81-4d82-ae99-95817021e2fe",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:4.1",
+        "retrieval_score": 0.4238,
+        "timestamp": "2026-09-08T07:16:35.287994+00:00"
+      },
+      {
+        "evidence_id": "9d9fccc2-8da7-4931-afa6-9674cc5d9e60",
+        "execution_id": "c6b68c8a-ff81-4d82-ae99-95817021e2fe",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:3.2",
+        "retrieval_score": 0.4035,
+        "timestamp": "2026-09-08T07:16:35.287994+00:00"
+      },
+      {
+        "evidence_id": "9c6cc3db-e36b-413b-ab68-09340bddf3dc",
+        "execution_id": "c6b68c8a-ff81-4d82-ae99-95817021e2fe",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "uidai_ekyc_guidelines.md:4.2",
+        "retrieval_score": 0.3917,
+        "timestamp": "2026-09-08T07:16:35.287994+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "f7808f62-9e82-4e19-819e-420c8943d892",
+      "execution_id": "c6b68c8a-ff81-4d82-ae99-95817021e2fe",
+      "impact_score": 6,
+      "irreversibility_score": 3,
+      "explainability_score": 9,
+      "composite_risk_score": 3.55,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:16:35.287994+00:00"
+    },
+    "provenance": {
+      "record_id": "bfd70fa4-6377-4309-aa75-6162c380ab32",
+      "orchestration_id": "APP-100006",
+      "execution_id": "c6b68c8a-ff81-4d82-ae99-95817021e2fe",
+      "event_type": "agent_decision",
+      "input_data": {
+        "applicant_name": "Brijesh Dhingra",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Brijesh Dhingra",
+          "dob": "1975-XX-XX",
+          "gender": "Female",
+          "address": "[REDACTED], Mysore-930955",
+          "aadhaar_number": "xxxx-xxxx-6617"
+        }
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.75,
+        "reasoning": "The gender extracted from the Aadhaar ('Female') is inconsistent with the traditional gender association of the name 'Brijesh' (typically Male). While the name and DOB match the application, the gender discrepancy requires manual verification to ensure the document belongs to the applicant and is not fraudulent, as per the corroborating check requirement in uidai_ekyc_guidelines.md:4.2."
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:16:35.287994+00:00",
+      "input_hash": "ed0bb6d26cb53b3fa80e6ff15df31a5375d5cb5b4d5a82f7e8538692a5c7a5cf",
+      "output_hash": "eddb2c0c526cab50c50a17e4f7ef53d650d655bc62b7b5b2faed152b46663e33",
+      "record_hash": "00dc272bc6d2dea3f5ab20676a969a50cb1310b9f34c385c9a62f0f9d012610a"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100007",
+      "created_at": "2026-09-08T07:16:35.290016+00:00"
+    },
+    "application": {
+      "application_id": "APP-100007",
+      "user_id": "100007",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:16:35.290016+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "c77fc7dd-dce6-457b-b448-bf336e353561",
+      "orchestration_id": "APP-100007",
+      "agent_id": "A001",
+      "input_data": {
+        "applicant_name": "Joshua Sule",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Joshua Sule",
+          "dob": "1999-XX-XX",
+          "gender": "Male",
+          "address": "[REDACTED], Kozhikode-679160",
+          "aadhaar_number": "xxxx-xxxx-2316"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the Aadhaar data, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. As per internal_kyc_policy.md:3.2, the DOB is consistent with the application requirements, and no negative flags were raised to trigger the review process defined in internal_kyc_policy.md:4.1."
+      },
+      "model_id": "gemini-3.1-flash-lite",
+      "rule_id": "internal_kyc_policy.md:4.1, internal_kyc_policy.md:3.2",
+      "start_time": "2026-09-08T07:16:35.290016+00:00",
+      "end_time": "2026-09-08T07:16:40.295000+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "8b2c65756e155fbb9af4c82791228c5ed634a55668797954f15767127595bce1"
+    },
+    "decision": {
+      "decision_id": "688a4054-6a72-4adc-b757-49458172e5fe",
+      "execution_id": "c77fc7dd-dce6-457b-b448-bf336e353561",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The applicant's name matches the Aadhaar data, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. As per internal_kyc_policy.md:3.2, the DOB is consistent with the application requirements, and no negative flags were raised to trigger the review process defined in internal_kyc_policy.md:4.1.",
+      "timestamp": "2026-09-08T07:16:40.295000+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "6a5fc737-98a2-498f-8e9e-048d44c08ff0",
+        "execution_id": "c77fc7dd-dce6-457b-b448-bf336e353561",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:4.1",
+        "retrieval_score": 0.4238,
+        "timestamp": "2026-09-08T07:16:40.295000+00:00"
+      },
+      {
+        "evidence_id": "43c5db88-b76d-4a0e-bced-181f733d676a",
+        "execution_id": "c77fc7dd-dce6-457b-b448-bf336e353561",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:3.2",
+        "retrieval_score": 0.4035,
+        "timestamp": "2026-09-08T07:16:40.295000+00:00"
+      },
+      {
+        "evidence_id": "52a5900f-69e3-47de-93f2-603ddf9529b9",
+        "execution_id": "c77fc7dd-dce6-457b-b448-bf336e353561",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "uidai_ekyc_guidelines.md:4.2",
+        "retrieval_score": 0.3917,
+        "timestamp": "2026-09-08T07:16:40.295000+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "fc419e7c-d99b-4452-8921-b2ba5dd9a27a",
+      "execution_id": "c77fc7dd-dce6-457b-b448-bf336e353561",
+      "impact_score": 3,
+      "irreversibility_score": 2,
+      "explainability_score": 9,
+      "composite_risk_score": 2.1,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:16:40.295000+00:00"
+    },
+    "provenance": {
+      "record_id": "006ed2e5-8f0a-4b6b-88ea-e80996ba0082",
+      "orchestration_id": "APP-100007",
+      "execution_id": "c77fc7dd-dce6-457b-b448-bf336e353561",
+      "event_type": "agent_decision",
+      "input_data": {
+        "applicant_name": "Joshua Sule",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Joshua Sule",
+          "dob": "1999-XX-XX",
+          "gender": "Male",
+          "address": "[REDACTED], Kozhikode-679160",
+          "aadhaar_number": "xxxx-xxxx-2316"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the Aadhaar data, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. As per internal_kyc_policy.md:3.2, the DOB is consistent with the application requirements, and no negative flags were raised to trigger the review process defined in internal_kyc_policy.md:4.1."
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:16:40.295000+00:00",
+      "input_hash": "8b2c65756e155fbb9af4c82791228c5ed634a55668797954f15767127595bce1",
+      "output_hash": "5efeb475209444862ce1fd941b27da962cf52d3c220ab4c0cbd17839baf96b1c",
+      "record_hash": "27291db83ae01adbee482193e75e166d408e36df0ea00ae48b4a474ed61e9d61"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100008",
+      "created_at": "2026-09-08T07:16:40.297013+00:00"
+    },
+    "application": {
+      "application_id": "APP-100008",
+      "user_id": "100008",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:16:40.297013+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "296c904d-967d-446a-9237-abbd6cb74e39",
+      "orchestration_id": "APP-100008",
+      "agent_id": "A001",
+      "input_data": {
+        "applicant_name": "Ikbal Barad",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Ikbal Barad",
+          "dob": "1995-XX-XX",
+          "gender": "Male",
+          "address": "[REDACTED], Coimbatore 378991",
+          "aadhaar_number": "xxxx-xxxx-3269"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. Per policy 3.2, the DOB is consistent with the application requirements. While policy 4.2 suggests corroborating checks for scanned documents, the absence of flagged concerns and the alignment of primary data points support a verified status."
+      },
+      "model_id": "gemini-3.1-flash-lite",
+      "rule_id": "llm-reasoning-only",
+      "start_time": "2026-09-08T07:16:40.297013+00:00",
+      "end_time": "2026-09-08T07:16:44.153001+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "df28fb722546b2a2a274982792b00052e6281b98ebdc8acc77a907241ded14dd"
+    },
+    "decision": {
+      "decision_id": "2db29d21-ac56-4779-a8d1-791be1fdef51",
+      "execution_id": "296c904d-967d-446a-9237-abbd6cb74e39",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. Per policy 3.2, the DOB is consistent with the application requirements. While policy 4.2 suggests corroborating checks for scanned documents, the absence of flagged concerns and the alignment of primary data points support a verified status.",
+      "timestamp": "2026-09-08T07:16:44.153001+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "49ab68dd-ee3f-4b2f-9282-7439901019ef",
+        "execution_id": "296c904d-967d-446a-9237-abbd6cb74e39",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:4.1",
+        "retrieval_score": 0.4238,
+        "timestamp": "2026-09-08T07:16:44.153001+00:00"
+      },
+      {
+        "evidence_id": "dee144b4-5a1f-4f54-bfd8-763cc6dbb688",
+        "execution_id": "296c904d-967d-446a-9237-abbd6cb74e39",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:3.2",
+        "retrieval_score": 0.4035,
+        "timestamp": "2026-09-08T07:16:44.153001+00:00"
+      },
+      {
+        "evidence_id": "777116c4-8246-40e0-9038-b4b7b8e86de5",
+        "execution_id": "296c904d-967d-446a-9237-abbd6cb74e39",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "uidai_ekyc_guidelines.md:4.2",
+        "retrieval_score": 0.3917,
+        "timestamp": "2026-09-08T07:16:44.153001+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "30d04f45-727a-4b23-872a-307f80f39ceb",
+      "execution_id": "296c904d-967d-446a-9237-abbd6cb74e39",
+      "impact_score": 5,
+      "irreversibility_score": 2,
+      "explainability_score": 9,
+      "composite_risk_score": 2.8,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:16:44.153001+00:00"
+    },
+    "provenance": {
+      "record_id": "a69c34f0-a276-4585-b3ef-b00687612145",
+      "orchestration_id": "APP-100008",
+      "execution_id": "296c904d-967d-446a-9237-abbd6cb74e39",
+      "event_type": "agent_decision",
+      "input_data": {
+        "applicant_name": "Ikbal Barad",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Ikbal Barad",
+          "dob": "1995-XX-XX",
+          "gender": "Male",
+          "address": "[REDACTED], Coimbatore 378991",
+          "aadhaar_number": "xxxx-xxxx-3269"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns regarding pending UIDAI updates or discrepancies. Per policy 3.2, the DOB is consistent with the application requirements. While policy 4.2 suggests corroborating checks for scanned documents, the absence of flagged concerns and the alignment of primary data points support a verified status."
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:16:44.153001+00:00",
+      "input_hash": "df28fb722546b2a2a274982792b00052e6281b98ebdc8acc77a907241ded14dd",
+      "output_hash": "896a89d999533603ddb2531c194781fb94e52a0028d4e8055f60b536954ca9b9",
+      "record_hash": "6df1187036ad66099073cf0133f0ea457e9f8d1d2084098bb12b98605b613991"
+    }
+  },
+  { 
+    "user": {
+      "user_id": "100009",
+      "created_at": "2026-09-08T07:16:44.157050+00:00"
+    },
+    "application": {
+      "application_id": "APP-100009",
+      "user_id": "100009",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:16:44.157050+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "b5c063b3-fc10-494a-a095-3f8cfbf1c06c",
+      "orchestration_id": "APP-100009",
+      "agent_id": "A001",
+      "input_data": {
+        "applicant_name": "Simon Jani",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Simon Jani",
+          "dob": "1961-XX-XX",
+          "gender": "Female",
+          "address": "[REDACTED], Ichalkaranji 892152",
+          "aadhaar_number": "xxxx-xxxx-0323"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns or pending update requests. As per internal_kyc_policy.md:3.2, the DOB requirement is satisfied as the application data aligns with the provided Aadhaar details. No contradictory information was found to trigger internal_kyc_policy.md:4.1 or uidai_ekyc_guidelines.md:4.2."
+      },
+      "model_id": "gemini-3.1-flash-lite",
+      "rule_id": "internal_kyc_policy.md:4.1, internal_kyc_policy.md:3.2, uidai_ekyc_guidelines.md:4.2",
+      "start_time": "2026-09-08T07:16:44.157050+00:00",
+      "end_time": "2026-09-08T07:16:48.847867+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "d99ac8033bbb1089ccb62f7695c1f138fa69ff9034f05511291f060e372f18ea"
+    },
+    "decision": {
+      "decision_id": "136fbaed-2b85-43d9-85ba-5aafcd2d2500",
+      "execution_id": "b5c063b3-fc10-494a-a095-3f8cfbf1c06c",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns or pending update requests. As per internal_kyc_policy.md:3.2, the DOB requirement is satisfied as the application data aligns with the provided Aadhaar details. No contradictory information was found to trigger internal_kyc_policy.md:4.1 or uidai_ekyc_guidelines.md:4.2.",
+      "timestamp": "2026-09-08T07:16:48.847867+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "54c59b00-927f-49ca-82f0-eee8b7368cc1",
+        "execution_id": "b5c063b3-fc10-494a-a095-3f8cfbf1c06c",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:4.1",
+        "retrieval_score": 0.4238,
+        "timestamp": "2026-09-08T07:16:48.847867+00:00"
+      },
+      {
+        "evidence_id": "252801fc-3746-4aee-9486-8b72a1903991",
+        "execution_id": "b5c063b3-fc10-494a-a095-3f8cfbf1c06c",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:3.2",
+        "retrieval_score": 0.4035,
+        "timestamp": "2026-09-08T07:16:48.847867+00:00"
+      },
+      {
+        "evidence_id": "ec37dbb7-ccde-444a-8508-9a63e759d769",
+        "execution_id": "b5c063b3-fc10-494a-a095-3f8cfbf1c06c",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "uidai_ekyc_guidelines.md:4.2",
+        "retrieval_score": 0.3917,
+        "timestamp": "2026-09-08T07:16:48.847867+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "eb4ebb3d-e2de-4589-81fb-5e151767932a",
+      "execution_id": "b5c063b3-fc10-494a-a095-3f8cfbf1c06c",
+      "impact_score": 3,
+      "irreversibility_score": 2,
+      "explainability_score": 9,
+      "composite_risk_score": 2.1,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:16:48.847867+00:00"
+    },
+    "provenance": {
+      "record_id": "a067c7ce-dfa0-41ae-a3b9-23814da20be8",
+      "orchestration_id": "APP-100009",
+      "execution_id": "b5c063b3-fc10-494a-a095-3f8cfbf1c06c",
+      "event_type": "agent_decision",
+      "input_data": {
+        "applicant_name": "Simon Jani",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Simon Jani",
+          "dob": "1961-XX-XX",
+          "gender": "Female",
+          "address": "[REDACTED], Ichalkaranji 892152",
+          "aadhaar_number": "xxxx-xxxx-0323"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the application exactly, and there are no flagged concerns or pending update requests. As per internal_kyc_policy.md:3.2, the DOB requirement is satisfied as the application data aligns with the provided Aadhaar details. No contradictory information was found to trigger internal_kyc_policy.md:4.1 or uidai_ekyc_guidelines.md:4.2."
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:16:48.847867+00:00",
+      "input_hash": "d99ac8033bbb1089ccb62f7695c1f138fa69ff9034f05511291f060e372f18ea",
+      "output_hash": "b25c2b0db12363a5642232b0b5a2c1e6e3327f2a91c097f49cc15e7b8e1e8c91",
+      "record_hash": "38c638542c017619f877042d3fe0c4aebae6501cb9630f2ae24edbaa822fd4b8"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100010",
+      "created_at": "2026-09-08T07:16:48.849889+00:00"
+    },
+    "application": {
+      "application_id": "APP-100010",
+      "user_id": "100010",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:16:48.849889+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "dc2a6f13-d3e9-4367-83d1-9e1eee062c41",
+      "orchestration_id": "APP-100010",
+      "agent_id": "A001",
+      "input_data": {
+        "applicant_name": "Ganga Vig",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Ganga Vig",
+          "dob": "2000-XX-XX",
+          "gender": "Female",
+          "address": "[REDACTED], Ongole-452117",
+          "aadhaar_number": "xxxx-xxxx-0955"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the loan application, and there are no flagged concerns regarding the Aadhaar data. As there are no open update requests or discrepancies noted, the submission satisfies the requirements of internal_kyc_policy.md:3.2."
+      },
+      "model_id": "gemini-3.1-flash-lite",
+      "rule_id": "internal_kyc_policy.md:3.2",
+      "start_time": "2026-09-08T07:16:48.849889+00:00",
+      "end_time": "2026-09-08T07:16:52.887507+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "b75978bfc59237b6d6dacaf74f6ea6e5d065e7be58698dabe3dc250fd84a4b15"
+    },
+    "decision": {
+      "decision_id": "6606a57e-6bcd-4dd3-971a-9ddffffcdda2",
+      "execution_id": "dc2a6f13-d3e9-4367-83d1-9e1eee062c41",
+      "decision_output": "verified",
+      "confidence_score": 0.95,
+      "reasoning": "The applicant's name matches the loan application, and there are no flagged concerns regarding the Aadhaar data. As there are no open update requests or discrepancies noted, the submission satisfies the requirements of internal_kyc_policy.md:3.2.",
+      "timestamp": "2026-09-08T07:16:52.887507+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "010a9999-8c1b-4daf-863e-fbfa882fd434",
+        "execution_id": "dc2a6f13-d3e9-4367-83d1-9e1eee062c41",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:4.1",
+        "retrieval_score": 0.4238,
+        "timestamp": "2026-09-08T07:16:52.887507+00:00"
+      },
+      {
+        "evidence_id": "4c573658-e9dd-4bd9-8df7-6cc571385c13",
+        "execution_id": "dc2a6f13-d3e9-4367-83d1-9e1eee062c41",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "internal_kyc_policy.md:3.2",
+        "retrieval_score": 0.4035,
+        "timestamp": "2026-09-08T07:16:52.887507+00:00"
+      },
+      {
+        "evidence_id": "a119853f-0a6c-4ea5-91c5-084f1356ca12",
+        "execution_id": "dc2a6f13-d3e9-4367-83d1-9e1eee062c41",
+        "source": "Aadhar ChromaDB",
+        "document_reference": "uidai_ekyc_guidelines.md:4.2",
+        "retrieval_score": 0.3917,
+        "timestamp": "2026-09-08T07:16:52.887507+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "97abfc73-3924-45e2-a103-e5ae5141d7b6",
+      "execution_id": "dc2a6f13-d3e9-4367-83d1-9e1eee062c41",
+      "impact_score": 3,
+      "irreversibility_score": 2,
+      "explainability_score": 9,
+      "composite_risk_score": 2.1,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:16:52.887507+00:00"
+    },
+    "provenance": {
+      "record_id": "e1f7ff25-2e0f-4ce5-95a2-90a4d1397f97",
+      "orchestration_id": "APP-100010",
+      "execution_id": "dc2a6f13-d3e9-4367-83d1-9e1eee062c41",
+      "event_type": "agent_decision",
+      "input_data": {
+        "applicant_name": "Ganga Vig",
+        "loan_amount": 150000,
+        "extracted": {
+          "name": "Ganga Vig",
+          "dob": "2000-XX-XX",
+          "gender": "Female",
+          "address": "[REDACTED], Ongole-452117",
+          "aadhaar_number": "xxxx-xxxx-0955"
+        }
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.95,
+        "reasoning": "The applicant's name matches the loan application, and there are no flagged concerns regarding the Aadhaar data. As there are no open update requests or discrepancies noted, the submission satisfies the requirements of internal_kyc_policy.md:3.2."
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:16:52.887507+00:00",
+      "input_hash": "b75978bfc59237b6d6dacaf74f6ea6e5d065e7be58698dabe3dc250fd84a4b15",
+      "output_hash": "39c58043c4f79443118d5d0f48c90336a6d4eb5d06e2f9d61eb1f4275df9071d",
+      "record_hash": "b1f48efc668f59bba527dac8be26a09d1b8aa48019052242a9d66d951488894a"
+    }
+  }
+]
