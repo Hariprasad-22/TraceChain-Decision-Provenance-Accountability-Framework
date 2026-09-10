@@ -1,0 +1,1122 @@
+[
+  {
+    "user": {
+      "user_id": "100001",
+      "created_at": "2026-09-08T07:51:14.706580+00:00"
+    },
+    "application": {
+      "application_id": "APP-100001",
+      "user_id": "100001",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:51:14.706580+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "844e31ae-cdc8-470d-9e51-806e3901ff26",
+      "orchestration_id": "APP-100001",
+      "agent_id": "A004",
+      "input_data": {
+        "application_id": "APP-100001",
+        "applicant_ref_id": "hash_0fb7266073b4",
+        "cibil_score": 812,
+        "credit_utilization_pct": 18,
+        "dpd_history": [
+          0,
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.9,
+        "reasoning": "Your application was approved based on your strong CIBIL score of 812 and low credit utilization of 18%, both of which reflect responsible credit management. This decision is consistent with our historical data for applicants demonstrating similar financial behavior.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "cibil_policy_v1",
+      "start_time": "2026-09-08T07:51:14.706580+00:00",
+      "end_time": "2026-09-08T07:51:17.523127+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "f8af67e8c6491ad2fe3da0b5b27eaaec4350701baaf2fb023c1b39c261c255f1"
+    },
+    "decision": {
+      "decision_id": "bf6136af-c082-40fa-8e5f-d24d83efa47b",
+      "execution_id": "844e31ae-cdc8-470d-9e51-806e3901ff26",
+      "decision_output": "verified",
+      "confidence_score": 0.9,
+      "reasoning": "Your application was approved based on your strong CIBIL score of 812 and low credit utilization of 18%, both of which reflect responsible credit management. This decision is consistent with our historical data for applicants demonstrating similar financial behavior.",
+      "timestamp": "2026-09-08T07:51:17.529661+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "6fb51c2b-420f-4800-8145-264dd07f0ff6",
+        "execution_id": "844e31ae-cdc8-470d-9e51-806e3901ff26",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 812. Decision: verified.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:17.529661+00:00"
+      },
+      {
+        "evidence_id": "8fdc80e9-86d5-4049-a272-9cdc1cec9ea9",
+        "execution_id": "844e31ae-cdc8-470d-9e51-806e3901ff26",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 760. Decision: verified.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:17.529661+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "3555561f-227a-4b1c-8fc9-60a2af57e6fd",
+      "execution_id": "844e31ae-cdc8-470d-9e51-806e3901ff26",
+      "impact_score": 3,
+      "irreversibility_score": 2,
+      "explainability_score": 10,
+      "composite_risk_score": 2.5,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:51:17.529661+00:00"
+    },
+    "provenance": {
+      "record_id": "1ae22d64-86aa-4ff3-ad60-d185dce3f445",
+      "orchestration_id": "APP-100001",
+      "execution_id": "844e31ae-cdc8-470d-9e51-806e3901ff26",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100001",
+        "applicant_ref_id": "hash_0fb7266073b4",
+        "cibil_score": 812,
+        "credit_utilization_pct": 18,
+        "dpd_history": [
+          0,
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.9,
+        "reasoning": "Your application was approved based on your strong CIBIL score of 812 and low credit utilization of 18%, both of which reflect responsible credit management. This decision is consistent with our historical data for applicants demonstrating similar financial behavior.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:51:17.529661+00:00",
+      "input_hash": "f8af67e8c6491ad2fe3da0b5b27eaaec4350701baaf2fb023c1b39c261c255f1",
+      "output_hash": "b721fb4b920f8f417f2df3c973abf55353a7f6787e8fc450f882d1aa19e72b4e",
+      "record_hash": "a27117646e71b4992cd482184410a876fc4446e3bd184575e3d42e4396fe954c"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100002",
+      "created_at": "2026-09-08T07:51:17.530678+00:00"
+    },
+    "application": {
+      "application_id": "APP-100002",
+      "user_id": "100002",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:51:17.530678+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "65de588b-ad91-4f51-ab71-dc815fd40cc1",
+      "orchestration_id": "APP-100002",
+      "agent_id": "A004",
+      "input_data": {
+        "application_id": "APP-100002",
+        "applicant_ref_id": "hash_5e7bae7a5caf",
+        "cibil_score": 760,
+        "credit_utilization_pct": 30,
+        "dpd_history": [
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.9,
+        "reasoning": "Your loan application has been verified based on your strong CIBIL score of 760 and a healthy credit utilization rate of 30%. This decision aligns with our historical data, which consistently shows that applicants with similar credit profiles demonstrate reliable repayment behavior.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "cibil_policy_v1",
+      "start_time": "2026-09-08T07:51:17.530678+00:00",
+      "end_time": "2026-09-08T07:51:19.527168+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "ad23e2142195aebdced5b9115d26a076498ec06d8fe4a6718fa6d9395e1a83c2"
+    },
+    "decision": {
+      "decision_id": "959697e6-920e-4e50-96cf-d443624b1edb",
+      "execution_id": "65de588b-ad91-4f51-ab71-dc815fd40cc1",
+      "decision_output": "verified",
+      "confidence_score": 0.9,
+      "reasoning": "Your loan application has been verified based on your strong CIBIL score of 760 and a healthy credit utilization rate of 30%. This decision aligns with our historical data, which consistently shows that applicants with similar credit profiles demonstrate reliable repayment behavior.",
+      "timestamp": "2026-09-08T07:51:19.527168+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "388393ea-3c29-48ec-9c4c-49470b26da3a",
+        "execution_id": "65de588b-ad91-4f51-ab71-dc815fd40cc1",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 760. Decision: verified.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:19.527168+00:00"
+      },
+      {
+        "evidence_id": "7b45f55b-8989-44c4-832d-cc0221a1b8f5",
+        "execution_id": "65de588b-ad91-4f51-ab71-dc815fd40cc1",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 812. Decision: verified.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:19.528164+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "98feff7d-a872-4237-98b0-c546dc76c9d8",
+      "execution_id": "65de588b-ad91-4f51-ab71-dc815fd40cc1",
+      "impact_score": 3,
+      "irreversibility_score": 2,
+      "explainability_score": 10,
+      "composite_risk_score": 2.5,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:51:19.528164+00:00"
+    },
+    "provenance": {
+      "record_id": "1ee44955-8a58-4566-b789-545d21112685",
+      "orchestration_id": "APP-100002",
+      "execution_id": "65de588b-ad91-4f51-ab71-dc815fd40cc1",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100002",
+        "applicant_ref_id": "hash_5e7bae7a5caf",
+        "cibil_score": 760,
+        "credit_utilization_pct": 30,
+        "dpd_history": [
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "verified",
+        "confidence_score": 0.9,
+        "reasoning": "Your loan application has been verified based on your strong CIBIL score of 760 and a healthy credit utilization rate of 30%. This decision aligns with our historical data, which consistently shows that applicants with similar credit profiles demonstrate reliable repayment behavior.",
+        "risk_factors": {
+          "irreversibility": 2,
+          "impact": 3,
+          "explainability": 10
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:51:19.528164+00:00",
+      "input_hash": "ad23e2142195aebdced5b9115d26a076498ec06d8fe4a6718fa6d9395e1a83c2",
+      "output_hash": "63c0a257219b099b575f5e8175ba92ef1ea1e033f62ed6a731a7e56da793fd84",
+      "record_hash": "d2f1ba354199ead610243062360f8df0316dd49dc4e9879fd3e7bbc4cc04f50e"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100003",
+      "created_at": "2026-09-08T07:51:19.528164+00:00"
+    },
+    "application": {
+      "application_id": "APP-100003",
+      "user_id": "100003",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:51:19.528164+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "016ba441-1417-434a-b5d3-b9c47f9432f8",
+      "orchestration_id": "APP-100003",
+      "agent_id": "A004",
+      "input_data": {
+        "application_id": "APP-100003",
+        "applicant_ref_id": "hash_53a219a3f2b1",
+        "cibil_score": 735,
+        "credit_utilization_pct": 25,
+        "dpd_history": [
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.9,
+        "reasoning": "While your credit score of 735 is generally positive and your utilization is well-managed, our system flags applications in this specific range for additional verification. We prioritize a manual review to ensure all risk criteria are met before final approval.",
+        "risk_factors": {
+          "irreversibility": 4,
+          "impact": 5,
+          "explainability": 8
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "cibil_policy_v1",
+      "start_time": "2026-09-08T07:51:19.528164+00:00",
+      "end_time": "2026-09-08T07:51:21.370058+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "7352e53295e5ed3b6e610a3fa5637ca1d6d690cc13da26cd829310bcae3b22f3"
+    },
+    "decision": {
+      "decision_id": "f9e6da6f-644f-47ad-b280-00068e752e65",
+      "execution_id": "016ba441-1417-434a-b5d3-b9c47f9432f8",
+      "decision_output": "needs_review",
+      "confidence_score": 0.9,
+      "reasoning": "While your credit score of 735 is generally positive and your utilization is well-managed, our system flags applications in this specific range for additional verification. We prioritize a manual review to ensure all risk criteria are met before final approval.",
+      "timestamp": "2026-09-08T07:51:21.370058+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "597353c0-f263-4e1b-aa76-3ed3656a4d16",
+        "execution_id": "016ba441-1417-434a-b5d3-b9c47f9432f8",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 735. Decision: needs_review.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:21.370058+00:00"
+      },
+      {
+        "evidence_id": "0582ee5e-dcb4-463e-abdc-b7e0554c381b",
+        "execution_id": "016ba441-1417-434a-b5d3-b9c47f9432f8",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 712. Decision: needs_review.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:21.370058+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "bdb1d62c-758c-4ba3-8158-b39368aa3e16",
+      "execution_id": "016ba441-1417-434a-b5d3-b9c47f9432f8",
+      "impact_score": 5,
+      "irreversibility_score": 4,
+      "explainability_score": 8,
+      "composite_risk_score": 4.5,
+      "risk_level": "Medium",
+      "review_required": true,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:51:21.370058+00:00"
+    },
+    "provenance": {
+      "record_id": "ab86f5d4-f86c-4d11-93da-60e2c0bf98e8",
+      "orchestration_id": "APP-100003",
+      "execution_id": "016ba441-1417-434a-b5d3-b9c47f9432f8",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100003",
+        "applicant_ref_id": "hash_53a219a3f2b1",
+        "cibil_score": 735,
+        "credit_utilization_pct": 25,
+        "dpd_history": [
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.9,
+        "reasoning": "While your credit score of 735 is generally positive and your utilization is well-managed, our system flags applications in this specific range for additional verification. We prioritize a manual review to ensure all risk criteria are met before final approval.",
+        "risk_factors": {
+          "irreversibility": 4,
+          "impact": 5,
+          "explainability": 8
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:51:21.370058+00:00",
+      "input_hash": "7352e53295e5ed3b6e610a3fa5637ca1d6d690cc13da26cd829310bcae3b22f3",
+      "output_hash": "fe90c961c508f1e6ae78019038dcf13c11e065f007b1b7a8c46e49a9881f633f",
+      "record_hash": "3297d3ebc830b8af4e20d0f737e13080c2b8f33953dcd9a81644436220b4c284"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100004",
+      "created_at": "2026-09-08T07:51:21.370058+00:00"
+    },
+    "application": {
+      "application_id": "APP-100004",
+      "user_id": "100004",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:51:21.370058+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "465d7359-dad9-4239-8a5a-bb45e0c0da18",
+      "orchestration_id": "APP-100004",
+      "agent_id": "A004",
+      "input_data": {
+        "application_id": "APP-100004",
+        "applicant_ref_id": "hash_d1f57939753a",
+        "cibil_score": 712,
+        "credit_utilization_pct": 82,
+        "dpd_history": [
+          0,
+          0,
+          15,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.9,
+        "reasoning": "While your CIBIL score is within a respectable range, your credit utilization of 82% is significantly higher than the recommended threshold, suggesting potential over-reliance on revolving credit. Due to this high utilization level and patterns observed in similar applications, your request requires a manual review to better assess your overall creditworthiness.",
+        "risk_factors": {
+          "irreversibility": 4,
+          "impact": 5,
+          "explainability": 9
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "cibil_policy_v1",
+      "start_time": "2026-09-08T07:51:21.370058+00:00",
+      "end_time": "2026-09-08T07:51:23.478268+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "2caa2b7cc229457b22abbb328a74a734bd9ed50b33efaad0df55b930e0613407"
+    },
+    "decision": {
+      "decision_id": "d42573c5-bd8f-4608-9e5d-15ec048c3dae",
+      "execution_id": "465d7359-dad9-4239-8a5a-bb45e0c0da18",
+      "decision_output": "needs_review",
+      "confidence_score": 0.9,
+      "reasoning": "While your CIBIL score is within a respectable range, your credit utilization of 82% is significantly higher than the recommended threshold, suggesting potential over-reliance on revolving credit. Due to this high utilization level and patterns observed in similar applications, your request requires a manual review to better assess your overall creditworthiness.",
+      "timestamp": "2026-09-08T07:51:23.478268+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "203df39c-5d96-4627-9087-c347e1a99e76",
+        "execution_id": "465d7359-dad9-4239-8a5a-bb45e0c0da18",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 712. Decision: needs_review.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:23.478268+00:00"
+      },
+      {
+        "evidence_id": "5d594e75-b7f0-4543-b516-d5c5262b02d9",
+        "execution_id": "465d7359-dad9-4239-8a5a-bb45e0c0da18",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 735. Decision: needs_review.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:23.478268+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "3b5bff88-d952-4213-89bc-ae21e1c427f1",
+      "execution_id": "465d7359-dad9-4239-8a5a-bb45e0c0da18",
+      "impact_score": 5,
+      "irreversibility_score": 4,
+      "explainability_score": 9,
+      "composite_risk_score": 4.5,
+      "risk_level": "Medium",
+      "review_required": true,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:51:23.478268+00:00"
+    },
+    "provenance": {
+      "record_id": "3bb87a74-da81-4db3-a4f0-e5963d3d73dd",
+      "orchestration_id": "APP-100004",
+      "execution_id": "465d7359-dad9-4239-8a5a-bb45e0c0da18",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100004",
+        "applicant_ref_id": "hash_d1f57939753a",
+        "cibil_score": 712,
+        "credit_utilization_pct": 82,
+        "dpd_history": [
+          0,
+          0,
+          15,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.9,
+        "reasoning": "While your CIBIL score is within a respectable range, your credit utilization of 82% is significantly higher than the recommended threshold, suggesting potential over-reliance on revolving credit. Due to this high utilization level and patterns observed in similar applications, your request requires a manual review to better assess your overall creditworthiness.",
+        "risk_factors": {
+          "irreversibility": 4,
+          "impact": 5,
+          "explainability": 9
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:51:23.478268+00:00",
+      "input_hash": "2caa2b7cc229457b22abbb328a74a734bd9ed50b33efaad0df55b930e0613407",
+      "output_hash": "c455ef92e1d6e7626428cd86e43ef3fa26459c521c912d655da18e15c0a2ad2e",
+      "record_hash": "da6736993dd45df99feeb16aeddcff801a9d1adb0126cc90d20c0031e27da431"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100005",
+      "created_at": "2026-09-08T07:51:23.479262+00:00"
+    },
+    "application": {
+      "application_id": "APP-100005",
+      "user_id": "100005",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:51:23.479262+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "25964002-b77f-4ada-aad9-184eb2e4f210",
+      "orchestration_id": "APP-100005",
+      "agent_id": "A004",
+      "input_data": {
+        "application_id": "APP-100005",
+        "applicant_ref_id": "hash_642c9278cf13",
+        "cibil_score": 668,
+        "credit_utilization_pct": 71,
+        "dpd_history": [
+          0,
+          20,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.9,
+        "reasoning": "Your application has been flagged for manual review due to a combination of a moderate credit score and high current credit utilization. These factors indicate a higher risk profile that requires a closer look by our underwriting team to ensure the loan terms align with your financial situation.",
+        "risk_factors": {
+          "irreversibility": 4,
+          "impact": 5,
+          "explainability": 9
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "cibil_policy_v1",
+      "start_time": "2026-09-08T07:51:23.479262+00:00",
+      "end_time": "2026-09-08T07:51:25.406260+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "1532ac6cb6b4dc2138052ec93ba46c4c1592e19500609ab0cfc80e7b5e666cbd"
+    },
+    "decision": {
+      "decision_id": "232ecb9a-861a-41b5-9fe8-b2e2f6550def",
+      "execution_id": "25964002-b77f-4ada-aad9-184eb2e4f210",
+      "decision_output": "needs_review",
+      "confidence_score": 0.9,
+      "reasoning": "Your application has been flagged for manual review due to a combination of a moderate credit score and high current credit utilization. These factors indicate a higher risk profile that requires a closer look by our underwriting team to ensure the loan terms align with your financial situation.",
+      "timestamp": "2026-09-08T07:51:25.406260+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "6872970c-30c5-49f6-a3d1-7445f6e967ce",
+        "execution_id": "25964002-b77f-4ada-aad9-184eb2e4f210",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 668. Decision: needs_review.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:25.406260+00:00"
+      },
+      {
+        "evidence_id": "8d1ce553-45c2-4736-be16-aa9d2ed8cee3",
+        "execution_id": "25964002-b77f-4ada-aad9-184eb2e4f210",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 735. Decision: needs_review.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:25.406260+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "531956cb-c8f4-482d-b821-c1051b8c29bc",
+      "execution_id": "25964002-b77f-4ada-aad9-184eb2e4f210",
+      "impact_score": 5,
+      "irreversibility_score": 4,
+      "explainability_score": 9,
+      "composite_risk_score": 4.5,
+      "risk_level": "Medium",
+      "review_required": true,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:51:25.406260+00:00"
+    },
+    "provenance": {
+      "record_id": "1095028e-83e8-4237-a028-62c9e6038a0f",
+      "orchestration_id": "APP-100005",
+      "execution_id": "25964002-b77f-4ada-aad9-184eb2e4f210",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100005",
+        "applicant_ref_id": "hash_642c9278cf13",
+        "cibil_score": 668,
+        "credit_utilization_pct": 71,
+        "dpd_history": [
+          0,
+          20,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "needs_review",
+        "confidence_score": 0.9,
+        "reasoning": "Your application has been flagged for manual review due to a combination of a moderate credit score and high current credit utilization. These factors indicate a higher risk profile that requires a closer look by our underwriting team to ensure the loan terms align with your financial situation.",
+        "risk_factors": {
+          "irreversibility": 4,
+          "impact": 5,
+          "explainability": 9
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:51:25.406260+00:00",
+      "input_hash": "1532ac6cb6b4dc2138052ec93ba46c4c1592e19500609ab0cfc80e7b5e666cbd",
+      "output_hash": "015bd6ae013001144468429f6ce5b7a77d12700237192e1c251cd7fd77554e98",
+      "record_hash": "10b258c867ddb6e80a0ad24c1c51b7d0b54619d00eac9bf6beb99b88ced62252"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100006",
+      "created_at": "2026-09-08T07:51:25.407260+00:00"
+    },
+    "application": {
+      "application_id": "APP-100006",
+      "user_id": "100006",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:51:25.407260+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "3cdb1ab0-c62b-4fa3-9d79-bf3ea2123edd",
+      "orchestration_id": "APP-100006",
+      "agent_id": "A004",
+      "input_data": {
+        "application_id": "APP-100006",
+        "applicant_ref_id": "hash_a1b84cc266af",
+        "cibil_score": 620,
+        "credit_utilization_pct": 55,
+        "dpd_history": [
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "high_risk",
+        "confidence_score": 0.9,
+        "reasoning": "Your credit score of 620 falls below our threshold for low-risk lending, and your current credit utilization of 55% indicates a higher reliance on available credit. Based on these factors and historical data of similar profiles, we have categorized this application as high risk.",
+        "risk_factors": {
+          "irreversibility": 6,
+          "impact": 7,
+          "explainability": 9
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "cibil_policy_v1",
+      "start_time": "2026-09-08T07:51:25.407260+00:00",
+      "end_time": "2026-09-08T07:51:27.263004+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "64a34502e4c28b898bcbeee973fccf380b9685e3dfec080bf71a843da22f2a3c"
+    },
+    "decision": {
+      "decision_id": "26358c80-ed00-4e75-ad31-51a4c4be490c",
+      "execution_id": "3cdb1ab0-c62b-4fa3-9d79-bf3ea2123edd",
+      "decision_output": "high_risk",
+      "confidence_score": 0.9,
+      "reasoning": "Your credit score of 620 falls below our threshold for low-risk lending, and your current credit utilization of 55% indicates a higher reliance on available credit. Based on these factors and historical data of similar profiles, we have categorized this application as high risk.",
+      "timestamp": "2026-09-08T07:51:27.263004+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "10414b10-d91b-481c-a6c5-e52626f6c299",
+        "execution_id": "3cdb1ab0-c62b-4fa3-9d79-bf3ea2123edd",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 620. Decision: high_risk.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:27.263004+00:00"
+      },
+      {
+        "evidence_id": "921c4200-4292-46bc-93ba-27e6ce17d3da",
+        "execution_id": "3cdb1ab0-c62b-4fa3-9d79-bf3ea2123edd",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 590. Decision: high_risk_auto.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:27.263004+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "d5f8c786-aee7-4ced-b427-fbc81ff78784",
+      "execution_id": "3cdb1ab0-c62b-4fa3-9d79-bf3ea2123edd",
+      "impact_score": 7,
+      "irreversibility_score": 6,
+      "explainability_score": 9,
+      "composite_risk_score": 6.5,
+      "risk_level": "Medium",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:51:27.263004+00:00"
+    },
+    "provenance": {
+      "record_id": "cb327a30-467f-436f-a926-b7700444ef7d",
+      "orchestration_id": "APP-100006",
+      "execution_id": "3cdb1ab0-c62b-4fa3-9d79-bf3ea2123edd",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100006",
+        "applicant_ref_id": "hash_a1b84cc266af",
+        "cibil_score": 620,
+        "credit_utilization_pct": 55,
+        "dpd_history": [
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "high_risk",
+        "confidence_score": 0.9,
+        "reasoning": "Your credit score of 620 falls below our threshold for low-risk lending, and your current credit utilization of 55% indicates a higher reliance on available credit. Based on these factors and historical data of similar profiles, we have categorized this application as high risk.",
+        "risk_factors": {
+          "irreversibility": 6,
+          "impact": 7,
+          "explainability": 9
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:51:27.263004+00:00",
+      "input_hash": "64a34502e4c28b898bcbeee973fccf380b9685e3dfec080bf71a843da22f2a3c",
+      "output_hash": "47463dc5674a75a5fe737fc417600b4368b42bd23f916b7c09c113d9fef8e173",
+      "record_hash": "26f4640669c70f59d6d20a492305550c2d76e8eb535a542999228da273a80084"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100007",
+      "created_at": "2026-09-08T07:51:27.263004+00:00"
+    },
+    "application": {
+      "application_id": "APP-100007",
+      "user_id": "100007",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:51:27.263004+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "a8d71427-031c-4d65-99ad-142c75a7c9b2",
+      "orchestration_id": "APP-100007",
+      "agent_id": "A004",
+      "input_data": {
+        "application_id": "APP-100007",
+        "applicant_ref_id": "hash_c8f644e852e9",
+        "cibil_score": 590,
+        "credit_utilization_pct": 95,
+        "dpd_history": [
+          0,
+          92,
+          45,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "high_risk_auto",
+        "confidence_score": 1.0,
+        "reasoning": "Your loan application has been classified as high risk due to your CIBIL score of 590 and very high credit utilization of 95%. These factors align with our historical data, which consistently marks applicants with similar credit profiles as high risk.",
+        "risk_factors": {
+          "irreversibility": 8,
+          "impact": 9,
+          "explainability": 10
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "cibil_policy_v1",
+      "start_time": "2026-09-08T07:51:27.263004+00:00",
+      "end_time": "2026-09-08T07:51:28.969065+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "149637be91c951fe44f1de8cb41d183904fb27f78bf6848d6115ed26847c56c2"
+    },
+    "decision": {
+      "decision_id": "ce3313ca-5e65-4615-b551-9247578bdfaa",
+      "execution_id": "a8d71427-031c-4d65-99ad-142c75a7c9b2",
+      "decision_output": "high_risk_auto",
+      "confidence_score": 1.0,
+      "reasoning": "Your loan application has been classified as high risk due to your CIBIL score of 590 and very high credit utilization of 95%. These factors align with our historical data, which consistently marks applicants with similar credit profiles as high risk.",
+      "timestamp": "2026-09-08T07:51:28.969065+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "c36ffec2-d899-4803-b892-71c9e279eb22",
+        "execution_id": "a8d71427-031c-4d65-99ad-142c75a7c9b2",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 590. Decision: high_risk_auto.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:28.969065+00:00"
+      },
+      {
+        "evidence_id": "7921d0bc-65ed-40b3-977d-e6fa1328c688",
+        "execution_id": "a8d71427-031c-4d65-99ad-142c75a7c9b2",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 540. Decision: high_risk_auto.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:28.969065+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "5911f772-23a0-4328-8ea9-808bff4929c5",
+      "execution_id": "a8d71427-031c-4d65-99ad-142c75a7c9b2",
+      "impact_score": 9,
+      "irreversibility_score": 8,
+      "explainability_score": 10,
+      "composite_risk_score": 8.5,
+      "risk_level": "High",
+      "review_required": true,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:51:28.969065+00:00"
+    },
+    "provenance": {
+      "record_id": "d7b5dfce-97fa-42da-8a26-a71da1a94571",
+      "orchestration_id": "APP-100007",
+      "execution_id": "a8d71427-031c-4d65-99ad-142c75a7c9b2",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100007",
+        "applicant_ref_id": "hash_c8f644e852e9",
+        "cibil_score": 590,
+        "credit_utilization_pct": 95,
+        "dpd_history": [
+          0,
+          92,
+          45,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "high_risk_auto",
+        "confidence_score": 1.0,
+        "reasoning": "Your loan application has been classified as high risk due to your CIBIL score of 590 and very high credit utilization of 95%. These factors align with our historical data, which consistently marks applicants with similar credit profiles as high risk.",
+        "risk_factors": {
+          "irreversibility": 8,
+          "impact": 9,
+          "explainability": 10
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:51:28.969065+00:00",
+      "input_hash": "149637be91c951fe44f1de8cb41d183904fb27f78bf6848d6115ed26847c56c2",
+      "output_hash": "5e21e7a4ef4e45f28ab7843582d81bfef62176b4104786045daf41c16a4645d0",
+      "record_hash": "7374e98f8ed60ba16b0739242ab6a104d3aeb1e8cc18dfad0bd4027ec6b927b7"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100008",
+      "created_at": "2026-09-08T07:51:28.970064+00:00"
+    },
+    "application": {
+      "application_id": "APP-100008",
+      "user_id": "100008",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:51:28.970064+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "7dd1583c-b4af-4666-915d-1ea876f22d04",
+      "orchestration_id": "APP-100008",
+      "agent_id": "A004",
+      "input_data": {
+        "application_id": "APP-100008",
+        "applicant_ref_id": "hash_c952bd5411e8",
+        "cibil_score": 540,
+        "credit_utilization_pct": 98,
+        "dpd_history": [
+          120,
+          0,
+          30
+        ]
+      },
+      "output_data": {
+        "decision_output": "high_risk_auto",
+        "confidence_score": 1.0,
+        "reasoning": "Your loan application has been classified as high risk due to your low CIBIL score of 540 and a very high credit utilization rate of 98%. These factors align with historical data from similar profiles, which consistently indicate a higher probability of default.",
+        "risk_factors": {
+          "irreversibility": 8,
+          "impact": 9,
+          "explainability": 10
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "cibil_policy_v1",
+      "start_time": "2026-09-08T07:51:28.970064+00:00",
+      "end_time": "2026-09-08T07:51:30.655991+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "c107774adc6605bb973ea59a21d168d6c9c21db6457f52e0ecc747e1cb487983"
+    },
+    "decision": {
+      "decision_id": "8bb2a2e6-934d-4621-aab5-2a5f59cdbbbb",
+      "execution_id": "7dd1583c-b4af-4666-915d-1ea876f22d04",
+      "decision_output": "high_risk_auto",
+      "confidence_score": 1.0,
+      "reasoning": "Your loan application has been classified as high risk due to your low CIBIL score of 540 and a very high credit utilization rate of 98%. These factors align with historical data from similar profiles, which consistently indicate a higher probability of default.",
+      "timestamp": "2026-09-08T07:51:30.655991+00:00"
+    },
+    "evidence": [
+      {
+        "evidence_id": "17e576dc-3507-4c87-babd-61968e9540ac",
+        "execution_id": "7dd1583c-b4af-4666-915d-1ea876f22d04",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 540. Decision: high_risk_auto.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:30.655991+00:00"
+      },
+      {
+        "evidence_id": "063288c6-b332-42c5-8545-d10dacc5f6ea",
+        "execution_id": "7dd1583c-b4af-4666-915d-1ea876f22d04",
+        "source": "chromadb:cibil_decisions",
+        "document_reference": "Applicant with CIBIL score 590. Decision: high_risk_auto.",
+        "retrieval_score": 0.0,
+        "timestamp": "2026-09-08T07:51:30.655991+00:00"
+      }
+    ],
+    "accountability": {
+      "score_id": "5a623580-301a-49bb-a6ea-994d443c98c3",
+      "execution_id": "7dd1583c-b4af-4666-915d-1ea876f22d04",
+      "impact_score": 9,
+      "irreversibility_score": 8,
+      "explainability_score": 10,
+      "composite_risk_score": 8.5,
+      "risk_level": "High",
+      "review_required": true,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:51:30.655991+00:00"
+    },
+    "provenance": {
+      "record_id": "5487a4b3-6f42-495d-a2ce-0fdeade9f808",
+      "orchestration_id": "APP-100008",
+      "execution_id": "7dd1583c-b4af-4666-915d-1ea876f22d04",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100008",
+        "applicant_ref_id": "hash_c952bd5411e8",
+        "cibil_score": 540,
+        "credit_utilization_pct": 98,
+        "dpd_history": [
+          120,
+          0,
+          30
+        ]
+      },
+      "output_data": {
+        "decision_output": "high_risk_auto",
+        "confidence_score": 1.0,
+        "reasoning": "Your loan application has been classified as high risk due to your low CIBIL score of 540 and a very high credit utilization rate of 98%. These factors align with historical data from similar profiles, which consistently indicate a higher probability of default.",
+        "risk_factors": {
+          "irreversibility": 8,
+          "impact": 9,
+          "explainability": 10
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:51:30.655991+00:00",
+      "input_hash": "c107774adc6605bb973ea59a21d168d6c9c21db6457f52e0ecc747e1cb487983",
+      "output_hash": "db652de222e46cee6cb5d6d5408d1be24c28c2f840333dbc3c28acafa919e81c",
+      "record_hash": "401ef0d9baf34a1d85269347c3e39b2abc9196263375c3d0b61831f71a7d06a8"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100009",
+      "created_at": "2026-09-08T07:51:30.655991+00:00"
+    },
+    "application": {
+      "application_id": "APP-100009",
+      "user_id": "100009",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:51:30.655991+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "4a4065aa-2230-449b-a648-976b29288e2a",
+      "orchestration_id": "APP-100009",
+      "agent_id": "A004",
+      "input_data": {
+        "application_id": "APP-100009",
+        "applicant_ref_id": "hash_3fa599330808",
+        "cibil_score": 950,
+        "credit_utilization_pct": 20,
+        "dpd_history": [
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "invalid_score",
+        "confidence_score": 1.0,
+        "reasoning": "Score 950 is outside the valid 300-900 range.",
+        "risk_factors": {
+          "irreversibility": 1,
+          "impact": 2,
+          "explainability": 10
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "cibil_policy_v1",
+      "start_time": "2026-09-08T07:51:30.655991+00:00",
+      "end_time": "2026-09-08T07:51:30.655991+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "875c007391c441788c64994948f4416de3aebc665b57f44e970aad6393db6db1"
+    },
+    "decision": {
+      "decision_id": "a643dea3-69e6-428d-b457-5c8141c5760a",
+      "execution_id": "4a4065aa-2230-449b-a648-976b29288e2a",
+      "decision_output": "invalid_score",
+      "confidence_score": 1.0,
+      "reasoning": "Score 950 is outside the valid 300-900 range.",
+      "timestamp": "2026-09-08T07:51:30.655991+00:00"
+    },
+    "evidence": [],
+    "accountability": {
+      "score_id": "edf85f90-b06a-4670-81cb-96dbf3aeed9a",
+      "execution_id": "4a4065aa-2230-449b-a648-976b29288e2a",
+      "impact_score": 2,
+      "irreversibility_score": 1,
+      "explainability_score": 10,
+      "composite_risk_score": 1.5,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:51:30.655991+00:00"
+    },
+    "provenance": {
+      "record_id": "111b39fa-8c17-4af7-b933-302ed554b7bd",
+      "orchestration_id": "APP-100009",
+      "execution_id": "4a4065aa-2230-449b-a648-976b29288e2a",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100009",
+        "applicant_ref_id": "hash_3fa599330808",
+        "cibil_score": 950,
+        "credit_utilization_pct": 20,
+        "dpd_history": [
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "invalid_score",
+        "confidence_score": 1.0,
+        "reasoning": "Score 950 is outside the valid 300-900 range.",
+        "risk_factors": {
+          "irreversibility": 1,
+          "impact": 2,
+          "explainability": 10
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:51:30.655991+00:00",
+      "input_hash": "875c007391c441788c64994948f4416de3aebc665b57f44e970aad6393db6db1",
+      "output_hash": "08edae50d30610d7dce2b59274d55022c9e0bd7dd67df64a5d604fd4a62f4cc5",
+      "record_hash": "ce9e698ed1e5133d617d441876382bd7f7d5a2ff10ff6e6b8baf094fb3de1950"
+    }
+  },
+  {
+    "user": {
+      "user_id": "100010",
+      "created_at": "2026-09-08T07:51:30.666057+00:00"
+    },
+    "application": {
+      "application_id": "APP-100010",
+      "user_id": "100010",
+      "loan_amount": 150000,
+      "application_date": "2026-09-08T07:51:30.666057+00:00",
+      "status": "processing"
+    },
+    "execution": {
+      "execution_id": "00e90adc-f00b-4d82-9dc6-375d01051e69",
+      "orchestration_id": "APP-100010",
+      "agent_id": "A004",
+      "input_data": {
+        "application_id": "APP-100010",
+        "applicant_ref_id": "hash_5c0ac2cce6c3",
+        "cibil_score": 250,
+        "credit_utilization_pct": 60,
+        "dpd_history": [
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "invalid_score",
+        "confidence_score": 1.0,
+        "reasoning": "Score 250 is outside the valid 300-900 range.",
+        "risk_factors": {
+          "irreversibility": 1,
+          "impact": 2,
+          "explainability": 10
+        }
+      },
+      "model_id": "rule-engine+llm-reasoning-v1",
+      "rule_id": "cibil_policy_v1",
+      "start_time": "2026-09-08T07:51:30.666057+00:00",
+      "end_time": "2026-09-08T07:51:30.666057+00:00",
+      "status": "completed",
+      "sequence_number": 1,
+      "input_hash": "0c016a81b31b2d5fc91bf115dcb23b5e478af9d62a1a7ae39f68bc6e2bac4154"
+    },
+    "decision": {
+      "decision_id": "4151da98-bccb-4fef-8ab9-faa85cc445ef",
+      "execution_id": "00e90adc-f00b-4d82-9dc6-375d01051e69",
+      "decision_output": "invalid_score",
+      "confidence_score": 1.0,
+      "reasoning": "Score 250 is outside the valid 300-900 range.",
+      "timestamp": "2026-09-08T07:51:30.666057+00:00"
+    },
+    "evidence": [],
+    "accountability": {
+      "score_id": "9fc2f3df-55ec-4210-9c41-70704dd43758",
+      "execution_id": "00e90adc-f00b-4d82-9dc6-375d01051e69",
+      "impact_score": 2,
+      "irreversibility_score": 1,
+      "explainability_score": 10,
+      "composite_risk_score": 1.5,
+      "risk_level": "Low",
+      "review_required": false,
+      "scoring_model_version": "tracechain-scoring-v1",
+      "calculated_at": "2026-09-08T07:51:30.666057+00:00"
+    },
+    "provenance": {
+      "record_id": "a464cd61-4b62-45e2-a01b-406eff6096bf",
+      "orchestration_id": "APP-100010",
+      "execution_id": "00e90adc-f00b-4d82-9dc6-375d01051e69",
+      "event_type": "agent_execution",
+      "input_data": {
+        "application_id": "APP-100010",
+        "applicant_ref_id": "hash_5c0ac2cce6c3",
+        "cibil_score": 250,
+        "credit_utilization_pct": 60,
+        "dpd_history": [
+          0,
+          0
+        ]
+      },
+      "output_data": {
+        "decision_output": "invalid_score",
+        "confidence_score": 1.0,
+        "reasoning": "Score 250 is outside the valid 300-900 range.",
+        "risk_factors": {
+          "irreversibility": 1,
+          "impact": 2,
+          "explainability": 10
+        }
+      },
+      "previous_record_hash": null,
+      "timestamp": "2026-09-08T07:51:30.666057+00:00",
+      "input_hash": "0c016a81b31b2d5fc91bf115dcb23b5e478af9d62a1a7ae39f68bc6e2bac4154",
+      "output_hash": "3eefef8d6384a81921b014edbcf8cefde2fddf51fc75dab95a6c69936d48548e",
+      "record_hash": "917347559148c84b4d0884ca83f4fc1a23b513086389daf3e582dc1beb2bce82"
+    }
+  }
+]

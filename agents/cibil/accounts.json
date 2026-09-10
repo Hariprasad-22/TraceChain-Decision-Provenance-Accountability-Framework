@@ -1,0 +1,14 @@
+[
+  {"application_id": "APP-100001", "applicant_ref_id": "hash_0fb7266073b4", "cibil_score": 812, "credit_utilization_pct": 18, "dpd_history": [0, 0, 0]},
+  {"application_id": "APP-100002", "applicant_ref_id": "hash_5e7bae7a5caf", "cibil_score": 760, "credit_utilization_pct": 30, "dpd_history": [0, 0]},
+  {"application_id": "APP-100003", "applicant_ref_id": "hash_53a219a3f2b1", "cibil_score": 735, "credit_utilization_pct": 25, "dpd_history": [0, 0]},
+  {"application_id": "APP-100004", "applicant_ref_id": "hash_d1f57939753a", "cibil_score": 712, "credit_utilization_pct": 82, "dpd_history": [0, 0, 15, 0]},
+  {"application_id": "APP-100005", "applicant_ref_id": "hash_642c9278cf13", "cibil_score": 668, "credit_utilization_pct": 71, "dpd_history": [0, 20, 0]},
+  {"application_id": "APP-100006", "applicant_ref_id": "hash_a1b84cc266af", "cibil_score": 620, "credit_utilization_pct": 55, "dpd_history": [0, 0]},
+  {"application_id": "APP-100007", "applicant_ref_id": "hash_c8f644e852e9", "cibil_score": 590, "credit_utilization_pct": 95, "dpd_history": [0, 92, 45, 0]},
+  {"application_id": "APP-100008", "applicant_ref_id": "hash_c952bd5411e8", "cibil_score": 540, "credit_utilization_pct": 98, "dpd_history": [120, 0, 30]},
+  {"application_id": "APP-100009", "applicant_ref_id": "hash_3fa599330808", "cibil_score": 950, "credit_utilization_pct": 20, "dpd_history": [0, 0]},
+  {"application_id": "APP-100010", "applicant_ref_id": "hash_5c0ac2cce6c3", "cibil_score": 250, "credit_utilization_pct": 60, "dpd_history": [0, 0]},
+  {"application_id": "APP-100011", "applicant_ref_id": "hash_test_bad_score", "cibil_score": "seven hundred", "credit_utilization_pct": 40, "dpd_history": [0, 0]},
+  {"application_id": "APP-100012", "applicant_ref_id": "hash_test_missing_score", "credit_utilization_pct": 30, "dpd_history": [0, 0]}
+]
