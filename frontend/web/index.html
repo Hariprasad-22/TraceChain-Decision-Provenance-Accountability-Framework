@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TraceChain — Loan Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e1a;
+    --bg-radial: radial-gradient(1100px 700px at 14% -8%, #12192e 0%, #0a0e1a 55%);
+    --panel:#111629;
+    --panel-2:#151b31;
+    --card:#131a30;
+    --border:#232c48;
+    --border-soft:#1b2238;
+    --text:#eceef5;
+    --muted:#8790aa;
+    --muted-2:#5c6683;
+    --gold:#d9a544;
+    --gold-soft:rgba(217,165,68,.14);
+    --teal:#3fc7b4;
+    --teal-soft:rgba(63,199,180,.14);
+    --danger:#e1626b;
+    --danger-soft:rgba(225,98,107,.14);
+    --warn:#e8983d;
+    --warn-soft:rgba(232,152,61,.14);
+    --serif:'Fraunces', Georgia, serif;
+    --sans:'Manrope', system-ui, -apple-system, sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+    --r-sm:8px; --r-md:12px; --r-lg:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg-radial);
+    color:var(--text);
+    font-family:var(--sans);
+    display:flex;
+    overflow:hidden;
+  }
+  ::-webkit-scrollbar{width:8px; height:8px;}
+  ::-webkit-scrollbar-thumb{background:#242c48; border-radius:8px;}
+  ::selection{background:var(--gold-soft); color:var(--text);}
+
+  /* ───────────────────────── sidebar ───────────────────────── */
+  #sidebar{
+    width:296px;
+    flex-shrink:0;
+    height:100vh;
+    background:var(--panel);
+    border-right:1px solid var(--border-soft);
+    display:flex;
+    flex-direction:column;
+    padding:26px 22px 20px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .brand svg{flex-shrink:0;}
+  .brand-word{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:21px;
+    letter-spacing:.2px;
+  }
+  .brand-tag{
+    font-size:12.5px;
+    color:var(--muted);
+    margin:0 0 30px;
+    padding-left:34px;
+  }
+
+  .timeline{ position:relative; margin-left:8px; }
+  .timeline-item{
+    position:relative;
+    padding:0 0 26px 26px;
+    display:flex;
+    flex-direction:column;
+  }
+  .timeline-item:last-child{padding-bottom:0;}
+  .timeline-item::before{ /* connecting line */
+    content:'';
+    position:absolute;
+    left:5px; top:16px; bottom:-10px;
+    width:1px;
+    background:var(--border);
+  }
+  .timeline-item:last-child::before{display:none;}
+  .timeline-dot{
+    position:absolute; left:0; top:2px;
+    width:11px; height:11px; border-radius:50%;
+    background:var(--panel-2);
+    border:1.5px solid var(--border);
+    transition:all .35s ease;
+  }
+  .timeline-label{
+    font-size:14px;
+    color:var(--muted-2);
+    font-weight:600;
+    transition:color .35s ease;
+  }
+  .timeline-item.done .timeline-dot{
+    background:var(--gold); border-color:var(--gold);
+    box-shadow:0 0 0 3px var(--gold-soft);
+  }
+  .timeline-item.done .timeline-label{ color:var(--muted); }
+  .timeline-item.active .timeline-dot{
+    background:var(--teal); border-color:var(--teal);
+    box-shadow:0 0 0 4px var(--teal-soft);
+  }
+  .timeline-item.active .timeline-label{ color:var(--text); }
+
+  .case-card{
+    margin-top:28px;
+    background:var(--card);
+    border:1px solid var(--border-soft);
+    border-left:2px solid var(--gold);
+    border-radius:var(--r-md);
+    padding:16px 16px 14px;
+    font-size:13px;
+    display:none;
+  }
+  .case-card.visible{display:block;}
+  .case-title{
+    font-size:11.5px;
+    color:var(--muted-2);
+    margin:0 0 10px;
+    font-weight:600;
+  }
+  .case-row{
+    display:flex;
+    justify-content:space-between;
+    padding:5px 0;
+    border-bottom:1px dashed var(--border-soft);
+  }
+  .case-row:last-child{border-bottom:none;}
+  .case-row span:first-child{color:var(--muted);}
+  .case-row span:last-child{color:var(--text); font-weight:600; text-align:right;}
+  .case-row .ok{color:var(--teal);}
+  .case-row .pending{color:var(--muted-2); font-weight:500;}
+
+  #sidebar-footer{
+    margin-top:auto;
+    padding-top:18px;
+    border-top:1px solid var(--border-soft);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    color:var(--muted-2);
+  }
+  #health-dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--muted-2);
+    flex-shrink:0;
+  }
+  #health-dot.ok{background:var(--teal); box-shadow:0 0 6px var(--teal);}
+  #health-dot.bad{background:var(--danger); box-shadow:0 0 6px var(--danger);}
+
+  /* ───────────────────────── main column ───────────────────────── */
+  #main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    min-width:0;
+  }
+  #topbar{
+    padding:20px 32px 16px;
+    border-bottom:1px solid var(--border-soft);
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+  }
+  #topbar h1{
+    font-family:var(--serif);
+    font-size:19px;
+    font-weight:500;
+    margin:0;
+  }
+  #topbar .status{
+    font-size:12.5px;
+    color:var(--muted);
+  }
+
+  #chat-wrap{ flex:1; overflow-y:auto; display:flex; justify-content:center; }
+  #chat{
+    width:100%;
+    max-width:700px;
+    padding:28px 24px 12px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  .row{ display:flex; gap:12px; max-width:100%; animation:rise .3s ease; }
+  @keyframes rise{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  .row.user{ flex-direction:row-reverse; }
+  .av{
+    width:30px; height:30px; border-radius:9px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; margin-top:2px;
+  }
+  .row.bot .av{ background:linear-gradient(150deg, var(--teal), #2d8f83); color:#06211d; font-weight:700;}
+  .row.user .av{ background:var(--panel-2); border:1px solid var(--border); color:var(--muted);}
+  .bubble{
+    padding:13px 16px;
+    border-radius:var(--r-lg);
+    font-size:14.5px;
+    line-height:1.6;
+    max-width:80%;
+  }
+  .row.bot .bubble{
+    background:var(--panel-2);
+    border:1px solid var(--border-soft);
+    border-top-left-radius:4px;
+  }
+  .row.user .bubble{
+    background:var(--gold);
+    color:#1c1404;
+    font-weight:600;
+    border-top-right-radius:4px;
+  }
+  .bubble strong{color:var(--text); font-weight:700;}
+  .row.user .bubble strong{color:#1c1404;}
+  .bubble code{
+    background:#080b14; border:1px solid var(--border-soft);
+    padding:1px 6px; border-radius:6px; font-family:var(--mono); font-size:12px;
+  }
+  .bubble h2, .bubble h3{ font-family:var(--serif); font-weight:600; }
+  .bubble h2{ font-size:17px; margin:0 0 8px; }
+  .bubble h3{ font-size:13px; color:var(--muted); margin:12px 0 6px; text-transform:none;}
+
+  .typing{ display:inline-flex; gap:4px; padding:3px 2px;}
+  .typing span{ width:6px; height:6px; border-radius:50%; background:var(--muted-2); animation:blink 1.2s infinite ease-in-out;}
+  .typing span:nth-child(2){animation-delay:.2s;}
+  .typing span:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,80%,100%{opacity:.25;} 40%{opacity:1;}}
+
+  /* chips */
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-left:42px; margin-top:-6px;}
+  .chip{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--muted);
+    padding:7px 13px;
+    border-radius:999px;
+    font-size:13px;
+    font-family:var(--sans);
+    font-weight:600;
+    cursor:pointer;
+    transition:border-color .15s, color .15s, background .15s;
+  }
+  .chip:hover{ border-color:var(--teal); color:var(--text); background:var(--teal-soft); }
+
+  /* upload card */
+  .upload-card{
+    margin-left:42px;
+    max-width:80%;
+    border:1.5px dashed var(--border);
+    border-radius:var(--r-md);
+    padding:18px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+    background:var(--panel-2);
+  }
+  .upload-card:hover, .upload-card.drag{ border-color:var(--teal); background:var(--teal-soft); }
+  .upload-card .u-icon{ font-size:22px; margin-bottom:6px; }
+  .upload-card .u-title{ font-weight:700; font-size:14px; }
+  .upload-card .u-sub{ font-size:12px; color:var(--muted-2); margin-top:3px; }
+  .upload-card input{ display:none; }
+  .upload-card.uploaded{
+    border-style:solid; border-color:var(--teal); background:var(--teal-soft); cursor:default;
+  }
+  .u-change{ color:var(--teal); text-decoration:underline; cursor:pointer; }
+
+  /* verifying card */
+  .verify-card{
+    margin-left:42px; max-width:80%;
+    background:var(--panel-2); border:1px solid var(--border-soft);
+    border-radius:var(--r-lg); padding:18px 20px;
+  }
+  .verify-card .v-title{ font-family:var(--serif); font-size:15px; margin-bottom:14px; }
+  .v-step{ display:flex; align-items:center; gap:10px; padding:6px 0; font-size:13.5px; color:var(--muted-2); }
+  .v-step .v-mark{
+    width:18px; height:18px; border-radius:50%; flex-shrink:0;
+    border:1.5px solid var(--border); display:flex; align-items:center; justify-content:center;
+    font-size:11px;
+  }
+  .v-step.active{ color:var(--text); }
+  .v-step.active .v-mark{ border-color:var(--teal); }
+  .v-step.active .v-mark::after{
+    content:''; width:8px; height:8px; border-radius:50%; background:var(--teal);
+    animation:pulse 1s infinite ease-in-out;
+  }
+  @keyframes pulse{ 0%,100%{opacity:.3;} 50%{opacity:1;} }
+  .v-step.done{ color:var(--muted); }
+  .v-step.done .v-mark{ background:var(--teal); border-color:var(--teal); color:#06211d; font-weight:700; }
+
+  /* decision card */
+  .decision-card{
+    margin-left:42px; max-width:86%;
+    background:var(--card);
+    border:1px solid var(--border-soft);
+    border-radius:var(--r-lg);
+    overflow:hidden;
+  }
+  .decision-head{
+    display:flex; align-items:center; gap:18px;
+    padding:22px 22px 18px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .gauge{ flex-shrink:0; }
+  .decision-title{ font-family:var(--serif); font-size:22px; font-weight:600; margin:0 0 4px; }
+  .decision-sub{ font-size:13px; color:var(--muted); margin:0; max-width:360px; }
+  .decision-status.approved .decision-title{ color:var(--teal); }
+  .decision-status.rejected .decision-title{ color:var(--danger); }
+  .decision-status.review .decision-title{ color:var(--warn); }
+
+  .decision-meta{
+    display:flex; gap:20px; padding:14px 22px; flex-wrap:wrap;
+    border-bottom:1px solid var(--border-soft);
+    font-size:12.5px; color:var(--muted);
+  }
+  .decision-meta b{ color:var(--text); }
+  .decision-meta code{ font-family:var(--mono); font-size:11.5px; color:var(--muted); }
+
+  .agent-list{ padding:14px 22px 18px; display:flex; flex-direction:column; gap:9px;}
+  .agent-row{ display:flex; align-items:center; gap:10px; font-size:13px;}
+  .agent-row .a-sym{ width:18px; text-align:center; flex-shrink:0;}
+  .agent-row .a-name{ font-weight:600; flex:1; }
+  .agent-row .a-meta{ color:var(--muted-2); font-size:12px;}
+
+  .decision-actions{ padding:6px 22px 20px; display:flex; gap:8px; flex-wrap:wrap;}
+
+  /* composer */
+  #composer{
+    display:flex; justify-content:center;
+    padding:14px 24px 22px;
+    border-top:1px solid var(--border-soft);
+  }
+  #composer-inner{
+    width:100%; max-width:700px;
+    display:flex; align-items:flex-end; gap:8px;
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:9px 10px;
+  }
+  #composer-inner:focus-within{ border-color:var(--teal); }
+  #msg-input{
+    flex:1; background:transparent; border:none; outline:none;
+    color:var(--text); resize:none; font-family:var(--sans);
+    font-size:14.5px; max-height:120px; padding:8px 6px;
+  }
+  #send-btn{
+    width:38px; height:38px; flex-shrink:0; border-radius:11px; border:none;
+    background:var(--gold); color:#1c1404; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700;
+  }
+  #send-btn:disabled{ opacity:.35; cursor:default; }
+
+  @media (max-width: 780px){
+    #sidebar{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+      <circle cx="9" cy="9" r="5.5" stroke="#d9a544" stroke-width="2"/>
+      <circle cx="17" cy="17" r="5.5" stroke="#3fc7b4" stroke-width="2"/>
+    </svg>
+    <span class="brand-word">TraceChain</span>
+  </div>
+  <p class="brand-tag">Auditable loan decisions</p>
+
+  <div id="timeline" class="timeline"></div>
+
+  <div id="case-card" class="case-card">
+    <p class="case-title">Current application</p>
+    <div class="case-row"><span>Applicant</span><span id="c-name">—</span></div>
+    <div class="case-row"><span>CIBIL score</span><span id="c-cibil">—</span></div>
+    <div class="case-row"><span>Loan amount</span><span id="c-amount">—</span></div>
+    <div class="case-row"><span>Aadhaar</span><span id="c-aadhaar" class="pending">Pending</span></div>
+    <div class="case-row"><span>Payslip</span><span id="c-payslip" class="pending">Pending</span></div>
+  </div>
+
+  <div id="sidebar-footer">
+    <span id="health-dot"></span>
+    <span id="health-text">Connecting to orchestrator…</span>
+  </div>
+</aside>
+
+<div id="main">
+  <div id="topbar">
+    <h1>Loan assistant</h1>
+    <span class="status" id="status-text">Welcome</span>
+  </div>
+  <div id="chat-wrap"><div id="chat"></div></div>
+  <div id="composer">
+    <div id="composer-inner">
+      <textarea id="msg-input" rows="1" placeholder="Type a message..." disabled></textarea>
+      <button id="send-btn" disabled>➤</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const chatEl = document.getElementById('chat');
+const inputEl = document.getElementById('msg-input');
+const sendBtn = document.getElementById('send-btn');
+const timelineEl = document.getElementById('timeline');
+const statusText = document.getElementById('status-text');
+const healthDot = document.getElementById('health-dot');
+const healthText = document.getElementById('health-text');
+const caseCard = document.getElementById('case-card');
+
+let sessionId = null;
+let currentUpload = null;
+let stepsCache = [];
+
+// ── health check ─────────────────────────────────────────────
+fetch('/api/health').then(r=>r.json()).then(d=>{
+  healthDot.className = d.orchestrator_available ? 'ok' : 'bad';
+  healthText.textContent = d.orchestrator_available
+    ? 'Orchestrator connected'
+    : 'Orchestrator offline — chat still works';
+}).catch(()=>{ healthDot.className='bad'; healthText.textContent='Backend unreachable'; });
+
+// ── timeline / sidebar ───────────────────────────────────────
+function renderTimeline(steps, activeIdx){
+  stepsCache = steps;
+  timelineEl.innerHTML = steps.map((label, i) => {
+    let cls = '';
+    if (i < activeIdx) cls = 'done';
+    else if (i === activeIdx) cls = 'active';
+    return `<div class="timeline-item ${cls}">
+      <div class="timeline-dot"></div>
+      <div class="timeline-label">${label}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderCase(summary){
+  if(!summary) return;
+  const any = summary.name || summary.cibil || summary.loan_amount || summary.aadhaar_uploaded || summary.payslip_uploaded;
+  caseCard.classList.toggle('visible', !!any);
+  document.getElementById('c-name').textContent = summary.name || '—';
+  document.getElementById('c-cibil').textContent = summary.cibil || '—';
+  document.getElementById('c-amount').textContent = summary.loan_amount
+    ? '₹' + Number(summary.loan_amount).toLocaleString('en-IN') : '—';
+  const a = document.getElementById('c-aadhaar');
+  a.textContent = summary.aadhaar_uploaded ? 'Uploaded' : 'Pending';
+  a.className = summary.aadhaar_uploaded ? 'ok' : 'pending';
+  const p = document.getElementById('c-payslip');
+  p.textContent = summary.payslip_uploaded ? 'Uploaded' : 'Pending';
+  p.className = summary.payslip_uploaded ? 'ok' : 'pending';
+}
+
+function setStatus(stage, done){
+  const map = {
+    null: 'Welcome', name:'Collecting details', cibil:'Collecting details',
+    aadhaar_upload:'Awaiting documents', payslip_upload:'Awaiting documents',
+    loan_amount:'Loan amount', verifying:'Verifying application',
+  };
+  statusText.textContent = done ? 'Decision ready' : (map[stage] || 'Welcome');
+}
+
+// ── chat rendering helpers ───────────────────────────────────
+function scrollBottom(){ chatEl.scrollTop = chatEl.scrollHeight; }
+
+function md(text){
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.*)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.*)$/gm, '<h2>$1</h2>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/^- (.*)$/gm, '&nbsp;&nbsp;• $1')
+    .replace(/\n/g, '<br/>');
+}
+
+function addBotBubble(text){
+  const row = document.createElement('div');
+  row.className = 'row bot';
+  row.innerHTML = `<div class="av">TC</div><div class="bubble">${md(text)}</div>`;
+  chatEl.appendChild(row);
+  scrollBottom();
+}
+function addUserBubble(text){
+  const row = document.createElement('div');
+  row.className = 'row user';
+  row.innerHTML = `<div class="av">You</div><div class="bubble">${md(text)}</div>`;
+  chatEl.appendChild(row);
+  scrollBottom();
+}
+function addTyping(){
+  const row = document.createElement('div');
+  row.className = 'row bot'; row.id = 'typing-row';
+  row.innerHTML = `<div class="av">TC</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  chatEl.appendChild(row); scrollBottom();
+}
+function removeTyping(){ document.getElementById('typing-row')?.remove(); }
+
+function addChips(chips){
+  if(!chips || !chips.length) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'chips';
+  chips.forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.textContent = c;
+    b.onclick = () => sendText(c.replace(/^[^\w₹]+/, ''));
+    wrap.appendChild(b);
+  });
+  chatEl.appendChild(wrap); scrollBottom();
+}
+
+function addUploadCard(upload){
+  const wrap = document.createElement('div');
+  wrap.className = 'upload-card';
+  wrap.innerHTML = `
+    <div class="u-icon">${upload.field === 'aadhaar' ? '🪪' : '📄'}</div>
+    <div class="u-title">Upload ${upload.label}</div>
+    <div class="u-sub">Click to browse, or drag a file here</div>
+    <input type="file" accept="${upload.accept}" />
+  `;
+  const input = wrap.querySelector('input');
+  wrap.addEventListener('click', () => input.click());
+  ['dragover','dragenter'].forEach(ev => wrap.addEventListener(ev, e => { e.preventDefault(); wrap.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(ev => wrap.addEventListener(ev, e => { e.preventDefault(); wrap.classList.remove('drag'); }));
+  wrap.addEventListener('drop', e => {
+    if(e.dataTransfer.files.length) handleUpload(upload.field, e.dataTransfer.files[0], wrap);
+  });
+  input.addEventListener('change', () => {
+    if(input.files.length) handleUpload(upload.field, input.files[0], wrap);
+  });
+  chatEl.appendChild(wrap); scrollBottom();
+}
+
+async function handleUpload(field, file, cardEl){
+  cardEl.classList.add('uploaded');
+  cardEl.innerHTML = `<div class="u-icon">✅</div><div class="u-title">${file.name}</div><div class="u-sub">Uploaded -- <a href="#" class="u-change">wrong file? change it</a></div>`;
+  cardEl.querySelector('.u-change').addEventListener('click', (e) => {
+    e.preventDefault();
+    sendText(field === 'aadhaar' ? 'change aadhaar' : 'change payslip');
+  });
+  addTyping();
+  const body = new FormData();
+  body.append('session_id', sessionId);
+  body.append('field', field);
+  body.append('file', file);
+  const res = await fetch('/api/upload', { method:'POST', body });
+  const data = await res.json();
+  removeTyping();
+  handleServerResponse(data);
+}
+
+function addVerifyCard(){
+  const wrap = document.createElement('div');
+  wrap.className = 'verify-card';
+  wrap.id = 'verify-card';
+  const steps = ['Aadhaar verification 🪪','Payslip income check 📄','Bank statement analysis 🏦','CIBIL score check 📊','Computing final decision ✨'];
+  wrap.innerHTML = `<div class="v-title">Verifying your application... 🔍</div>` +
+    steps.map((s,i)=>`<div class="v-step" data-i="${i}"><div class="v-mark"></div><span>${s}</span></div>`).join('');
+  chatEl.appendChild(wrap); scrollBottom();
+
+  let i = 0;
+  const stepsEls = wrap.querySelectorAll('.v-step');
+  stepsEls[0].classList.add('active');
+  const interval = setInterval(() => {
+    if(i >= stepsEls.length - 1) { clearInterval(interval); return; }
+    stepsEls[i].classList.remove('active'); stepsEls[i].classList.add('done');
+    stepsEls[i].querySelector('.v-mark').textContent = '✓';
+    i++;
+    stepsEls[i].classList.add('active');
+  }, 900);
+  wrap._interval = interval;
+  wrap._stepsEls = stepsEls;
+  wrap._i = () => i;
+  return wrap;
+}
+function finishVerifyCard(wrap){
+  if(!wrap) return;
+  clearInterval(wrap._interval);
+  wrap._stepsEls.forEach(el => {
+    el.classList.remove('active'); el.classList.add('done');
+    el.querySelector('.v-mark').textContent = '✓';
+  });
+}
+
+function gaugeSvg(score, colorVar){
+  const pct = Math.max(0, Math.min(10, score)) / 10;
+  const r = 26, c = 2*Math.PI*r;
+  const offset = c * (1 - pct);
+  return `<svg class="gauge" width="72" height="72" viewBox="0 0 72 72">
+    <circle cx="36" cy="36" r="${r}" fill="none" stroke="#1e2540" stroke-width="6"/>
+    <circle cx="36" cy="36" r="${r}" fill="none" stroke="${colorVar}" stroke-width="6"
+      stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${offset}"
+      transform="rotate(-90 36 36)"/>
+    <text x="36" y="41" text-anchor="middle" font-family="JetBrains Mono" font-size="14" fill="#eceef5">${score.toFixed(1)}</text>
+  </svg>`;
+}
+
+function addDecisionCard(result, chips){
+  const decision = result.loan_decision;
+  const statusClass = decision === 'Approved' ? 'approved' : decision === 'Rejected' ? 'rejected' : 'review';
+  const color = decision === 'Approved' ? 'var(--teal)' : decision === 'Rejected' ? 'var(--danger)' : 'var(--warn)';
+  const oa = result.overall_accountability || {};
+  const wrap = document.createElement('div');
+  wrap.className = 'decision-card';
+
+  const agents = (result.agent_breakdown || []).map(a => {
+    const sym = a.decision_output === 'verified' ? '✅' : (a.decision_output === 'rejected' || a.decision_output === 'high_risk') ? '❌' : '⚠️';
+    return `<div class="agent-row">
+      <span class="a-sym">${sym}</span>
+      <span class="a-name">${a.agent_name}</span>
+      <span class="a-meta">${a.decision_output} · ${(a.confidence_score*100).toFixed(0)}% · risk ${a.composite_risk_score.toFixed(1)}/10</span>
+    </div>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <div class="decision-head decision-status ${statusClass}">
+      ${gaugeSvg(oa.composite_score || 0, color)}
+      <div>
+        <p class="decision-title">${decision}</p>
+        <p class="decision-sub">${(result.reasoning || '').split('.')[0]}.</p>
+      </div>
+    </div>
+    <div class="decision-meta">
+      <span>Risk level: <b>${oa.risk_level || '—'}</b></span>
+      <span>Chain verified: <b>${result.chain_verified ? 'Yes' : 'No'}</b></span>
+      <span>Orchestration: <code>${result.orchestration_id || '—'}</code></span>
+    </div>
+    <div class="agent-list">${agents}</div>
+  `;
+  chatEl.appendChild(wrap);
+  addChips(chips);
+  scrollBottom();
+}
+
+// ── server round trips ───────────────────────────────────────
+function handleServerResponse(data){
+  sessionId = data.session_id;
+  renderTimeline(data.steps, data.step_index);
+  renderCase(data.summary);
+  setStatus(data.flow_stage, data.done);
+
+  if(data.result && !data.result.error){
+    addDecisionCard(data.result, data.chips);
+  } else {
+    addBotBubble(data.reply);
+    if(data.upload) addUploadCard(data.upload);
+    addChips(data.chips);
+  }
+
+  if(data.upload){
+    inputEl.placeholder = 'Use the upload button, or ask me a question...';
+  } else {
+    inputEl.placeholder = 'Type a message...';
+  }
+  if(!data.trigger_verify){
+    inputEl.disabled = false; sendBtn.disabled = false;
+    inputEl.focus();
+  }
+
+  if(data.trigger_verify){
+    inputEl.disabled = true; sendBtn.disabled = true;
+    runVerification();
+  }
+}
+
+async function runVerification(){
+  const card = addVerifyCard();
+  const body = new URLSearchParams();
+  body.append('session_id', sessionId);
+  const [res] = await Promise.all([
+    fetch('/api/verify', { method:'POST', body }),
+    new Promise(r => setTimeout(r, 1400)), // let the animation breathe
+  ]);
+  const data = await res.json();
+  finishVerifyCard(card);
+  setTimeout(() => handleServerResponse(data), 500);
+}
+
+async function start(){
+  addTyping();
+  const res = await fetch('/api/start', { method:'POST' });
+  const data = await res.json();
+  removeTyping();
+  handleServerResponse(data);
+}
+
+async function sendText(text){
+  if(!text.trim()) return;
+  addUserBubble(text);
+  addTyping();
+  const body = new URLSearchParams();
+  body.append('session_id', sessionId);
+  body.append('message', text);
+  const res = await fetch('/api/message', { method:'POST', body });
+  const data = await res.json();
+  removeTyping();
+  handleServerResponse(data);
+}
+
+function autoresize(){
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+}
+
+sendBtn.addEventListener('click', () => { const t = inputEl.value.trim(); if(t){ inputEl.value=''; autoresize(); sendText(t);} });
+inputEl.addEventListener('input', autoresize);
+inputEl.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    const t = inputEl.value.trim();
+    if(t){ inputEl.value=''; autoresize(); sendText(t); }
+  }
+});
+
+start();
+</script>
+</body>
+</html>

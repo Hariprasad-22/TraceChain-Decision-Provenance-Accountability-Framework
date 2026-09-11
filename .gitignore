@@ -29,3 +29,14 @@ synthetic_aadhar_realistic/
 
 # Logs
 *.log
+
+# Runtime uploads / generated files
+chat_uploads/
+user_counter.json
+last_pipeline_result.json
+__pycache__/
+tracechain_cibil_db/
+
+# Temporary files
+_tmp_*.py
+Untitled
