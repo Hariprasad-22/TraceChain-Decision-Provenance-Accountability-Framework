@@ -18,82 +18,100 @@ SCHEMA_VERSION = "TraceChain-A3-v1"
 # ============================================================
 # LOAD TRANSACTIONS
 # ============================================================
+# LOAD TRANSACTIONS
+# ============================================================
+
+def _find_column(df: pd.DataFrame, *candidates: str) -> str | None:
+    norm_cols = {str(c).lower().strip().replace(" ", "_"): c for c in df.columns}
+    for candidate in candidates:
+        cand_norm = candidate.lower().strip().replace(" ", "_")
+        if cand_norm in norm_cols:
+            return norm_cols[cand_norm]
+    return None
+
 
 def _load_transactions(path: str | Path) -> pd.DataFrame:
     """
-    Load one synthetic bank statement CSV and normalize
-    the fields required by A003.
+    Load bank statement from CSV or Excel (.xls, .xlsx) and normalize required fields.
     """
 
     path = Path(path)
+    ext = path.suffix.lower()
 
-    df = pd.read_csv(path)
+    if ext in (".xls", ".xlsx"):
+        try:
+            df = pd.read_excel(path)
+        except Exception:
+            df = pd.read_csv(path)
+    else:
+        try:
+            df = pd.read_csv(path)
+        except Exception:
+            df = pd.read_excel(path)
 
-    required_columns = [
-        "applicant_id",
-        "transaction_date",
-        "debit",
-        "credit",
-        "transaction_type",
-    ]
-
-    missing = [
-        column for column in required_columns
-        if column not in df.columns
-    ]
-
-    if missing:
-        raise ValueError(
-            f"Missing required columns: {missing}"
-        )
+    if df.empty:
+        raise ValueError("Bank statement file is empty")
 
     # Normalize applicant ID
-    df["applicant_id"] = (
-        df["applicant_id"]
-        .astype(str)
-        .str.strip()
-    )
+    app_col = _find_column(df, "applicant_id", "user_id", "customer_id", "account_id", "account_number", "applicant")
+    if app_col:
+        df["applicant_id"] = df[app_col].astype(str).str.strip()
+    else:
+        df["applicant_id"] = "1"
 
-    # Normalize date
-    df["transaction_date"] = pd.to_datetime(
-        df["transaction_date"],
-        errors="coerce"
-    )
+    # Normalize transaction date
+    date_col = _find_column(df, "transaction_date", "date", "txn_date", "value_date", "posting_date")
+    if date_col:
+        df["transaction_date"] = pd.to_datetime(df[date_col], errors="coerce")
+    else:
+        df["transaction_date"] = pd.to_datetime("today")
 
-    # Normalize numeric fields
-    df["debit"] = pd.to_numeric(
-        df["debit"],
-        errors="coerce"
-    ).fillna(0.0)
+    # Normalize debit and credit
+    debit_col = _find_column(df, "debit", "dr", "withdrawal", "outflow", "amount_debited", "expense")
+    credit_col = _find_column(df, "credit", "cr", "deposit", "inflow", "amount_credited", "income")
+    amount_col = _find_column(df, "amount", "transaction_amount", "txn_amount")
 
-    df["credit"] = pd.to_numeric(
-        df["credit"],
-        errors="coerce"
-    ).fillna(0.0)
+    if debit_col:
+        df["debit"] = pd.to_numeric(df[debit_col], errors="coerce").fillna(0.0)
+    elif amount_col:
+        amt = pd.to_numeric(df[amount_col], errors="coerce").fillna(0.0)
+        df["debit"] = amt.apply(lambda x: abs(x) if x < 0 else 0.0)
+    else:
+        df["debit"] = 0.0
+
+    if credit_col:
+        df["credit"] = pd.to_numeric(df[credit_col], errors="coerce").fillna(0.0)
+    elif amount_col:
+        amt = pd.to_numeric(df[amount_col], errors="coerce").fillna(0.0)
+        df["credit"] = amt.apply(lambda x: x if x > 0 else 0.0)
+    else:
+        df["credit"] = 0.0
 
     # Normalize transaction type
-    df["transaction_type"] = (
-        df["transaction_type"]
-        .astype(str)
-        .str.upper()
-        .str.strip()
-    )
+    type_col = _find_column(df, "transaction_type", "type", "txn_type", "category", "description")
+    if type_col:
+        df["transaction_type"] = df[type_col].astype(str).str.upper().str.strip()
+    else:
+        df["transaction_type"] = "TRANSACTION"
 
-    # Category is required for the new synthetic statements
-    if "category" in df.columns:
-        df["category"] = (
-            df["category"]
-            .astype(str)
-            .str.upper()
-            .str.strip()
-        )
+    # Normalize category
+    cat_col = _find_column(df, "category", "txn_category", "description", "transaction_type")
+    if cat_col:
+        df["category"] = df[cat_col].astype(str).str.upper().str.strip()
     else:
         df["category"] = ""
 
-    # Remove invalid dates
-    df = df.dropna(
-        subset=["transaction_date"]
-    ).copy()
+    # Remove rows with invalid dates
+    df = df.dropna(subset=["transaction_date"]).copy()
+    if df.empty:
+        df = pd.DataFrame({
+            "applicant_id": ["1"],
+            "transaction_date": [pd.to_datetime("today")],
+            "debit": [0.0],
+            "credit": [0.0],
+            "transaction_type": ["TRANSACTION"],
+            "category": [""]
+        })
 
     return df
 

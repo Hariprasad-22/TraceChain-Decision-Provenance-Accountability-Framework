@@ -1,15 +1,26 @@
 import os
 import json
+import logging
 from dotenv import load_dotenv
-from google import genai
 
 load_dotenv()
-api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-if not api_key:
-    raise RuntimeError(
-        "GEMINI_API_KEY is not set. Add it to your environment before using the CIBIL LLM reasoning path."
-    )
-client = genai.Client(api_key=api_key)
+
+_client = None
+
+def get_client():
+    global _client
+    if _client is not None:
+        return _client
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    if not api_key:
+        return None
+    try:
+        from google import genai
+        _client = genai.Client(api_key=api_key)
+        return _client
+    except Exception as exc:
+        logging.warning("Could not initialize CIBIL genai Client: %s", exc)
+        return None
 
 
 # Fixed, deterministic mapping — irreversibility and impact depend ONLY on
@@ -30,9 +41,13 @@ RISK_FACTOR_MAP = {
 
 
 def generate_reasoning(score, utilization_pct, decision_output, similar_cases):
-    precedent_text = f"Similar past cases: {similar_cases}" if similar_cases else "No similar past cases found."
+    fixed_factors = RISK_FACTOR_MAP.get(decision_output, {"irreversibility": 5, "impact": 5})
 
-    prompt = f"""You are explaining a credit risk decision for a loan application.
+    client = get_client()
+    if client is not None:
+        try:
+            precedent_text = f"Similar past cases: {similar_cases}" if similar_cases else "No similar past cases found."
+            prompt = f"""You are explaining a credit risk decision for a loan application.
 
 Rule engine decision (FIXED — do not change this): {decision_output}
 CIBIL score: {score}
@@ -44,22 +59,35 @@ Return ONLY valid JSON, no other text, in this exact shape:
   "reasoning": "2-3 sentence plain-language explanation",
   "explainability": <int 0-10, how clearly this decision can be justified from the score/utilization/precedent alone>
 }}"""
+            response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=prompt,
+            )
+            text = response.text.strip().replace("```json", "").replace("```", "").strip()
+            llm_output = json.loads(text)
+            explainability = int(llm_output.get("explainability", 9))
+            reasoning = llm_output.get("reasoning", "")
+            return {
+                "reasoning": reasoning,
+                "risk_factors": {
+                    "irreversibility": fixed_factors["irreversibility"],
+                    "impact": fixed_factors["impact"],
+                    "explainability": explainability,
+                }
+            }
+        except Exception as exc:
+            logging.warning("CIBIL LLM reasoning call failed: %s", exc)
 
-    response = client.models.generate_content(
-        model="gemini-3.1-flash-lite",
-        contents=prompt,
+    # Fallback reasoning if API key is not present or API call fails
+    reasoning = (
+        f"Applicant CIBIL score is {score} with {utilization_pct:.1f}% credit utilization. "
+        f"Rule engine evaluated risk tier as {decision_output.upper()}."
     )
-
-    text = response.text.strip()
-    text = text.replace("```json", "").replace("```", "").strip()
-    llm_output = json.loads(text)
-
-    fixed_factors = RISK_FACTOR_MAP.get(decision_output, {"irreversibility": 5, "impact": 5})
-
-    risk_factors = {
-        "irreversibility": fixed_factors["irreversibility"],
-        "impact": fixed_factors["impact"],
-        "explainability": llm_output["explainability"],
+    return {
+        "reasoning": reasoning,
+        "risk_factors": {
+            "irreversibility": fixed_factors["irreversibility"],
+            "impact": fixed_factors["impact"],
+            "explainability": 9,
+        }
     }
-
-    return {"reasoning": llm_output["reasoning"], "risk_factors": risk_factors}

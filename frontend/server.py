@@ -204,8 +204,10 @@ def validate_upload_type(field: str, original_name: str, content_type: Optional[
         return
 
     if field == "bank":
-        if not (name.endswith(".csv") or "csv" in ctype):
-            raise HTTPException(400, "Bank statement must be a CSV file")
+        allowed_exts = {".csv", ".xls", ".xlsx"}
+        if not (name.endswith(tuple(allowed_exts)) or "csv" in ctype or "excel" in ctype or "spreadsheet" in ctype):
+            raise HTTPException(400, "Bank statement must be a CSV or Excel file (.csv, .xls, .xlsx)")
+        return
 
 
 GENERIC_FAILURE_REPLY = (
@@ -381,14 +383,14 @@ PROMPTS = {
     "name": "Let's get your application started! 🚀 What's the applicant's **full name**?",
     "aadhaar_upload": "Thanks! 🪪 Please **upload the Aadhaar image** below.",
     "payslip_upload": "Got it ✅ Now let's grab the **payslip** 📄 (PDF or image).",
-    "bank_upload": "Excellent ✅ Please upload the **bank statement CSV** 🏦 for the financial review.",
+    "bank_upload": "Excellent ✅ Please upload the **bank statement file** (.csv, .xls, .xlsx) 🏦 for the financial review.",
     "loan_amount": "Last step! 💰 How much would you like to borrow? (up to ₹50,00,000)",
 }
 
 UPLOAD_HINTS = {
     "aadhaar_upload": {"field": "aadhaar", "label": "Aadhaar image", "accept": "image/*"},
     "payslip_upload": {"field": "payslip", "label": "Payslip (PDF)", "accept": "application/pdf,image/*"},
-    "bank_upload": {"field": "bank", "label": "Bank statement CSV", "accept": ".csv,text/csv"},
+    "bank_upload": {"field": "bank", "label": "Bank statement (CSV / Excel)", "accept": ".csv,.xls,.xlsx,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
 }
 
 CHIPS = {
@@ -893,7 +895,7 @@ FIELD_LABELS = {
     "name": "the applicant's full name",
     "aadhaar_upload": "the Aadhaar image",
     "payslip_upload": "the payslip",
-    "bank_upload": "the bank statement CSV",
+    "bank_upload": "the bank statement file",
     "loan_amount": "the loan amount",
 }
 
@@ -903,7 +905,7 @@ FIELD_EDIT_TRIGGERS = {
     "name": re.compile(r"\b(change|edit|fix|wrong|redo)\b.*\bname\b", re.I),
     "aadhaar_upload": re.compile(r"\b(change|edit|fix|wrong|redo|re-?upload)\b.*\baadhaa?r\b", re.I),
     "payslip_upload": re.compile(r"\b(change|edit|fix|wrong|redo|re-?upload)\b.*\bpayslip\b", re.I),
-    "bank_upload": re.compile(r"\b(change|edit|fix|wrong|redo|re-?upload)\b.*\b(bank|statement|csv)\b", re.I),
+    "bank_upload": re.compile(r"\b(change|edit|fix|wrong|redo|re-?upload)\b.*\b(bank|statement|csv|excel|xls|xlsx)\b", re.I),
     "loan_amount": re.compile(r"\b(change|edit|fix|wrong|redo)\b.*\b(amount|loan amount)\b", re.I),
 }
 
