@@ -20,19 +20,35 @@ Input fields consumed by the CIBIL agent:
 """
 
 import sys
+import importlib.util
 import logging
 from pathlib import Path
 
-from agents.import_isolation import prepare_agent_import, restore_orchestrator_path
-
 logger = logging.getLogger(__name__)
 
-# ─── path setup ───────────────────────────────────────────────────────────────
+try:
+    from .import_isolation import prepare_agent_import, restore_orchestrator_path
+except ImportError:  # pragma: no cover - script-style execution from orchestrator/
+    from agents.import_isolation import prepare_agent_import, restore_orchestrator_path
+
+# Load the real CIBIL agent directly from its source file. This avoids the
+# dependency on legacy top-level import names and path ordering.
 _ORCH_DIR = Path(__file__).resolve().parent.parent
 _CIBIL_DIR = _ORCH_DIR.parent / "agents" / "cibil"
+_CIBIL_FILE = _CIBIL_DIR / "cibil_agent.py"
+
 prepare_agent_import(_CIBIL_DIR)
 try:
-    from cibil_agent import cibil_verification_agent  # noqa: E402
+    if not _CIBIL_FILE.exists():
+        raise FileNotFoundError(f"CIBIL agent file not found at {_CIBIL_FILE}")
+
+    _spec = importlib.util.spec_from_file_location("tracechain_cibil_agent", _CIBIL_FILE)
+    if _spec is None or _spec.loader is None:
+        raise ImportError(f"Could not create import spec for {_CIBIL_FILE}")
+
+    _cibil_module = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_cibil_module)
+    cibil_verification_agent = _cibil_module.cibil_verification_agent
 finally:
     restore_orchestrator_path(_ORCH_DIR)
 

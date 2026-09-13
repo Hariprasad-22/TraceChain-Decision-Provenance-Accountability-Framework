@@ -25,8 +25,10 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-# Ensure orchestrator package is importable
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+# Ensure the repo root is importable so the package can be imported cleanly.
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 from orchestrator import run_pipeline
 
@@ -34,8 +36,9 @@ from orchestrator import run_pipeline
 # Edit these fields to test different scenarios.
 
 BASE_DIR  = Path(__file__).resolve().parent.parent / "agents"
-AADHAAR_IMG = BASE_DIR / "aadhaar" / "Deloitte_capstone" / "synthetic_aadhar_realistic" / "aadhar_realistic_001.png"
-PAYSLIP_PDF = BASE_DIR / "payslip" / "PythonProject1" / "Payslips" / "payslip_02_Dev_Bhargava.pdf"
+AADHAAR_IMG = BASE_DIR / "aadhar" / "synthetic_aadhar_realistic" / "aadhar_realistic_001.png"
+PAYSLIP_PDF = BASE_DIR / "payslip" / "Payslips" / "payslip_02_Dev_Bhargava.pdf"
+BANK_CSV    = BASE_DIR / "bank_statement" / "bank_statement_sample.csv"
 
 STATE = {
     # Identity
@@ -57,11 +60,12 @@ STATE = {
 
     # Document paths + metadata
     "applicant_data": {
-        "aadhar_image_path": str(AADHAAR_IMG),
-        "payslip_file_path": str(PAYSLIP_PDF),
-        "scenario":          "everything_correct",  # payslip scenario
-        "gender":            "Male",
-        "address":           "Hayre,Durg-017468",
+        "aadhar_image_path":        str(AADHAAR_IMG),
+        "payslip_file_path":        str(PAYSLIP_PDF),
+        "bank_statement_file_path": str(BANK_CSV),
+        "scenario":                 "everything_correct",  # payslip scenario
+        "gender":                   "Male",
+        "address":                  "Hayre,Durg-017468",
     },
 }
 

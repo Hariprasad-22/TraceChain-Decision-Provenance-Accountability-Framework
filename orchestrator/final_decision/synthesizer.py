@@ -43,7 +43,7 @@ _REVIEW_KEYWORDS = {
 }
 
 _APPROVE_KEYWORDS = {
-    "verified",
+    "verified", "approved",
 }
 
 # Map to FINAL_DECISIONS.answer CHECK constraint values
@@ -64,14 +64,26 @@ _AGENT_NAMES = {
 
 def _classify(decision_output: str) -> str:
     """Return 'Rejected', 'Manual Review', or 'Approved' for a single agent output."""
-    d = (decision_output or "").lower().strip()
+    d = (decision_output or "").strip().lower()
+
+    # Accept both canonical lowercase values and human-facing title-case labels.
+    d = d.replace(" ", "_")
     if d in _REJECT_KEYWORDS:
         return "Rejected"
     if d in _REVIEW_KEYWORDS:
         return "Manual Review"
     if d in _APPROVE_KEYWORDS:
         return "Approved"
-    # Unknown output — treat as Manual Review (safe default)
+
+    # Some agent outputs are title-cased or include a surrounding label.
+    alt = d.replace("-", "_")
+    if alt in _REJECT_KEYWORDS:
+        return "Rejected"
+    if alt in _REVIEW_KEYWORDS:
+        return "Manual Review"
+    if alt in _APPROVE_KEYWORDS:
+        return "Approved"
+
     logger.warning("Unknown decision_output '%s' — defaulting to Manual Review", decision_output)
     return "Manual Review"
 

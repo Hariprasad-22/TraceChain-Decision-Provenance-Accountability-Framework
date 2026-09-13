@@ -12,7 +12,7 @@ from google.genai import types
 import logging
 logging.getLogger("google_genai").setLevel(logging.ERROR)  # silence the harmless AFC notice
 
-API_KEY = os.environ.get("GOOGLE_API_KEY")
+API_KEY = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
 if not API_KEY:
     raise RuntimeError(
         "GOOGLE_API_KEY is not set. Get a free key at aistudio.google.com "

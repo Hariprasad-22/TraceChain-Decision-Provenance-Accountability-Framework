@@ -394,6 +394,7 @@
     <div class="case-row"><span>Loan amount</span><span id="c-amount">—</span></div>
     <div class="case-row"><span>Aadhaar</span><span id="c-aadhaar" class="pending">Pending</span></div>
     <div class="case-row"><span>Payslip</span><span id="c-payslip" class="pending">Pending</span></div>
+    <div class="case-row"><span>Bank CSV</span><span id="c-bank" class="pending">Pending</span></div>
   </div>
 
   <div id="sidebar-footer">
@@ -454,7 +455,7 @@ function renderTimeline(steps, activeIdx){
 
 function renderCase(summary){
   if(!summary) return;
-  const any = summary.name || summary.cibil || summary.loan_amount || summary.aadhaar_uploaded || summary.payslip_uploaded;
+  const any = summary.name || summary.cibil || summary.loan_amount || summary.aadhaar_uploaded || summary.payslip_uploaded || summary.bank_uploaded;
   caseCard.classList.toggle('visible', !!any);
   document.getElementById('c-name').textContent = summary.name || '—';
   document.getElementById('c-cibil').textContent = summary.cibil || '—';
@@ -466,13 +467,18 @@ function renderCase(summary){
   const p = document.getElementById('c-payslip');
   p.textContent = summary.payslip_uploaded ? 'Uploaded' : 'Pending';
   p.className = summary.payslip_uploaded ? 'ok' : 'pending';
+  const b = document.getElementById('c-bank');
+  if (b) {
+    b.textContent = summary.bank_uploaded ? 'Uploaded' : 'Pending';
+    b.className = summary.bank_uploaded ? 'ok' : 'pending';
+  }
 }
 
 function setStatus(stage, done){
   const map = {
     null: 'Welcome', name:'Collecting details', cibil:'Collecting details',
     aadhaar_upload:'Awaiting documents', payslip_upload:'Awaiting documents',
-    loan_amount:'Loan amount', verifying:'Verifying application',
+    bank_upload:'Awaiting bank CSV', loan_amount:'Loan amount', verifying:'Verifying application',
   };
   statusText.textContent = done ? 'Decision ready' : (map[stage] || 'Welcome');
 }
@@ -613,7 +619,7 @@ function gaugeSvg(score, colorVar){
 }
 
 function addDecisionCard(result, chips){
-  const decision = result.loan_decision;
+  const decision = result.loan_decision || result.final_decision || result.answer || result.decision || 'Manual Review';
   const statusClass = decision === 'Approved' ? 'approved' : decision === 'Rejected' ? 'rejected' : 'review';
   const color = decision === 'Approved' ? 'var(--teal)' : decision === 'Rejected' ? 'var(--danger)' : 'var(--warn)';
   const oa = result.overall_accountability || {};
@@ -629,17 +635,26 @@ function addDecisionCard(result, chips){
     </div>`;
   }).join('');
 
+  const responsibleId = result.responsible_agent || result.responsible_agent_id;
+  const responsibleLabel = {
+    A001: 'Aadhaar Verification',
+    A002: 'Payslip Income Verification',
+    A003: 'Bank Statement Analysis',
+    A004: 'CIBIL Score',
+  }[responsibleId] || responsibleId || '—';
+
   wrap.innerHTML = `
     <div class="decision-head decision-status ${statusClass}">
       ${gaugeSvg(oa.composite_score || 0, color)}
       <div>
         <p class="decision-title">${decision}</p>
-        <p class="decision-sub">${(result.reasoning || '').split('.')[0]}.</p>
+        <p class="decision-sub">Driving agent: ${responsibleLabel}</p>
       </div>
     </div>
     <div class="decision-meta">
       <span>Risk level: <b>${oa.risk_level || '—'}</b></span>
       <span>Chain verified: <b>${result.chain_verified ? 'Yes' : 'No'}</b></span>
+      <span>Responsible: <b>${responsibleLabel}</b></span>
       <span>Orchestration: <code>${result.orchestration_id || '—'}</code></span>
     </div>
     <div class="agent-list">${agents}</div>
@@ -656,10 +671,13 @@ function handleServerResponse(data){
   renderCase(data.summary);
   setStatus(data.flow_stage, data.done);
 
+  if(data.reply){
+    addBotBubble(data.reply);
+  }
+
   if(data.result && !data.result.error){
     addDecisionCard(data.result, data.chips);
   } else {
-    addBotBubble(data.reply);
     if(data.upload) addUploadCard(data.upload);
     addChips(data.chips);
   }

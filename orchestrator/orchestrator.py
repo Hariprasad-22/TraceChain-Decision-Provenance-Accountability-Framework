@@ -32,6 +32,7 @@ Public API:
 import logging
 import uuid
 import os
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -39,17 +40,33 @@ from typing import Optional
 from dotenv import load_dotenv
 
 # ─── load env ─────────────────────────────────────────────────────────────────
-load_dotenv(Path(__file__).resolve().parent / ".env")
+_env_candidates = [
+    Path(__file__).resolve().parents[1] / ".env",
+    Path(__file__).resolve().parent / ".env",
+]
+for candidate in _env_candidates:
+    if candidate.exists():
+        load_dotenv(candidate)
+        break
 ORCHESTRATOR_VERSION = os.getenv("ORCHESTRATOR_VERSION", "v1.0.0")
 
 # ─── internal imports ─────────────────────────────────────────────────────────
-from db import writer as db
-from chain.hasher import recompute_provenance_chain, verify_chain
-from scoring.overall_score import (
-    compute_overall, normalise_agent_score, determine_responsible_agent
-)
-from final_decision.synthesizer import synthesize
-from agents import aadhaar_adapter, payslip_adapter, bank_adapter, cibil_adapter
+try:
+    from .db import writer as db
+    from .chain.hasher import recompute_provenance_chain, verify_chain
+    from .scoring.overall_score import (
+        compute_overall, normalise_agent_score, determine_responsible_agent
+    )
+    from .final_decision.synthesizer import synthesize
+    from .agents import aadhaar_adapter, payslip_adapter, bank_adapter, cibil_adapter
+except ImportError:  # pragma: no cover - script-style execution from orchestrator/
+    from db import writer as db
+    from chain.hasher import recompute_provenance_chain, verify_chain
+    from scoring.overall_score import (
+        compute_overall, normalise_agent_score, determine_responsible_agent
+    )
+    from final_decision.synthesizer import synthesize
+    from agents import aadhaar_adapter, payslip_adapter, bank_adapter, cibil_adapter
 
 # ─── logging ──────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -65,11 +82,24 @@ _REQUIRED_TOP_LEVEL = [
     "user_id", "application_id", "loan_amount",
     "applicant_name", "applicant_data",
 ]
-_REQUIRED_APPLICANT_DATA = ["aadhar_image_path", "payslip_file_path"]
+_REQUIRED_APPLICANT_DATA = ["aadhar_image_path", "payslip_file_path", "bank_statement_file_path"]
 _REQUIRED_CIBIL = ["cibil_score"]
+_USER_ID_RE = re.compile(r"^10000[1-9]\d*$")
+_APPLICATION_ID_RE = re.compile(r"^APP-10000[1-9]\d*$")
 
 
 # ─── state validation ─────────────────────────────────────────────────────────
+
+def _validate_uploaded_file(field_name: str, file_path: Optional[str]) -> None:
+    if not file_path:
+        raise ValueError(f"Missing applicant_data field: '{field_name}'")
+
+    path = Path(file_path)
+    if not path.exists():
+        raise ValueError(f"Missing uploaded file: '{field_name}' does not exist at '{path}'")
+    if not path.is_file():
+        raise ValueError(f"Missing uploaded file: '{field_name}' is not a valid file at '{path}'")
+
 
 def validate_state(state: dict) -> None:
     """
@@ -80,6 +110,14 @@ def validate_state(state: dict) -> None:
         if field not in state or state[field] is None:
             raise ValueError(f"Missing required field: '{field}'")
 
+    user_id = str(state.get("user_id", ""))
+    if not _USER_ID_RE.fullmatch(user_id):
+        raise ValueError(f"user_id must start from 100001, got: {user_id}")
+
+    application_id = str(state.get("application_id", ""))
+    if not _APPLICATION_ID_RE.fullmatch(application_id):
+        raise ValueError(f"application_id must start from APP-100001, got: {application_id}")
+
     loan = state.get("loan_amount", 0)
     if not (0 < float(loan) <= 5_000_000):
         raise ValueError(f"loan_amount out of range (0, 5000000]: got {loan}")
@@ -88,6 +126,7 @@ def validate_state(state: dict) -> None:
     for field in _REQUIRED_APPLICANT_DATA:
         if not applicant_data.get(field):
             raise ValueError(f"Missing applicant_data field: '{field}'")
+        _validate_uploaded_file(field, applicant_data.get(field))
 
     for field in _REQUIRED_CIBIL:
         if field not in state or state[field] is None:
@@ -163,7 +202,7 @@ def _write_agent_result(
         composite_risk_score=float(norm_acc["composite_risk_score"]),
         risk_level=norm_acc["risk_level"],
         review_required=bool(norm_acc["review_required"]),
-        scoring_model_version=acc_data.get("scoring_model_version", "tracechain-scoring-v1"),
+        scoring_model_version=str(acc_data.get("scoring_model_version", "tracechain-score-v1"))[:20],
         calculated_at=acc_data.get("calculated_at", datetime.now(timezone.utc).isoformat()),
     )
 
@@ -231,17 +270,29 @@ def run_pipeline(state: dict) -> dict:
         logger.error("State validation failed: %s", exc)
         return {"error": str(exc), "loan_decision": "Rejected"}
 
-    user_id        = state["user_id"]
-    application_id = state["application_id"]
+    # ── Resolve or create user_id & application_id via DB check ─────────────
+    try:
+        user_id, application_id = db.get_or_create_user_and_application(
+            applicant_name=state.get("applicant_name"),
+            requested_user_id=state.get("user_id"),
+            requested_app_id=state.get("application_id"),
+        )
+        state["user_id"] = user_id
+        state["application_id"] = application_id
+    except Exception as exc:
+        logger.warning("DB user resolution failed, falling back to state values: %s", exc)
+        user_id = state["user_id"]
+        application_id = state["application_id"]
+
     orchestration_id = f"ORC-{application_id}-{uuid.uuid4().hex[:8].upper()}"
 
     logger.info("=" * 60)
-    logger.info("Pipeline START  application_id=%s  orchestration_id=%s",
-                application_id, orchestration_id)
+    logger.info("Pipeline START  user_id=%s  application_id=%s  orchestration_id=%s",
+                user_id, application_id, orchestration_id)
     logger.info("=" * 60)
 
     # ── 1. Write USERS / APPLICATIONS / ORCHESTRATIONS ────────────────────────
-    db.write_user(user_id)
+    db.write_user(user_id, applicant_name=state.get("applicant_name"))
     db.write_application(
         application_id=application_id,
         user_id=user_id,

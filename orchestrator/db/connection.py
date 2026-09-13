@@ -25,9 +25,15 @@ import psycopg2
 from psycopg2 import pool
 from dotenv import load_dotenv
 
-# Load .env from the orchestrator directory
-_ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
-load_dotenv(_ENV_FILE)
+# Load project-root .env, with a fallback for older orchestrator-local copies.
+_ENV_CANDIDATES = [
+    Path(__file__).resolve().parents[2] / ".env",
+    Path(__file__).resolve().parent.parent / ".env",
+]
+for candidate in _ENV_CANDIDATES:
+    if candidate.exists():
+        load_dotenv(candidate)
+        break
 
 # ─── connection parameters (all from .env) ────────────────────────────────────
 _DB_CONFIG = {

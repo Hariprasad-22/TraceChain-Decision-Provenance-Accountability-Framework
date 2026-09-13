@@ -23,8 +23,16 @@ import sys
 from pathlib import Path
 
 # Modules that exist (with different contents) in more than one agent tree.
+# Keep this list narrow: we do NOT touch the orchestrator package name
+# ``agents`` itself, because deleting that package from sys.modules while the
+# orchestrator is still importing submodules causes partial-import KeyError
+# failures.
 _COLLIDING_MODULES = (
     "execution_record",
+    "scoring",
+    "chain",
+    "db",
+    "final_decision",
 )
 
 # Names that belong to the orchestrator package tree and must not stay bound

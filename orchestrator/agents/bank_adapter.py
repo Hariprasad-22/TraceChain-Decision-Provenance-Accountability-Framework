@@ -1,257 +1,247 @@
-"""
-agents/bank_adapter.py
------------------------
-Plug-in STUB for the Bank Statement Analysis Agent (A003).
+"""Adapter for the Bank Statement Analysis Agent (A003)."""
 
-This module is a placeholder slot that keeps the pipeline serial chain
-intact (Aadhaar → Payslip → Bank → CIBIL).  When the real Bank agent
-is available, replace the `run()` body below — the orchestrator's call
-site does not need to change at all.
-
-Current behaviour:
-  - Returns a minimal "skipped" result so the hash chain can still pass
-    a record_hash through to CIBIL.
-  - Does NOT write to the DB (the orchestrator checks result["skipped"]).
-  - Carries the previous_record_hash forward unchanged.
-
-Integration checklist (when Bank agent is ready):
-  [ ] Add the bank agent directory to _BANK_DIR below.
-  [ ] Import the callable function (similar to aadhar_verification_agent).
-  [ ] Fill in _scope() with the fields the bank agent is allowed to see.
-  [ ] Remove the `skipped=True` flag from the returned dict.
-  [ ] Set SEQUENCE_NUMBER = 3 (already set, nothing to change here).
-"""
-
+import json
 import logging
 import uuid
 from datetime import datetime, timezone
+from pathlib import Path
+
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-AGENT_ID        = "A003"
+AGENT_ID = "A003"
 SEQUENCE_NUMBER = 3
 
-# ─── STUB result shape ────────────────────────────────────────────────────────
 
-def _stub_result(state: dict, orchestration_id: str) -> dict:
-    """
-    Generate a minimal pass-through result so the chain can continue.
-    The orchestrator treats skipped=True as a no-op for DB writes.
-    """
-    now = datetime.now(timezone.utc).isoformat()
-    exec_id = str(uuid.uuid4())
+def _safe_float(value):
+    if value is None or value == "":
+        return 0.0
+    if isinstance(value, str):
+        cleaned = value.replace(",", "").replace("₹", "").replace("%", "").strip()
+        try:
+            return float(cleaned)
+        except ValueError:
+            return 0.0
+    return float(value)
+
+
+def _first_present(df, *candidates):
+    for candidate in candidates:
+        if candidate in df.columns:
+            return candidate
+    return None
+
+
+def _bank_metrics_from_csv(csv_path: str | Path) -> dict:
+    df = pd.read_csv(csv_path)
+    if df.empty:
+        raise ValueError("Bank CSV is empty")
+
+    income_col = _first_present(df, "average_monthly_income", "monthly_income", "income", "salary", "net_income")
+    expense_col = _first_present(df, "average_monthly_expense", "monthly_expense", "expenses", "expense")
+    emi_col = _first_present(df, "emi_amount", "monthly_emi", "emi", "loan_emi")
+    savings_col = _first_present(df, "savings_ratio", "savings", "monthly_savings")
+    surplus_col = _first_present(df, "average_monthly_surplus", "monthly_surplus", "surplus")
+
+    avg_income = float(df[income_col].mean()) if income_col else 0.0
+    avg_expense = float(df[expense_col].mean()) if expense_col else 0.0
+    if surplus_col:
+        avg_surplus = float(df[surplus_col].mean())
+    else:
+        avg_surplus = avg_income - avg_expense
+
+    if emi_col:
+        emi_amount = float(df[emi_col].mean()) if not df[emi_col].isna().all() else 0.0
+    else:
+        emi_amount = 0.0
+    emi_ratio = (emi_amount / avg_income) if avg_income else 0.0
+
+    if savings_col:
+        savings_ratio = float(df[savings_col].mean())
+    else:
+        savings_ratio = max((avg_income - avg_expense - emi_amount) / avg_income, 0.0) if avg_income else 0.0
+
+    income_stability = 0.75
+    for possible in ("income_stability", "stability_score"):
+        if possible in df.columns:
+            income_stability = float(df[possible].mean())
+            break
+
+    negative_surplus_flag = int(avg_surplus < 0)
+    low_surplus_flag = int(avg_surplus >= 0 and avg_surplus <= 10000)
+    high_emi_flag = int(emi_ratio > 0.30)
+    negative_savings_flag = int(savings_ratio <= 0)
+    low_savings_flag = int(savings_ratio > 0 and savings_ratio < 0.10)
+    excessive_expense_flag = int(avg_expense > avg_income)
+    high_cash_withdrawal_flag = int((df[[c for c in df.columns if "cash" in c.lower() or "withdraw" in c.lower()]].sum().sum() if any("cash" in c.lower() or "withdraw" in c.lower() for c in df.columns) else 0) > 0)
+
+    score = 100
+    if negative_surplus_flag:
+        score -= 35
+    elif low_surplus_flag:
+        score -= 15
+    if negative_savings_flag:
+        score -= 25
+    elif low_savings_flag:
+        score -= 10
+    if high_emi_flag:
+        score -= 20
+    if excessive_expense_flag:
+        score -= 20
+    if high_cash_withdrawal_flag:
+        score -= 10
+    score = max(0, score)
+
+    if score >= 80:
+        decision_output = "verified"
+    elif score >= 60:
+        decision_output = "needs_review"
+    else:
+        decision_output = "high_risk_auto"
+
+    evidence_text = (
+        f"Average monthly income: INR {avg_income:.2f} | "
+        f"Average monthly expense: INR {avg_expense:.2f} | "
+        f"Average monthly surplus: INR {avg_surplus:.2f} | "
+        f"EMI-to-income ratio: {emi_ratio * 100:.2f}% | "
+        f"Savings ratio: {savings_ratio * 100:.2f}% | "
+        f"Income stability: {income_stability:.2f}"
+    )
+
     return {
-        "skipped": True,
-        "execution": {
-            "execution_id":    exec_id,
-            "orchestration_id": orchestration_id,
-            "agent_id":        AGENT_ID,
-            "sequence_number": SEQUENCE_NUMBER,
-            "input_data":      {},
-            "output_data":     {"decision_output": "skipped", "confidence_score": 0.0, "reasoning": "Bank agent not yet integrated."},
-            "model_id":        "stub",
-            "rule_id":         None,
-            "start_time":      now,
-            "end_time":        now,
-            "status":          "completed",
-        },
-        "decision": {
-            "decision_id":     str(uuid.uuid4()),
-            "execution_id":    exec_id,
-            "decision_output": "skipped",
-            "confidence_score": 0.0,
-            "reasoning":       "Bank Statement agent not yet integrated — slot reserved.",
-            "timestamp":       now,
-        },
-        "evidence": [],
-        "accountability": {
-            "score_id":               str(uuid.uuid4()),
-            "execution_id":           exec_id,
-            "impact_score":           0,
-            "irreversibility_score":  0,
-            "explainability_score":   10,
-            "composite_risk_score":   0.0,
-            "risk_level":             "Low",
-            "review_required":        False,
-            "scoring_model_version":  "tracechain-scoring-v1",
-            "calculated_at":          now,
-        },
-        "provenance": {
-            "record_id":            str(uuid.uuid4()),
-            "orchestration_id":     orchestration_id,
-            "execution_id":         exec_id,
-            "event_type":           "agent_skipped",
-            "timestamp":            now,
-            "input_hash":           "",
-            "output_hash":          "",
-            "previous_record_hash": None,
-            "record_hash":          "",
-        },
+        "average_monthly_income": avg_income,
+        "average_monthly_expense": avg_expense,
+        "average_monthly_surplus": avg_surplus,
+        "emi_to_income_ratio": emi_ratio,
+        "savings_ratio": savings_ratio,
+        "income_stability": income_stability,
+        "agent_score": score,
+        "decision_output": decision_output,
+        "confidence_score": round(score / 100, 2),
+        "reasoning": (
+            "Bank statement analysis reviewed the uploaded statement summary and found "
+            f"average monthly income of INR {avg_income:.2f}, average monthly expense of INR {avg_expense:.2f}, "
+            f"and average monthly surplus of INR {avg_surplus:.2f}. "
+            f"The EMI-to-income ratio is {emi_ratio * 100:.2f}% and the savings ratio is {savings_ratio * 100:.2f}%. "
+            f"The resulting bank score is {score}/100, which leads to a {decision_output.upper()} decision."
+        ),
+        "evidence_summary": evidence_text,
     }
 
 
-# ─── public interface (matches all other adapters) ────────────────────────────
+def _scope(state: dict) -> dict:
+    applicant_data = state.get("applicant_data", {})
+    return {
+        "application_id": state.get("application_id"),
+        "user_id": state.get("user_id"),
+        "loan_amount": state.get("loan_amount"),
+        "bank_statement_file_path": applicant_data.get("bank_statement_file_path"),
+    }
+
 
 def run(state: dict, orchestration_id: str) -> dict:
-    """
-    Stub run — returns skipped result so the pipeline can continue.
-    Replace this body when the real bank agent is integrated.
-    """
-    logger.warning("[A003] Attempting to run integrated Bank Statement agent.")
+    logger.info("[A003] Running Bank Statement agent for application_id=%s", state.get("application_id"))
+    scoped = _scope(state)
+    csv_path = scoped.get("bank_statement_file_path")
 
-    # Helper: normalise a tracechain JSON payload into the orchestrator shape
-    def _normalise_from_tracechain(tracechain: dict, orchestration_id: str) -> dict:
-        records = tracechain.get("records", {})
-        execs = records.get("AGENT_EXECUTIONS", [])
-        decs = records.get("AGENT_DECISIONS", [])
-        evs = records.get("EVIDENCE", [])
-        accs = records.get("ACCOUNTABILITY_SCORES", [])
-        provs = records.get("PROVENANCE_RECORDS", [])
+    if not csv_path:
+        raise ValueError("Missing bank_statement_file_path in applicant_data")
 
-        if not execs:
-            raise ValueError("bank tracechain contains no AGENT_EXECUTIONS")
+    csv_path = Path(csv_path)
+    if not csv_path.exists():
+        raise FileNotFoundError(f"Bank statement CSV not found at {csv_path}")
 
-        execution = dict(execs[0])
-        decision = dict(decs[0]) if decs else {
-            "decision_id": "",
-            "execution_id": execution.get("execution_id"),
-            "decision_output": "skipped",
-            "confidence_score": 0.0,
-            "reasoning": "No decision produced",
-            "timestamp": execution.get("end_time"),
-        }
-        evidence = [dict(e) for e in evs]
-        accountability = dict(accs[0]) if accs else {
-            "score_id": "",
-            "execution_id": execution.get("execution_id"),
-            "impact_score": 0,
-            "irreversibility_score": 0,
-            "explainability_score": 10,
-            "composite_risk_score": 0.0,
-            "risk_level": "Low",
-            "review_required": False,
-            "scoring_model_version": "tracechain-scoring-v1",
-            "calculated_at": execution.get("end_time"),
-        }
-        if provs:
-            provenance = dict(provs[0])
-        else:
-            provenance = {
-                "record_id": "",
-                "orchestration_id": orchestration_id,
-                "execution_id": execution.get("execution_id"),
-                "event_type": "agent_decision",
-                "timestamp": execution.get("end_time"),
-                "input_hash": "",
-                "output_hash": "",
-                "previous_record_hash": None,
-                "record_hash": "",
-            }
+    metrics = _bank_metrics_from_csv(csv_path)
+    now = datetime.now(timezone.utc).isoformat()
+    execution_id = str(uuid.uuid4())
+    decision_id = str(uuid.uuid4())
+    score_id = str(uuid.uuid4())
+    record_id = str(uuid.uuid4())
 
-        # Enforce orchestrator metadata
-        execution["agent_id"] = AGENT_ID
-        execution["orchestration_id"] = orchestration_id
-        execution["sequence_number"] = SEQUENCE_NUMBER
-        provenance["orchestration_id"] = orchestration_id
+    decision_output = metrics["decision_output"]
+    confidence_score = metrics["confidence_score"]
+    risk_level = "Low" if decision_output == "verified" else "Medium" if decision_output == "needs_review" else "High"
+    composite_risk = 1.5 if decision_output == "verified" else 4.0 if decision_output == "needs_review" else 7.5
 
-        # Ensure IDs are UUIDs (orchestrator DB expects UUID text fields)
-        def _is_uuid(val: str) -> bool:
-            try:
-                uuid.UUID(str(val))
-                return True
-            except Exception:
-                return False
+    execution = {
+        "execution_id": execution_id,
+        "orchestration_id": orchestration_id,
+        "agent_id": AGENT_ID,
+        "parent_execution_id": None,
+        "sequence_number": SEQUENCE_NUMBER,
+        "input_data": {"bank_statement_file_path": str(csv_path), "application_id": state.get("application_id")},
+        "output_data": {
+            "decision_output": decision_output,
+            "confidence_score": confidence_score,
+            "agent_score": metrics["agent_score"],
+            "reasoning": metrics["reasoning"],
+        },
+        "model_id": "bank-statements-rule-v1",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "rule_version": "1.0",
+        "start_time": now,
+        "end_time": now,
+        "status": "completed",
+    }
 
-        old_exec_id = execution.get("execution_id")
-        if not _is_uuid(old_exec_id):
-            new_exec_id = str(uuid.uuid4())
-        else:
-            new_exec_id = str(old_exec_id)
+    decision = {
+        "decision_id": decision_id,
+        "execution_id": execution_id,
+        "decision_output": decision_output,
+        "confidence_score": confidence_score,
+        "reasoning": metrics["reasoning"],
+        "decision_timestamp": now,
+    }
 
-        # replace execution IDs and generate canonical UUIDs for related IDs
-        execution["execution_id"] = new_exec_id
+    evidence = [{
+        "evidence_id": str(uuid.uuid4()),
+        "execution_id": execution_id,
+        "source": "uploaded_bank_statement_csv",
+        "document_reference": str(csv_path),
+        "retrieval_score": 1.0,
+        "timestamp": now,
+        "evidence_data": {
+            "average_monthly_income": metrics["average_monthly_income"],
+            "average_monthly_expense": metrics["average_monthly_expense"],
+            "average_monthly_surplus": metrics["average_monthly_surplus"],
+            "emi_to_income_ratio": metrics["emi_to_income_ratio"],
+            "savings_ratio": metrics["savings_ratio"],
+            "income_stability": metrics["income_stability"],
+        },
+    }]
 
-        # normalize status to match DB constraint (lowercase)
-        execution["status"] = str(execution.get("status", "completed")).lower()
+    accountability = {
+        "score_id": score_id,
+        "execution_id": execution_id,
+        "impact_score": 6,
+        "irreversibility_score": 5,
+        "explainability_score": 9,
+        "composite_risk_score": composite_risk,
+        "risk_level": risk_level,
+        "review_required": decision_output == "needs_review",
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": now,
+    }
 
-        # decision IDs
-        if not _is_uuid(decision.get("decision_id")):
-            decision["decision_id"] = str(uuid.uuid4())
-        decision["execution_id"] = new_exec_id
+    provenance = {
+        "record_id": record_id,
+        "orchestration_id": orchestration_id,
+        "execution_id": execution_id,
+        "event_type": "agent_decision",
+        "timestamp": now,
+        "input_hash": "",
+        "output_hash": "",
+        "previous_record_hash": None,
+        "record_hash": "",
+    }
 
-        # accountability
-        if not _is_uuid(accountability.get("score_id")):
-            accountability["score_id"] = str(uuid.uuid4())
-        accountability["execution_id"] = new_exec_id
-
-        # evidence items: ensure IDs and map to orchestrator evidence schema
-        normalized_evidence = []
-        for ev in evidence:
-            if not _is_uuid(ev.get("evidence_id")):
-                ev["evidence_id"] = str(uuid.uuid4())
-            ev["execution_id"] = new_exec_id
-            item = {
-                "evidence_id": ev["evidence_id"],
-                "execution_id": ev["execution_id"],
-                "source": ev.get("source", "bank_statement"),
-                "document_reference": ev.get("data_reference") or ev.get("document_reference") or "",
-                "retrieval_score": ev.get("retrieval_score", 1.0),
-                "timestamp": ev.get("timestamp"),
-            }
-            normalized_evidence.append(item)
-
-        evidence = normalized_evidence
-
-        # provenance
-        provenance["execution_id"] = new_exec_id
-        if not _is_uuid(provenance.get("record_id")):
-            provenance["record_id"] = str(uuid.uuid4())
-
-        return {
-            "execution": execution,
-            "decision": decision,
-            "evidence": evidence,
-            "accountability": accountability,
-            "provenance": provenance,
-        }
-
-    # Attempt integration with the imp_docs bank_statement agent
-    try:
-        from agents.import_isolation import prepare_agent_import, restore_orchestrator_path
-        from pathlib import Path
-        import json
-        import runpy
-
-        _ORCH_DIR = Path(__file__).resolve().parent.parent
-        _BANK_DIR = _ORCH_DIR.parent / "agents" / "bank_statement" / "src"
-
-        prepare_agent_import(_BANK_DIR)
-        try:
-            # Try to import the tracechain module from the bank agent
-            import bank_statement_tracechain as bst  # noqa: F401
-        finally:
-            restore_orchestrator_path(_ORCH_DIR)
-
-        # The bank agent writes an output JSON to data/processed by default.
-        output_path = (_BANK_DIR.parent / "data" / "processed" / "bank_statement_tracechain_output.json")
-        tracechain = None
-        if output_path.exists():
-            with open(output_path, "r", encoding="utf-8") as f:
-                tracechain = json.load(f)
-        else:
-            # Run the module to produce the output file, then load it.
-            runpy.run_path(str(_BANK_DIR / "bank_statement_tracechain.py"), run_name="__main__")
-            if output_path.exists():
-                with open(output_path, "r", encoding="utf-8") as f:
-                    tracechain = json.load(f)
-
-        if not tracechain:
-            raise RuntimeError("Could not obtain bank statement tracechain output")
-
-        result = _normalise_from_tracechain(tracechain, orchestration_id)
-        logger.info("[A003] Bank agent integrated successfully — returning real result.")
-        return result
-
-    except Exception as exc:
-        logger.exception("[A003] Bank integration failed, falling back to stub: %s", exc)
-        return _stub_result(state, orchestration_id)
+    logger.info("[A003] Done — decision=%s confidence=%.2f", decision_output, confidence_score)
+    return {
+        "execution": execution,
+        "decision": decision,
+        "evidence": evidence,
+        "accountability": accountability,
+        "provenance": provenance,
+    }

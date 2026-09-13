@@ -18,43 +18,36 @@ The orchestrator's hasher module handles all hash-chain work separately.
 """
 
 import sys
+import importlib.util
 import logging
 from pathlib import Path
 
-from agents.import_isolation import prepare_agent_import, restore_orchestrator_path
-
 logger = logging.getLogger(__name__)
 
-# ─── path setup ───────────────────────────────────────────────────────────────
-# Allow importing the Aadhaar agent from its own folder without installing it.
-_ORCH_DIR = Path(__file__).resolve().parent.parent
-_AADHAAR_DIR = _ORCH_DIR.parent / "agents" / "aadhaar" / "Deloitte_capstone"
+try:
+    from .import_isolation import prepare_agent_import, restore_orchestrator_path
+except ImportError:  # pragma: no cover - script-style execution from orchestrator/
+    from agents.import_isolation import prepare_agent_import, restore_orchestrator_path
 
-# The orchestrator ships `scoring/` and `chain/` *packages*. Aadhaar ships
-# top-level `scoring.py` / `chain.py` modules with the same names. Evict the
-# orchestrator packages for the agent import, then restore path + modules so
-# later `from chain.hasher import …` (and uvicorn --reload) keep working.
-_SAVED_MODULES: dict = {}
-for _key in list(sys.modules.keys()):
-    if (
-        _key == "scoring" or _key.startswith("scoring.")
-        or _key == "chain" or _key.startswith("chain.")
-    ):
-        _SAVED_MODULES[_key] = sys.modules.pop(_key)
+# Load the real Aadhaar agent module directly from its source file, avoiding
+# package-name collisions caused by legacy agent folder layouts.
+_ORCH_DIR = Path(__file__).resolve().parent.parent
+_AADHAAR_DIR = _ORCH_DIR.parent / "agents" / "aadhar"
+_AADHAAR_FILE = _AADHAAR_DIR / "aadhar_agent.py"
 
 prepare_agent_import(_AADHAAR_DIR)
 try:
-    from aadhar_agent import aadhar_verification_agent  # noqa: E402
+    if not _AADHAAR_FILE.exists():
+        raise FileNotFoundError(f"Aadhaar agent file not found at {_AADHAAR_FILE}")
+
+    _spec = importlib.util.spec_from_file_location("tracechain_aadhar_agent", _AADHAAR_FILE)
+    if _spec is None or _spec.loader is None:
+        raise ImportError(f"Could not create import spec for {_AADHAAR_FILE}")
+
+    _aadhar_module = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_aadhar_module)
+    aadhar_verification_agent = _aadhar_module.aadhar_verification_agent
 finally:
-    # Drop any aadhaar impostors, put orchestrator first, restore packages.
-    for _key in list(sys.modules.keys()):
-        if (
-            _key == "scoring" or _key.startswith("scoring.")
-            or _key == "chain" or _key.startswith("chain.")
-        ):
-            if _key not in _SAVED_MODULES:
-                del sys.modules[_key]
-    sys.modules.update(_SAVED_MODULES)
     restore_orchestrator_path(_ORCH_DIR)
 
 AGENT_ID       = "A001"

@@ -186,6 +186,75 @@ def _looks_loan_related(text: str) -> bool:
     return any(k in t for k in LOAN_KEYWORDS)
 
 
+def validate_upload_type(field: str, original_name: str, content_type: Optional[str]) -> None:
+    """Reject obviously invalid document types before they reach the pipeline."""
+    name = (original_name or "").lower()
+    ctype = (content_type or "").lower()
+
+    if field == "aadhaar":
+        allowed_exts = {".png", ".jpg", ".jpeg", ".webp"}
+        if not (name.endswith(tuple(allowed_exts)) or "image" in ctype):
+            raise HTTPException(400, "Aadhaar must be a valid image file (.png, .jpg, .jpeg, .webp)")
+        return
+
+    if field == "payslip":
+        allowed_exts = {".pdf", ".png", ".jpg", ".jpeg", ".webp"}
+        if not (name.endswith(tuple(allowed_exts)) or "pdf" in ctype or "image" in ctype):
+            raise HTTPException(400, "Payslip must be a PDF or image file")
+        return
+
+    if field == "bank":
+        if not (name.endswith(".csv") or "csv" in ctype):
+            raise HTTPException(400, "Bank statement must be a CSV file")
+
+
+GENERIC_FAILURE_REPLY = (
+    "😕 We couldn't complete verification for this application due to a technical "
+    "issue on our side -- no decision was reached. Please try again in a little "
+    "while, or start a new application."
+)
+
+
+def friendly_error_reply(error_msg: str) -> str:
+    """Return the user-facing error message for a failed verification run."""
+    msg = (error_msg or "").lower()
+    if "missing required field" in msg:
+        if "loan_amount" in msg:
+            return "⚠️ Please enter the loan amount before submitting the application for verification."
+        if "applicant_name" in msg:
+            return "⚠️ Please enter the applicant's full name before verifying the application."
+        if "user_id" in msg or "application_id" in msg:
+            return (
+                "⚠️ The application identifiers are not in the required format. Use user IDs starting with "
+                "100001 and application IDs starting with APP-100001."
+            )
+        return "⚠️ Some required application details are missing. Please complete the form and try again."
+    if "missing uploaded file" in msg or "does not exist" in msg or "not a valid file" in msg:
+        return (
+            "📎 One or more uploaded documents could not be found on disk. Please re-upload the "
+            "Aadhaar image, payslip, and bank statement CSV, then try verification again."
+        )
+    if "unable to process input image" in msg or "invalid_argument" in msg or "process input image" in msg:
+        return (
+            "🖼️ The Aadhaar image could not be processed by the verifier. Please upload a clear, valid "
+            "Aadhaar image (PNG/JPG/JPEG) and try again."
+        )
+    if "agent a001 failed" in msg:
+        if "unable to process input image" in msg or "invalid_argument" in msg:
+            return (
+                "🖼️ The Aadhaar image could not be processed by the verifier. Please upload a clear, valid "
+                "Aadhaar image (PNG/JPG/JPEG) and try again."
+            )
+    if "user_id must start" in msg or "application_id must start" in msg:
+        return (
+            "⚠️ The application identifiers are not in the required format. Use user IDs starting with "
+            "100001 and application IDs starting with APP-100001."
+        )
+    if "loan_amount out of range" in msg:
+        return "⚠️ Please enter a valid loan amount between ₹1 and ₹50,00,000 before verifying."
+    return GENERIC_FAILURE_REPLY
+
+
 def ask_gemini(question: str) -> Optional[str]:
     """Call Gemini for a general loan/finance question. Returns None on any failure."""
     if not GEMINI_API_KEY:
@@ -288,7 +357,7 @@ def simulate_cibil_lookup(state: dict) -> int:
 
 # ─── session model ─────────────────────────────────────────────────────────────
 
-COLLECT_STAGES = ["name", "aadhaar_upload", "payslip_upload", "loan_amount"]
+COLLECT_STAGES = ["name", "aadhaar_upload", "payslip_upload", "bank_upload", "loan_amount"]
 
 STEP_LABELS = ["Welcome", "Details", "Documents", "Loan Amount", "Verifying", "Decision"]
 
@@ -299,7 +368,7 @@ def step_index(session: dict) -> int:
         return 5 if session["result"] is not None else 0
     if fs == "name":
         return 1
-    if fs in ("aadhaar_upload", "payslip_upload"):
+    if fs in ("aadhaar_upload", "payslip_upload", "bank_upload"):
         return 2
     if fs == "loan_amount":
         return 3
@@ -312,12 +381,14 @@ PROMPTS = {
     "name": "Let's get your application started! 🚀 What's the applicant's **full name**?",
     "aadhaar_upload": "Thanks! 🪪 Please **upload the Aadhaar image** below.",
     "payslip_upload": "Got it ✅ Now let's grab the **payslip** 📄 (PDF or image).",
+    "bank_upload": "Excellent ✅ Please upload the **bank statement CSV** 🏦 for the financial review.",
     "loan_amount": "Last step! 💰 How much would you like to borrow? (up to ₹50,00,000)",
 }
 
 UPLOAD_HINTS = {
     "aadhaar_upload": {"field": "aadhaar", "label": "Aadhaar image", "accept": "image/*"},
     "payslip_upload": {"field": "payslip", "label": "Payslip (PDF)", "accept": "application/pdf,image/*"},
+    "bank_upload": {"field": "bank", "label": "Bank statement CSV", "accept": ".csv,text/csv"},
 }
 
 CHIPS = {
@@ -351,12 +422,15 @@ def new_session() -> dict:
     except Exception:
         pass
 
+    user_id = str(next_id)
+    application_id = f"APP-{next_id}"
+
     return {
         "id": str(uuid.uuid4()),
         "flow_stage": None,  # None = idle/general mode
         "state": {
-            "user_id": str(next_id),
-            "application_id": f"APP-{uuid.uuid4().hex[:8].upper()}",
+            "user_id": user_id,
+            "application_id": application_id,
             "applicant_data": {},
         },
         "result": None,
@@ -384,6 +458,7 @@ def session_summary(session: dict) -> dict:
         "loan_amount": s.get("loan_amount"),
         "aadhaar_uploaded": bool(ad.get("aadhar_image_path")),
         "payslip_uploaded": bool(ad.get("payslip_file_path")),
+        "bank_uploaded": bool(ad.get("bank_statement_file_path")),
     }
 
 
@@ -413,8 +488,8 @@ def reset_state(session: dict) -> None:
     session["reason_given"] = False
     session["retry_count"] = 0
     session["state"] = {
-        "user_id": f"U-{uuid.uuid4().hex[:6].upper()}",
-        "application_id": f"APP-{uuid.uuid4().hex[:8].upper()}",
+        "user_id": str(100001),
+        "application_id": "APP-100001",
         "applicant_data": {},
         # optional fields the orchestrator accepts but this short flow doesn't ask for
         "applicant_dob": None,
@@ -606,11 +681,20 @@ def render_result_markdown(result: dict) -> str:
     decision = result.get("loan_decision", "Unknown")
     emoji = {"Approved": "✅", "Rejected": "❌", "Manual Review": "⚠️"}.get(decision, "ℹ️")
     oa = result.get("overall_accountability", {})
+    responsible = result.get("responsible_agent") or result.get("responsible_agent_id")
+    responsible_label = {
+        "A001": "Aadhaar Verification",
+        "A002": "Payslip Income Verification",
+        "A003": "Bank Statement Analysis",
+        "A004": "CIBIL Score",
+    }.get(str(responsible), str(responsible or "—"))
+
     lines = [
         f"## {emoji} Decision: {decision}",
         "",
         result.get("reasoning", ""),
         "",
+        f"**Driving agent:** {responsible_label}",
         f"**Overall risk score:** {oa.get('composite_score', 0):.2f}/10 ({oa.get('risk_level', '—')})",
         f"**Chain verified:** {'✅ Yes' if result.get('chain_verified') else '❌ No'}",
         f"**Orchestration ID:** `{result.get('orchestration_id')}`",
@@ -809,6 +893,7 @@ FIELD_LABELS = {
     "name": "the applicant's full name",
     "aadhaar_upload": "the Aadhaar image",
     "payslip_upload": "the payslip",
+    "bank_upload": "the bank statement CSV",
     "loan_amount": "the loan amount",
 }
 
@@ -818,6 +903,7 @@ FIELD_EDIT_TRIGGERS = {
     "name": re.compile(r"\b(change|edit|fix|wrong|redo)\b.*\bname\b", re.I),
     "aadhaar_upload": re.compile(r"\b(change|edit|fix|wrong|redo|re-?upload)\b.*\baadhaa?r\b", re.I),
     "payslip_upload": re.compile(r"\b(change|edit|fix|wrong|redo|re-?upload)\b.*\bpayslip\b", re.I),
+    "bank_upload": re.compile(r"\b(change|edit|fix|wrong|redo|re-?upload)\b.*\b(bank|statement|csv)\b", re.I),
     "loan_amount": re.compile(r"\b(change|edit|fix|wrong|redo)\b.*\b(amount|loan amount)\b", re.I),
 }
 
@@ -836,6 +922,8 @@ def clear_field(state: dict, field_stage: str) -> None:
         state.get("applicant_data", {}).pop("aadhar_image_path", None)
     elif field_stage == "payslip_upload":
         state.get("applicant_data", {}).pop("payslip_file_path", None)
+    elif field_stage == "bank_upload":
+        state.get("applicant_data", {}).pop("bank_statement_file_path", None)
     elif field_stage == "loan_amount":
         state.pop("loan_amount", None)
 
@@ -849,6 +937,8 @@ def next_incomplete_stage(state: dict) -> Optional[str]:
         return "aadhaar_upload"
     if not ad.get("payslip_file_path"):
         return "payslip_upload"
+    if not ad.get("bank_statement_file_path"):
+        return "bank_upload"
     if not state.get("loan_amount"):
         return "loan_amount"
     return None
@@ -862,7 +952,7 @@ def advance_after(session: dict, reply_prefix: str = "") -> dict:
         session["flow_stage"] = "verifying"
         reply = reply_prefix + (
             "Your application has been sent for verification! 📨 "
-            "I'm checking the Aadhaar document, payslip, bank details and CIBIL "
+            "I'm checking the Aadhaar document, payslip, bank statement and CIBIL "
             "score now -- this only takes a moment... ⏳"
         )
         return build_response(session, reply, trigger_verify=True)
@@ -934,14 +1024,18 @@ def api_message(session_id: str = Form(...), message: str = Form(...)):
         )
         return build_response(session, reply, upload=UPLOAD_HINTS.get(stage), chips=CHIPS.get(stage, []))
 
-    if stage in ("aadhaar_upload", "payslip_upload"):
+    if stage in ("aadhaar_upload", "payslip_upload", "bank_upload"):
         side = maybe_answer_side_question(message)
         if side is not None:
             reply = f"{side}\n\n---\n{PROMPTS[stage]}"
             return build_response(session, reply, upload=UPLOAD_HINTS[stage])
-        reply = (f"Please use the upload area below to attach the "
-                  f"{'Aadhaar image 🪪' if stage == 'aadhaar_upload' else 'payslip 📄'}. "
-                  f"Or ask me anything else in the meantime!")
+        docs = {
+            "aadhaar_upload": "Aadhaar image 🪪",
+            "payslip_upload": "payslip 📄",
+            "bank_upload": "bank statement CSV 🏦",
+        }
+        reply = (f"Please use the upload area below to attach the {docs[stage]}. "
+                 f"Or ask me anything else in the meantime!")
         return build_response(session, reply, upload=UPLOAD_HINTS[stage])
 
     side = maybe_answer_side_question(message)
@@ -967,8 +1061,10 @@ def api_message(session_id: str = Form(...), message: str = Form(...)):
 async def api_upload(session_id: str = Form(...), field: str = Form(...), file: UploadFile = File(...)):
     session = get_session(session_id)
 
-    if field not in ("aadhaar", "payslip"):
+    if field not in ("aadhaar", "payslip", "bank"):
         raise HTTPException(400, "Unknown upload field")
+
+    validate_upload_type(field, file.filename or "", file.content_type)
 
     session_dir = UPLOAD_DIR / session["id"]
     session_dir.mkdir(parents=True, exist_ok=True)
@@ -979,8 +1075,10 @@ async def api_upload(session_id: str = Form(...), field: str = Form(...), file: 
     ad = session["state"]["applicant_data"]
     if field == "aadhaar":
         ad["aadhar_image_path"] = str(dest)
-    else:
+    elif field == "payslip":
         ad["payslip_file_path"] = str(dest)
+    else:
+        ad["bank_statement_file_path"] = str(dest)
 
     # Resume wherever is still missing -- handles both the normal forward flow
     # and re-uploads triggered by "change aadhaar" / "wrong payslip" etc.
@@ -997,12 +1095,6 @@ def api_verify(session_id: str = Form(...)):
     if not state.get("cibil_score"):
         state["cibil_score"] = simulate_cibil_lookup(state)
 
-    GENERIC_FAILURE_REPLY = (
-        "😕 We couldn't complete verification for this application due to a technical "
-        "issue on our side -- no decision was reached. Please try again in a little "
-        "while, or start a new application."
-    )
-
     if not ORCHESTRATOR_AVAILABLE:
         logger.error("Pipeline unavailable at /api/verify: %s", ORCHESTRATOR_IMPORT_ERROR)
         session["result"] = {"error": "unavailable"}
@@ -1013,9 +1105,9 @@ def api_verify(session_id: str = Form(...)):
 
     try:
         result = run_pipeline(state)
-    except Exception:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001
         logger.exception("Pipeline execution failed")
-        result = {"error": "pipeline_exception", "loan_decision": "Manual Review"}
+        result = {"error": str(exc), "loan_decision": "Manual Review"}
 
     session["result"] = result
     session["flow_stage"] = None
@@ -1035,7 +1127,7 @@ def api_verify(session_id: str = Form(...)):
         logger.exception("Failed merging DB agent breakdown into result")
     if "error" in result:
         logger.error("Pipeline returned an error for %s: %s", state.get("application_id"), result["error"])
-        reply = GENERIC_FAILURE_REPLY
+        reply = friendly_error_reply(str(result.get("error", "")))
         chips = ["📝 New application"]
     else:
         reply = render_result_markdown(result)

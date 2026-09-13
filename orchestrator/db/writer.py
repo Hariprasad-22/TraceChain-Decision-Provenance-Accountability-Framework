@@ -19,7 +19,10 @@ import logging
 from datetime import datetime, timezone
 from typing import Optional
 
-from db.connection import get_conn, release_conn
+try:
+    from ..db.connection import get_conn, release_conn
+except ImportError:  # pragma: no cover - compatibility for script usage
+    from db.connection import get_conn, release_conn
 
 logger = logging.getLogger(__name__)
 
@@ -51,18 +54,111 @@ def _exec(sql: str, params: tuple) -> None:
 
 # ─── USERS ────────────────────────────────────────────────────────────────────
 
-def write_user(user_id: str, created_at: Optional[datetime] = None) -> None:
+def write_user(user_id: str, applicant_name: Optional[str] = None, created_at: Optional[datetime] = None) -> None:
     """
-    Insert a row into USERS.
-    Skips silently if the user already exists (idempotent).
+    Insert or update a row in USERS with applicant_name.
     """
+    try:
+        _exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS applicant_name VARCHAR(100);", ())
+    except Exception:
+        pass
+
     sql = """
-        INSERT INTO users (user_id, created_at)
-        VALUES (%s, %s)
-        ON CONFLICT (user_id) DO NOTHING;
+        INSERT INTO users (user_id, applicant_name, created_at)
+        VALUES (%s, %s, %s)
+        ON CONFLICT (user_id) DO UPDATE
+        SET applicant_name = COALESCE(EXCLUDED.applicant_name, users.applicant_name);
     """
-    _exec(sql, (user_id, created_at or _now()))
-    logger.info("USERS: upserted user_id=%s", user_id)
+    _exec(sql, (user_id, applicant_name, created_at or _now()))
+    logger.info("USERS: upserted user_id=%s applicant_name=%s", user_id, applicant_name)
+
+
+def get_or_create_user_and_application(
+    applicant_name: Optional[str] = None,
+    requested_user_id: Optional[str] = None,
+    requested_app_id: Optional[str] = None,
+) -> tuple[str, str]:
+    """
+    Check if the user is already present in DB by applicant_name or user_id.
+    - If YES: reuse the existing user_id and generate a new application_id under that user_id.
+    - If NO: create a new user_id following the max previous user_id and create a new application_id.
+
+    Returns:
+        tuple[user_id: str, application_id: str]
+    """
+    try:
+        _exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS applicant_name VARCHAR(100);", ())
+    except Exception:
+        pass
+
+    conn = get_conn()
+    existing_user_id = None
+    try:
+        with conn.cursor() as cur:
+            # 1. Primary check: Search by applicant_name in users table
+            if applicant_name and applicant_name.strip():
+                cur.execute(
+                    "SELECT user_id FROM users WHERE LOWER(applicant_name) = LOWER(%s) ORDER BY created_at ASC LIMIT 1;",
+                    (applicant_name.strip(),),
+                )
+                row = cur.fetchone()
+                if row:
+                    existing_user_id = str(row[0])
+
+            # 2. Search by applicant_name in agent_executions input_data
+            if not existing_user_id and applicant_name and applicant_name.strip():
+                cur.execute(
+                    """
+                    SELECT a.user_id 
+                    FROM applications a
+                    JOIN agent_executions e ON a.application_id = e.orchestration_id 
+                        OR a.application_id = (e.input_data->>'application_id')
+                    WHERE LOWER(e.input_data->>'applicant_name') = LOWER(%s)
+                    ORDER BY a.application_date ASC LIMIT 1;
+                    """,
+                    (applicant_name.strip(),),
+                )
+                row = cur.fetchone()
+                if row:
+                    existing_user_id = str(row[0])
+
+            # 3. Secondary check: explicit requested_user_id match if name wasn't provided
+            if not existing_user_id and requested_user_id and not applicant_name:
+                cur.execute("SELECT user_id FROM users WHERE user_id = %s;", (requested_user_id,))
+                row = cur.fetchone()
+                if row:
+                    existing_user_id = str(row[0])
+
+            # Finalize User ID
+            if existing_user_id:
+                final_user_id = existing_user_id
+                logger.info("Reusing existing user_id=%s from DB for applicant_name='%s'", final_user_id, applicant_name)
+            else:
+                cur.execute("SELECT MAX(CAST(user_id AS INTEGER)) FROM users WHERE user_id ~ '^\\d+$';")
+                row = cur.fetchone()
+                max_u = row[0] if row and row[0] is not None else 100000
+                final_user_id = str(max_u + 1)
+                logger.info("Creating new sequential user_id=%s for applicant_name='%s'", final_user_id, applicant_name)
+
+            # Finalize Application ID (always sequential & new)
+            cur.execute("SELECT MAX(CAST(SUBSTRING(application_id FROM 5) AS INTEGER)) FROM applications WHERE application_id ~ '^APP-\\d+$';")
+            row = cur.fetchone()
+            max_app = row[0] if row and row[0] is not None else 100000
+
+            if requested_app_id:
+                cur.execute("SELECT application_id FROM applications WHERE application_id = %s;", (requested_app_id,))
+                if cur.fetchone():
+                    final_app_id = f"APP-{max_app + 1}"
+                else:
+                    final_app_id = requested_app_id
+            else:
+                final_app_id = f"APP-{max_app + 1}"
+
+    finally:
+        release_conn(conn)
+
+    write_user(final_user_id, applicant_name=applicant_name)
+    return final_user_id, final_app_id
 
 
 # ─── APPLICATIONS ─────────────────────────────────────────────────────────────
@@ -75,16 +171,19 @@ def write_application(
     status: str = "processing",
 ) -> None:
     """
-    Insert a row into APPLICATIONS.
-    Skips silently if application_id already exists.
+    Insert or update a row in APPLICATIONS.
     """
     sql = """
         INSERT INTO applications (application_id, user_id, loan_amount, application_date, status)
         VALUES (%s, %s, %s, %s, %s)
-        ON CONFLICT (application_id) DO NOTHING;
+        ON CONFLICT (application_id) DO UPDATE
+        SET user_id = EXCLUDED.user_id,
+            loan_amount = EXCLUDED.loan_amount,
+            status = EXCLUDED.status,
+            application_date = EXCLUDED.application_date;
     """
     _exec(sql, (application_id, user_id, loan_amount, application_date or _now(), status))
-    logger.info("APPLICATIONS: upserted application_id=%s", application_id)
+    logger.info("APPLICATIONS: upserted application_id=%s user_id=%s status=%s", application_id, user_id, status)
 
 
 def update_application_status(application_id: str, status: str) -> None:
@@ -96,6 +195,20 @@ def update_application_status(application_id: str, status: str) -> None:
 
 # ─── ORCHESTRATIONS ───────────────────────────────────────────────────────────
 
+def seed_agents() -> None:
+    """Ensure standard agent catalog (A001..A004) exists in AGENTS table."""
+    sql = """
+        INSERT INTO agents (agent_id, agent_name, agent_type, description, version, status)
+        VALUES
+            ('A001', 'Aadhaar Verification Agent', 'KYC', 'Extracts and verifies Aadhaar card details', '1.0', 'Active'),
+            ('A002', 'Payslip Income Agent', 'Income', 'Verifies payslip income and policy compliance', '1.0', 'Active'),
+            ('A003', 'Bank Statement Analysis Agent', 'BankAnalysis', 'Analyzes cashflow and recurring expenses from bank statements', '1.0', 'Active'),
+            ('A004', 'CIBIL Score Agent', 'CreditScore', 'Evaluates credit score, utilization, and overdue history', '1.0', 'Active')
+        ON CONFLICT (agent_id) DO NOTHING;
+    """
+    _exec(sql, ())
+
+
 def write_orchestration(
     orchestration_id: str,
     application_id: str,
@@ -105,6 +218,7 @@ def write_orchestration(
     start_time: Optional[datetime] = None,
 ) -> None:
     """Insert a row into ORCHESTRATIONS when a pipeline run begins."""
+    seed_agents()
     sql = """
         INSERT INTO orchestrations
             (orchestration_id, application_id, orchestrator_version, scenario, status, start_time)
@@ -151,7 +265,7 @@ def write_agent_execution(
 ) -> None:
     """
     Insert a row into AGENT_EXECUTIONS.
-    Note: no input_hash column — hashing lives in PROVENANCE_RECORDS only.
+    Note: no input_hash column - hashing lives in PROVENANCE_RECORDS only.
     """
     sql = """
         INSERT INTO agent_executions
@@ -268,7 +382,7 @@ def write_accountability_score(
     _exec(sql, (
         score_id, execution_id, irreversibility_score, impact_score,
         explainability_score, composite_risk_score, risk_level,
-        review_required, scoring_model_version, calculated_at
+        review_required, str(scoring_model_version)[:20], calculated_at
     ))
     logger.info("ACCOUNTABILITY_SCORES: wrote score_id=%s composite=%.2f risk=%s",
                 score_id, composite_risk_score, risk_level)
@@ -316,8 +430,8 @@ def write_provenance_record(
 ) -> None:
     """
     Insert a row into PROVENANCE_RECORDS (lean hash-chain table).
-    No raw input/output data stored here — only hashes.
-    record_hash is computed by the orchestrator's hasher module.
+    No raw input/output data stored here - only hashes.
+    record_hash is computed by the orchestrator hasher module.
     """
     sql = """
         INSERT INTO provenance_records

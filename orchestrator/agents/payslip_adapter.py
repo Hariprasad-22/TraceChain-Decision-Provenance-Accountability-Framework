@@ -31,20 +31,36 @@ The payslip agent's build_execution() function is called directly
 
 import sys
 import uuid
+import importlib.util
 import logging
 from pathlib import Path
 from dataclasses import asdict
 
-from agents.import_isolation import prepare_agent_import, restore_orchestrator_path
-
 logger = logging.getLogger(__name__)
 
-# ─── path setup ───────────────────────────────────────────────────────────────
+try:
+    from .import_isolation import prepare_agent_import, restore_orchestrator_path
+except ImportError:  # pragma: no cover - script-style execution from orchestrator/
+    from agents.import_isolation import prepare_agent_import, restore_orchestrator_path
+
+# Load the real payslip module directly from its source file to avoid legacy
+# folder path assumptions and namespace collisions.
 _ORCH_DIR = Path(__file__).resolve().parent.parent
-_PAYSLIP_DIR = _ORCH_DIR.parent / "agents" / "payslip" / "PythonProject1"
+_PAYSLIP_DIR = _ORCH_DIR.parent / "agents" / "payslip"
+_PAYSLIP_FILE = _PAYSLIP_DIR / "main.py"
+
 prepare_agent_import(_PAYSLIP_DIR)
 try:
-    from main import build_execution as _payslip_build_execution  # noqa: E402
+    if not _PAYSLIP_FILE.exists():
+        raise FileNotFoundError(f"Payslip agent file not found at {_PAYSLIP_FILE}")
+
+    _spec = importlib.util.spec_from_file_location("tracechain_payslip_agent", _PAYSLIP_FILE)
+    if _spec is None or _spec.loader is None:
+        raise ImportError(f"Could not create import spec for {_PAYSLIP_FILE}")
+
+    _payslip_module = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_payslip_module)
+    _payslip_build_execution = _payslip_module.build_execution
 finally:
     restore_orchestrator_path(_ORCH_DIR)
 
