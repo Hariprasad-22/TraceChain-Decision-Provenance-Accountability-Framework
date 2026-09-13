@@ -1,0 +1,758 @@
+{
+  "schema_version": "TraceChain-A3-v1",
+  "agent_id": "A003",
+  "model_id": "bank-statement-rules",
+  "model_version": "1.0",
+  "rule_id": "bank-affordability-rules-v1",
+  "record_count": 10,
+  "records": [
+    {
+      "schema_version": "TraceChain-A3-v1",
+      "execution_input": {
+        "agent_id": "A003",
+        "input_type": "bank_statement",
+        "applicant_id": "1",
+        "applicant_name": "Udyati Seth",
+        "aadhaar_id": "8778 9328 7920",
+        "bank_name": "SBI",
+        "account_number": "SYN00120261000",
+        "statement_id": "BS-001-2026",
+        "file_name": "bank_statement_001_udyati_seth.csv",
+        "transaction_count": 54,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "output": {
+        "decision": "ELIGIBLE",
+        "confidence": 1.0,
+        "financial_health": "HEALTHY",
+        "score": 100,
+        "reasoning": "Average monthly income is ₹73,819.63, average monthly expense is ₹37,088.14, and average monthly EMI is ₹8,000.66. Average monthly surplus is ₹36,731.49. EMI-to-income ratio is 10.84% and savings ratio is 49.76%. The applicant demonstrates sufficient monthly affordability with no major financial risk flags.",
+        "risk_flags": [],
+        "financial_metrics": {
+          "average_monthly_income": 73819.63,
+          "average_monthly_expense": 37088.14,
+          "average_monthly_emi": 8000.66,
+          "emi_to_income_ratio": 0.108381,
+          "average_monthly_surplus": 36731.49,
+          "savings_ratio": 0.497584,
+          "expense_to_income_ratio": 0.502416,
+          "income_stability": 0.977804,
+          "ending_balance": 275388.96,
+          "minimum_balance": 89447.14,
+          "cash_to_income_ratio": 0.02925
+        },
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "evidence": {
+        "source_type": "bank_statement_csv",
+        "source_file": "bank_statement_001_udyati_seth.csv",
+        "evidence_hash": "92f37906c79854fe77c0e7b6f31c566325fa252251836643099a3a4b34e8e9f0",
+        "transaction_count": 54,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "accountability": {
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "rules_applied": [
+          "bank-affordability-rules-v1"
+        ],
+        "risk_flag_count": 0
+      },
+      "provenance": {
+        "input_hash": "907c0522be49d2067af2ae538522acdf6e40b16e795743304c4ef028051bd448",
+        "output_hash": "a188900916aeb3ef7155a9a0a52a20dc2871efa3ed01af2275b0d2dfd9eb4dbf",
+        "previous_record_hash": null,
+        "record_hash": "c79a0f0fd0fe6dc0d767e7c5df9bd0431bf4b6bfd1b0385a43c3e4689475b544",
+        "agent_id": "A003",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1"
+      }
+    },
+    {
+      "schema_version": "TraceChain-A3-v1",
+      "execution_input": {
+        "agent_id": "A003",
+        "input_type": "bank_statement",
+        "applicant_id": "2",
+        "applicant_name": "Dev Bhargava",
+        "aadhaar_id": "7421 8096 7929",
+        "bank_name": "HDFC Bank",
+        "account_number": "SYN00220261001",
+        "statement_id": "BS-002-2026",
+        "file_name": "bank_statement_002_dev_bhargava.csv",
+        "transaction_count": 48,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "output": {
+        "decision": "ELIGIBLE",
+        "confidence": 1.0,
+        "financial_health": "HEALTHY",
+        "score": 100,
+        "reasoning": "Average monthly income is ₹57,933.15, average monthly expense is ₹31,921.03, and average monthly EMI is ₹6,969.37. Average monthly surplus is ₹26,012.12. EMI-to-income ratio is 12.03% and savings ratio is 44.90%. The applicant demonstrates sufficient monthly affordability with no major financial risk flags.",
+        "risk_flags": [],
+        "financial_metrics": {
+          "average_monthly_income": 57933.15,
+          "average_monthly_expense": 31921.03,
+          "average_monthly_emi": 6969.37,
+          "emi_to_income_ratio": 0.1203,
+          "average_monthly_surplus": 26012.12,
+          "savings_ratio": 0.449002,
+          "expense_to_income_ratio": 0.550998,
+          "income_stability": 0.983033,
+          "ending_balance": 198072.76,
+          "minimum_balance": 68247.48,
+          "cash_to_income_ratio": 0.021493
+        },
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "evidence": {
+        "source_type": "bank_statement_csv",
+        "source_file": "bank_statement_002_dev_bhargava.csv",
+        "evidence_hash": "569f7eaed3ad100a36d0d57ee4f70b1c29868c6fbe4ab392b6bd2cdf6213fd10",
+        "transaction_count": 48,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "accountability": {
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "rules_applied": [
+          "bank-affordability-rules-v1"
+        ],
+        "risk_flag_count": 0
+      },
+      "provenance": {
+        "input_hash": "3e2ac250a362f1623c63fc7ab873af85c4f9ab8d9a4a59047bfdc730af3a2c2f",
+        "output_hash": "a6787752bd646c2114a5d473b949125f765672e8089097d0ba879c7540af7697",
+        "previous_record_hash": "c79a0f0fd0fe6dc0d767e7c5df9bd0431bf4b6bfd1b0385a43c3e4689475b544",
+        "record_hash": "5e743828eabd5ff3cb1548eca169b79bf97bfa1f6743f9b5ae45829cf5f5f3f3",
+        "agent_id": "A003",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1"
+      }
+    },
+    {
+      "schema_version": "TraceChain-A3-v1",
+      "execution_input": {
+        "agent_id": "A003",
+        "input_type": "bank_statement",
+        "applicant_id": "3",
+        "applicant_name": "Aachal Murty",
+        "aadhaar_id": "8100 3390 7575",
+        "bank_name": "ICICI Bank",
+        "account_number": "SYN00320261002",
+        "statement_id": "BS-003-2026",
+        "file_name": "bank_statement_003_aachal_murty.csv",
+        "transaction_count": 55,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "output": {
+        "decision": "NOT_ELIGIBLE",
+        "confidence": 0.0,
+        "financial_health": "HIGH_RISK",
+        "score": 0,
+        "reasoning": "Average monthly income is ₹35,786.41, average monthly expense is ₹50,341.12, and average monthly EMI is ₹14,640.87. Average monthly surplus is ₹-14,554.71. EMI-to-income ratio is 40.91% and savings ratio is -40.67%. The applicant demonstrates insufficient financial affordability based on the configured rules.",
+        "risk_flags": [
+          "NEGATIVE_MONTHLY_SURPLUS",
+          "NEGATIVE_SAVINGS_RATIO",
+          "HIGH_EMI_TO_INCOME",
+          "HIGH_EXPENSE_TO_INCOME"
+        ],
+        "financial_metrics": {
+          "average_monthly_income": 35786.41,
+          "average_monthly_expense": 50341.12,
+          "average_monthly_emi": 14640.87,
+          "emi_to_income_ratio": 0.409118,
+          "average_monthly_surplus": -14554.71,
+          "savings_ratio": -0.406711,
+          "expense_to_income_ratio": 1.406711,
+          "income_stability": 0.853207,
+          "ending_balance": -69328.3,
+          "minimum_balance": -69328.3,
+          "cash_to_income_ratio": 0.051594
+        },
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "evidence": {
+        "source_type": "bank_statement_csv",
+        "source_file": "bank_statement_003_aachal_murty.csv",
+        "evidence_hash": "36fda3f6a0a8c0c1e9f73b3e0126768f03db617e38c541fd25190913bb4a4193",
+        "transaction_count": 55,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "accountability": {
+        "composite_risk_score": 8.0,
+        "risk_level": "High",
+        "review_required": true,
+        "rules_applied": [
+          "bank-affordability-rules-v1"
+        ],
+        "risk_flag_count": 4
+      },
+      "provenance": {
+        "input_hash": "597b3b3757e3cb1df2bb7001a324a4a9443305951828f952ef4b983dfe918e52",
+        "output_hash": "875168672c32ad5ac8e419fb4057d326e8f4052e0683826aded31aab30896312",
+        "previous_record_hash": "5e743828eabd5ff3cb1548eca169b79bf97bfa1f6743f9b5ae45829cf5f5f3f3",
+        "record_hash": "1b0af4bb4b9f2d7cc0302fa172fd9d4b86c9179157eef049d9a318b2c99f8edb",
+        "agent_id": "A003",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1"
+      }
+    },
+    {
+      "schema_version": "TraceChain-A3-v1",
+      "execution_input": {
+        "agent_id": "A003",
+        "input_type": "bank_statement",
+        "applicant_id": "4",
+        "applicant_name": "Oni Bora",
+        "aadhaar_id": "8347 0174 6818",
+        "bank_name": "Axis Bank",
+        "account_number": "SYN00420261003",
+        "statement_id": "BS-004-2026",
+        "file_name": "bank_statement_004_oni_bora.csv",
+        "transaction_count": 54,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "output": {
+        "decision": "ELIGIBLE",
+        "confidence": 1.0,
+        "financial_health": "HEALTHY",
+        "score": 100,
+        "reasoning": "Average monthly income is ₹87,809.66, average monthly expense is ₹49,256.47, and average monthly EMI is ₹12,113.63. Average monthly surplus is ₹38,553.19. EMI-to-income ratio is 13.80% and savings ratio is 43.91%. The applicant demonstrates sufficient monthly affordability with no major financial risk flags.",
+        "risk_flags": [],
+        "financial_metrics": {
+          "average_monthly_income": 87809.66,
+          "average_monthly_expense": 49256.47,
+          "average_monthly_emi": 12113.63,
+          "emi_to_income_ratio": 0.137953,
+          "average_monthly_surplus": 38553.19,
+          "savings_ratio": 0.439054,
+          "expense_to_income_ratio": 0.560946,
+          "income_stability": 0.978215,
+          "ending_balance": 309319.14,
+          "minimum_balance": 114761.92,
+          "cash_to_income_ratio": 0.026993
+        },
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "evidence": {
+        "source_type": "bank_statement_csv",
+        "source_file": "bank_statement_004_oni_bora.csv",
+        "evidence_hash": "4a2fa00e012e58b6dd51258c95065f9ebd33f255d2c159666c81eaf7de2c8396",
+        "transaction_count": 54,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "accountability": {
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "rules_applied": [
+          "bank-affordability-rules-v1"
+        ],
+        "risk_flag_count": 0
+      },
+      "provenance": {
+        "input_hash": "05201ab3c5078c79c11364af3529efe73abdf43acbf75f64b93bf3a8298e2c66",
+        "output_hash": "52c6c2c0d21157e90f22d6aad7bb186b6ee3183b97434fdd2a4184d638483563",
+        "previous_record_hash": "1b0af4bb4b9f2d7cc0302fa172fd9d4b86c9179157eef049d9a318b2c99f8edb",
+        "record_hash": "f5e20393f3dffd46db2fc39388eff14fd9457fb98bae3449a773afbc90fb46a1",
+        "agent_id": "A003",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1"
+      }
+    },
+    {
+      "schema_version": "TraceChain-A3-v1",
+      "execution_input": {
+        "agent_id": "A003",
+        "input_type": "bank_statement",
+        "applicant_id": "5",
+        "applicant_name": "Raghav Sem",
+        "aadhaar_id": "5384 0191 6144",
+        "bank_name": "Kotak Mahindra Bank",
+        "account_number": "SYN00520261004",
+        "statement_id": "BS-005-2026",
+        "file_name": "bank_statement_005_raghav_sem.csv",
+        "transaction_count": 52,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "output": {
+        "decision": "ELIGIBLE",
+        "confidence": 1.0,
+        "financial_health": "HEALTHY",
+        "score": 100,
+        "reasoning": "Average monthly income is ₹75,741.56, average monthly expense is ₹56,985.43, and average monthly EMI is ₹16,923.05. Average monthly surplus is ₹18,756.13. EMI-to-income ratio is 22.34% and savings ratio is 24.76%. The applicant demonstrates sufficient monthly affordability with no major financial risk flags.",
+        "risk_flags": [],
+        "financial_metrics": {
+          "average_monthly_income": 75741.56,
+          "average_monthly_expense": 56985.43,
+          "average_monthly_emi": 16923.05,
+          "emi_to_income_ratio": 0.223432,
+          "average_monthly_surplus": 18756.13,
+          "savings_ratio": 0.247633,
+          "expense_to_income_ratio": 0.752367,
+          "income_stability": 0.791919,
+          "ending_balance": 138536.79,
+          "minimum_balance": 37654.94,
+          "cash_to_income_ratio": 0.029933
+        },
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "evidence": {
+        "source_type": "bank_statement_csv",
+        "source_file": "bank_statement_005_raghav_sem.csv",
+        "evidence_hash": "bf46c4bc0b4c7a9fa4ed0cdcf2e24be8c9c6ec3db529130c1f69258164ef4014",
+        "transaction_count": 52,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "accountability": {
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "rules_applied": [
+          "bank-affordability-rules-v1"
+        ],
+        "risk_flag_count": 0
+      },
+      "provenance": {
+        "input_hash": "f756eb2a4bc5e288da248f6c6c478a3ada4f251e9cf048c08437d2fd0f9cbfdd",
+        "output_hash": "c80dca7e959ab95ae0ce5faaa47048ba56e99501522ae5139e06cc06d8572504",
+        "previous_record_hash": "f5e20393f3dffd46db2fc39388eff14fd9457fb98bae3449a773afbc90fb46a1",
+        "record_hash": "8b0204e1b4609669d65a2ed840946471f48efdfb2c2f7c01f78c68a6a8c165db",
+        "agent_id": "A003",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1"
+      }
+    },
+    {
+      "schema_version": "TraceChain-A3-v1",
+      "execution_input": {
+        "agent_id": "A003",
+        "input_type": "bank_statement",
+        "applicant_id": "6",
+        "applicant_name": "Brijesh Dhingra",
+        "aadhaar_id": "1003 3076 6617",
+        "bank_name": "SBI",
+        "account_number": "SYN00620261005",
+        "statement_id": "BS-006-2026",
+        "file_name": "bank_statement_006_brijesh_dhingra.csv",
+        "transaction_count": 58,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "output": {
+        "decision": "NOT_ELIGIBLE",
+        "confidence": 0.0,
+        "financial_health": "HIGH_RISK",
+        "score": 0,
+        "reasoning": "Average monthly income is ₹32,887.29, average monthly expense is ₹50,216.49, and average monthly EMI is ₹13,491.36. Average monthly surplus is ₹-17,329.20. EMI-to-income ratio is 41.02% and savings ratio is -52.69%. The applicant demonstrates insufficient financial affordability based on the configured rules.",
+        "risk_flags": [
+          "NEGATIVE_MONTHLY_SURPLUS",
+          "NEGATIVE_SAVINGS_RATIO",
+          "HIGH_EMI_TO_INCOME",
+          "HIGH_EXPENSE_TO_INCOME"
+        ],
+        "financial_metrics": {
+          "average_monthly_income": 32887.29,
+          "average_monthly_expense": 50216.49,
+          "average_monthly_emi": 13491.36,
+          "emi_to_income_ratio": 0.41023,
+          "average_monthly_surplus": -17329.2,
+          "savings_ratio": -0.526927,
+          "expense_to_income_ratio": 1.526927,
+          "income_stability": 0.852049,
+          "ending_balance": -91975.21,
+          "minimum_balance": -91975.21,
+          "cash_to_income_ratio": 0.062127
+        },
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "evidence": {
+        "source_type": "bank_statement_csv",
+        "source_file": "bank_statement_006_brijesh_dhingra.csv",
+        "evidence_hash": "9b518bf52b4b541220f6d49ff4be11ad48eb43fa3efd6c903e553a9f580efdba",
+        "transaction_count": 58,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "accountability": {
+        "composite_risk_score": 8.0,
+        "risk_level": "High",
+        "review_required": true,
+        "rules_applied": [
+          "bank-affordability-rules-v1"
+        ],
+        "risk_flag_count": 4
+      },
+      "provenance": {
+        "input_hash": "eb4f6982b8f3df23082d34281d7a1a17b0cf2fb0c3fc334e63f397b3fe85c1a1",
+        "output_hash": "7b17ccf20e91fc77c7a3219e22bc0d8b4aeb2a359d855da79f7df84639ed0c24",
+        "previous_record_hash": "8b0204e1b4609669d65a2ed840946471f48efdfb2c2f7c01f78c68a6a8c165db",
+        "record_hash": "4c75b64d0f05a4416031cd4a93bb311374d9b129bf583dddc298373e8119a1a5",
+        "agent_id": "A003",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1"
+      }
+    },
+    {
+      "schema_version": "TraceChain-A3-v1",
+      "execution_input": {
+        "agent_id": "A003",
+        "input_type": "bank_statement",
+        "applicant_id": "7",
+        "applicant_name": "Joshua Sule",
+        "aadhaar_id": "4514 5061 2316",
+        "bank_name": "HDFC Bank",
+        "account_number": "SYN00720261006",
+        "statement_id": "BS-007-2026",
+        "file_name": "bank_statement_007_joshua_sule.csv",
+        "transaction_count": 54,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "output": {
+        "decision": "ELIGIBLE",
+        "confidence": 1.0,
+        "financial_health": "HEALTHY",
+        "score": 100,
+        "reasoning": "Average monthly income is ₹96,698.93, average monthly expense is ₹57,186.00, and average monthly EMI is ₹15,103.03. Average monthly surplus is ₹39,512.93. EMI-to-income ratio is 15.62% and savings ratio is 40.86%. The applicant demonstrates sufficient monthly affordability with no major financial risk flags.",
+        "risk_flags": [],
+        "financial_metrics": {
+          "average_monthly_income": 96698.93,
+          "average_monthly_expense": 57186.0,
+          "average_monthly_emi": 15103.03,
+          "emi_to_income_ratio": 0.156186,
+          "average_monthly_surplus": 39512.93,
+          "savings_ratio": 0.408618,
+          "expense_to_income_ratio": 0.591382,
+          "income_stability": 0.973966,
+          "ending_balance": 347077.58,
+          "minimum_balance": 145953.36,
+          "cash_to_income_ratio": 0.029356
+        },
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "evidence": {
+        "source_type": "bank_statement_csv",
+        "source_file": "bank_statement_007_joshua_sule.csv",
+        "evidence_hash": "c407fa66ccff7a3d4dcfb0f0da3be9e452b9e81572205d56d720177bf3108184",
+        "transaction_count": 54,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "accountability": {
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "rules_applied": [
+          "bank-affordability-rules-v1"
+        ],
+        "risk_flag_count": 0
+      },
+      "provenance": {
+        "input_hash": "b58c2755d7671d01c52a666f159c5091f272f272b75a11f9429e4d3c36b6443c",
+        "output_hash": "0190c1b11ffdb1b71eed3a0c94f9773d6b9ce2a3ddd9d797e60698aa8c9201c9",
+        "previous_record_hash": "4c75b64d0f05a4416031cd4a93bb311374d9b129bf583dddc298373e8119a1a5",
+        "record_hash": "6737cd1057f5108ce41e025cb3084503e5d344485ced930c9b684137d6659437",
+        "agent_id": "A003",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1"
+      }
+    },
+    {
+      "schema_version": "TraceChain-A3-v1",
+      "execution_input": {
+        "agent_id": "A003",
+        "input_type": "bank_statement",
+        "applicant_id": "8",
+        "applicant_name": "Ikbal Barad",
+        "aadhaar_id": "0772 8378 3269",
+        "bank_name": "ICICI Bank",
+        "account_number": "SYN00820261007",
+        "statement_id": "BS-008-2026",
+        "file_name": "bank_statement_008_ikbal_barad.csv",
+        "transaction_count": 53,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "output": {
+        "decision": "REVIEW",
+        "confidence": 0.65,
+        "financial_health": "MODERATE_RISK",
+        "score": 65,
+        "reasoning": "Average monthly income is ₹58,641.12, average monthly expense is ₹50,781.31, and average monthly EMI is ₹13,989.76. Average monthly surplus is ₹7,859.81. EMI-to-income ratio is 23.86% and savings ratio is 13.40%. The applicant shows some financial risk indicators and should undergo manual review.",
+        "risk_flags": [
+          "LOW_MONTHLY_SURPLUS",
+          "HIGH_EXPENSE_TO_INCOME"
+        ],
+        "financial_metrics": {
+          "average_monthly_income": 58641.12,
+          "average_monthly_expense": 50781.31,
+          "average_monthly_emi": 13989.76,
+          "emi_to_income_ratio": 0.238566,
+          "average_monthly_surplus": 7859.81,
+          "savings_ratio": 0.134032,
+          "expense_to_income_ratio": 0.865968,
+          "income_stability": 0.7867,
+          "ending_balance": 66158.85,
+          "minimum_balance": 13317.45,
+          "cash_to_income_ratio": 0.047906
+        },
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "evidence": {
+        "source_type": "bank_statement_csv",
+        "source_file": "bank_statement_008_ikbal_barad.csv",
+        "evidence_hash": "9c239c5b51ef57843fdadaa191be60472b5b62cec1736b7b6300fc8e4a5f8e85",
+        "transaction_count": 53,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "accountability": {
+        "composite_risk_score": 5.0,
+        "risk_level": "Medium",
+        "review_required": true,
+        "rules_applied": [
+          "bank-affordability-rules-v1"
+        ],
+        "risk_flag_count": 2
+      },
+      "provenance": {
+        "input_hash": "0dded5097c694efad00dd9eb80a3f3b61dbc149e192f9e21cc1246e586e55000",
+        "output_hash": "ab2ecd9ae24794805a8cd3373ceb5919e4c21c188d444dde29a353ffb8333565",
+        "previous_record_hash": "6737cd1057f5108ce41e025cb3084503e5d344485ced930c9b684137d6659437",
+        "record_hash": "5966288e3399064e0b5f56922a8a39fb05dd99a83f7e3e52b21fba8c246038e8",
+        "agent_id": "A003",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1"
+      }
+    },
+    {
+      "schema_version": "TraceChain-A3-v1",
+      "execution_input": {
+        "agent_id": "A003",
+        "input_type": "bank_statement",
+        "applicant_id": "9",
+        "applicant_name": "Simon Jani",
+        "aadhaar_id": "1663 0494 0323",
+        "bank_name": "Axis Bank",
+        "account_number": "SYN00920261008",
+        "statement_id": "BS-009-2026",
+        "file_name": "bank_statement_009_simon_jani.csv",
+        "transaction_count": 55,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "output": {
+        "decision": "NOT_ELIGIBLE",
+        "confidence": 0.0,
+        "financial_health": "HIGH_RISK",
+        "score": 0,
+        "reasoning": "Average monthly income is ₹38,113.37, average monthly expense is ₹53,997.72, and average monthly EMI is ₹13,330.36. Average monthly surplus is ₹-15,884.35. EMI-to-income ratio is 34.98% and savings ratio is -41.68%. The applicant demonstrates insufficient financial affordability based on the configured rules.",
+        "risk_flags": [
+          "NEGATIVE_MONTHLY_SURPLUS",
+          "NEGATIVE_SAVINGS_RATIO",
+          "HIGH_EMI_TO_INCOME",
+          "HIGH_EXPENSE_TO_INCOME"
+        ],
+        "financial_metrics": {
+          "average_monthly_income": 38113.37,
+          "average_monthly_expense": 53997.72,
+          "average_monthly_emi": 13330.36,
+          "emi_to_income_ratio": 0.349756,
+          "average_monthly_surplus": -15884.35,
+          "savings_ratio": -0.416766,
+          "expense_to_income_ratio": 1.416766,
+          "income_stability": 0.869927,
+          "ending_balance": -86306.12,
+          "minimum_balance": -86306.12,
+          "cash_to_income_ratio": 0.05732
+        },
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "evidence": {
+        "source_type": "bank_statement_csv",
+        "source_file": "bank_statement_009_simon_jani.csv",
+        "evidence_hash": "61fde4c16b37c418f7588095b0e63d03d1917b3e653845bbc9711794e801ba1b",
+        "transaction_count": 55,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "accountability": {
+        "composite_risk_score": 8.0,
+        "risk_level": "High",
+        "review_required": true,
+        "rules_applied": [
+          "bank-affordability-rules-v1"
+        ],
+        "risk_flag_count": 4
+      },
+      "provenance": {
+        "input_hash": "02444eef95eeab4dd4e4681c2938e51c8d0d21311931ba0a55f4869e6bb2e096",
+        "output_hash": "9b09e1092859c62bf06ef070c2dfb4d1c959f8d13046186780c160e1e8dc813f",
+        "previous_record_hash": "5966288e3399064e0b5f56922a8a39fb05dd99a83f7e3e52b21fba8c246038e8",
+        "record_hash": "3e9f2e8a34fd054870f982a9ab103624e21603e6f4b7fed4ae6b22245d8d2c3a",
+        "agent_id": "A003",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1"
+      }
+    },
+    {
+      "schema_version": "TraceChain-A3-v1",
+      "execution_input": {
+        "agent_id": "A003",
+        "input_type": "bank_statement",
+        "applicant_id": "10",
+        "applicant_name": "Ganga Vig",
+        "aadhaar_id": "9910 2374 0955",
+        "bank_name": "Kotak Mahindra Bank",
+        "account_number": "SYN01020261009",
+        "statement_id": "BS-010-2026",
+        "file_name": "bank_statement_010_ganga_vig.csv",
+        "transaction_count": 54,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "output": {
+        "decision": "ELIGIBLE",
+        "confidence": 1.0,
+        "financial_health": "HEALTHY",
+        "score": 100,
+        "reasoning": "Average monthly income is ₹71,418.34, average monthly expense is ₹34,187.67, and average monthly EMI is ₹6,535.11. Average monthly surplus is ₹37,230.67. EMI-to-income ratio is 9.15% and savings ratio is 52.13%. The applicant demonstrates sufficient monthly affordability with no major financial risk flags.",
+        "risk_flags": [],
+        "financial_metrics": {
+          "average_monthly_income": 71418.34,
+          "average_monthly_expense": 34187.67,
+          "average_monthly_emi": 6535.11,
+          "emi_to_income_ratio": 0.091505,
+          "average_monthly_surplus": 37230.67,
+          "savings_ratio": 0.521304,
+          "expense_to_income_ratio": 0.478696,
+          "income_stability": 0.976271,
+          "ending_balance": 285384.03,
+          "minimum_balance": 102241.29,
+          "cash_to_income_ratio": 0.024574
+        },
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "evidence": {
+        "source_type": "bank_statement_csv",
+        "source_file": "bank_statement_010_ganga_vig.csv",
+        "evidence_hash": "a22abd9b9204f7c38349df587cd3f48ecd76ed705ae42704fe76bbc5f40f6e26",
+        "transaction_count": 54,
+        "statement_period": {
+          "start": "2026-04-01",
+          "end": "2026-09-30"
+        }
+      },
+      "accountability": {
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "rules_applied": [
+          "bank-affordability-rules-v1"
+        ],
+        "risk_flag_count": 0
+      },
+      "provenance": {
+        "input_hash": "b0d25c989722c643dde90fc0c48358be569036e3284fda7362bbdd682df00386",
+        "output_hash": "b7fe3bd5652ee22573e3253c6920d201f2b74df7fed4f218bead9e201a9622e0",
+        "previous_record_hash": "3e9f2e8a34fd054870f982a9ab103624e21603e6f4b7fed4ae6b22245d8d2c3a",
+        "record_hash": "3478b7fa07565b0ce504e2fe549f11f27603aade6bd640e15fdc0d7c809bb34f",
+        "agent_id": "A003",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1"
+      }
+    }
+  ]
+}

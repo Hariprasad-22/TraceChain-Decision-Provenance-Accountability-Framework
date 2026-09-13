@@ -1,0 +1,9 @@
+# Large and generated Bank Statement Agent files
+data/raw/
+synthetic_data/bank_statements/
+synthetic_data/bank_transactions.csv
+synthetic_data/applications.csv
+synthetic_data/split_bank_statements.py
+chroma_db/
+__pycache__/
+src/__pycache__/

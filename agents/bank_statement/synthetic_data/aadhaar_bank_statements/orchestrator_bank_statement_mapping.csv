@@ -1,0 +1,11 @@
+applicant_id,aadhaar_id,applicant_name,bank_statement_file,statement_period,expected_test_scenario
+001,8778 9328 7920,Udyati Seth,bank_statement_001_udyati_seth.csv,2026-04-01 to 2026-09-30,ACCEPT
+002,7421 8096 7929,Dev Bhargava,bank_statement_002_dev_bhargava.csv,2026-04-01 to 2026-09-30,ACCEPT
+003,8100 3390 7575,Aachal Murty,bank_statement_003_aachal_murty.csv,2026-04-01 to 2026-09-30,REJECT
+004,8347 0174 6818,Oni Bora,bank_statement_004_oni_bora.csv,2026-04-01 to 2026-09-30,ACCEPT
+005,5384 0191 6144,Raghav Sem,bank_statement_005_raghav_sem.csv,2026-04-01 to 2026-09-30,MANUAL_REVIEW
+006,1003 3076 6617,Brijesh Dhingra,bank_statement_006_brijesh_dhingra.csv,2026-04-01 to 2026-09-30,REJECT
+007,4514 5061 2316,Joshua Sule,bank_statement_007_joshua_sule.csv,2026-04-01 to 2026-09-30,ACCEPT
+008,0772 8378 3269,Ikbal Barad,bank_statement_008_ikbal_barad.csv,2026-04-01 to 2026-09-30,MANUAL_REVIEW
+009,1663 0494 0323,Simon Jani,bank_statement_009_simon_jani.csv,2026-04-01 to 2026-09-30,REJECT
+010,9910 2374 0955,Ganga Vig,bank_statement_010_ganga_vig.csv,2026-04-01 to 2026-09-30,ACCEPT

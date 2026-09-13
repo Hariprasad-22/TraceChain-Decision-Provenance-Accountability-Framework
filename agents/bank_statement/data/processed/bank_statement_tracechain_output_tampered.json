@@ -1,0 +1,1138 @@
+{
+  "agent_id": "BANK_STATEMENT_AGENT",
+  "agent_version": "1.0",
+  "schema_version": "TraceChain-A3-v1",
+  "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+  "records": {
+    "AGENT_EXECUTIONS": [
+      {
+        "execution_id": "EXEC_BANK_100001_001",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "agent_id": "BANK_STATEMENT_AGENT",
+        "parent_execution_id": null,
+        "sequence_number": 1,
+        "input_data": {
+          "account_id": 100001,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 60000.0,
+            "average_monthly_expense": 42367.833333333336,
+            "average_monthly_surplus": 17632.166666666664,
+            "emi_to_income_ratio": 0.1302444444444444,
+            "savings_ratio": 0.2938694444444444,
+            "income_stability": 1.0
+          }
+        },
+        "input_hash": "75e768e33969f337cc3ddaf82eb08167c33f8c23cb91cee82157ee5b453ec780",
+        "model_id": "bank-statement-rules-v1",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "rule_version": "1.0",
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 60000.00 and average monthly expenses of INR 42367.83. Average monthly surplus is INR 17632.17. EMI-to-income ratio is 13.02% and savings ratio is 29.39%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "output_hash": "4f9439d7772f9ad15678edb7ce213bebccbe7d2bbc8c60e346dbc45983ac7df6",
+        "start_time": "2026-09-10T17:47:53.280578+00:00",
+        "end_time": "2026-09-10T17:47:53.280578+00:00",
+        "status": "COMPLETED"
+      },
+      {
+        "execution_id": "EXEC_BANK_100002_002",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "agent_id": "BANK_STATEMENT_AGENT",
+        "parent_execution_id": null,
+        "sequence_number": 2,
+        "input_data": {
+          "account_id": 100002,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 70000.0,
+            "average_monthly_expense": 42861.333333333336,
+            "average_monthly_surplus": 27138.666666666664,
+            "emi_to_income_ratio": 0.117597619047619,
+            "savings_ratio": 0.387695238095238,
+            "income_stability": 1.0
+          }
+        },
+        "input_hash": "85d470ce362b8b0c8aa99250afc43219d683bf86fee09cc22497e55c740e70e1",
+        "model_id": "bank-statement-rules-v1",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "rule_version": "1.0",
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 70000.00 and average monthly expenses of INR 42861.33. Average monthly surplus is INR 27138.67. EMI-to-income ratio is 11.76% and savings ratio is 38.77%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "output_hash": "c6acfee3b32e31bcbde4e6bd72b5869d4e8b912b1c33bc9ec8bf5aac6ad0f66a",
+        "start_time": "2026-09-10T17:47:53.280578+00:00",
+        "end_time": "2026-09-10T17:47:53.280578+00:00",
+        "status": "COMPLETED"
+      },
+      {
+        "execution_id": "EXEC_BANK_100003_003",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "agent_id": "BANK_STATEMENT_AGENT",
+        "parent_execution_id": null,
+        "sequence_number": 3,
+        "input_data": {
+          "account_id": 100003,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 45000.0,
+            "average_monthly_expense": 44466.0,
+            "average_monthly_surplus": 534.0,
+            "emi_to_income_ratio": 0.185,
+            "savings_ratio": 0.0118666666666666,
+            "income_stability": 1.0
+          }
+        },
+        "input_hash": "01a729a36886f0904a7196f98211c114b490d728c3a5d1d9dd27ceee011579a3",
+        "model_id": "bank-statement-rules-v1",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "rule_version": "1.0",
+        "output_data": {
+          "financial_health": "MODERATE_RISK",
+          "financial_risk_flag_count": 2,
+          "agent_score": 75,
+          "decision_output": "REVIEW",
+          "confidence_score": 0.75,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 45000.00 and average monthly expenses of INR 44466.00. Average monthly surplus is INR 534.00. EMI-to-income ratio is 18.50% and savings ratio is 1.19%. Income stability score is 1.00. The applicant has a low monthly surplus, providing a limited repayment buffer. The savings ratio is below the defined threshold. The applicant shows some financial concerns and should undergo further review."
+        },
+        "output_hash": "051fac721d6a69da6b7052bcc4578c8a5cf3baeba999fb96aa704abf3cd4cef9",
+        "start_time": "2026-09-10T17:47:53.280578+00:00",
+        "end_time": "2026-09-10T17:47:53.280578+00:00",
+        "status": "COMPLETED"
+      },
+      {
+        "execution_id": "EXEC_BANK_100004_004",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "agent_id": "BANK_STATEMENT_AGENT",
+        "parent_execution_id": null,
+        "sequence_number": 4,
+        "input_data": {
+          "account_id": 100004,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 85000.0,
+            "average_monthly_expense": 45710.16666666666,
+            "average_monthly_surplus": 39289.833333333336,
+            "emi_to_income_ratio": 0.1061470588235294,
+            "savings_ratio": 0.4622333333333334,
+            "income_stability": 1.0
+          }
+        },
+        "input_hash": "f377acebfe069339f6ce34f4cdf291a04d1fdd521805f7233a04c0888315fe7c",
+        "model_id": "bank-statement-rules-v1",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "rule_version": "1.0",
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 85000.00 and average monthly expenses of INR 45710.17. Average monthly surplus is INR 39289.83. EMI-to-income ratio is 10.61% and savings ratio is 46.22%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "output_hash": "2d6f348ad35d92f563e83e6faf8b32ae2246dcf972b67a4ec606f1d19724a8ff",
+        "start_time": "2026-09-10T17:47:53.280578+00:00",
+        "end_time": "2026-09-10T17:47:53.280578+00:00",
+        "status": "COMPLETED"
+      },
+      {
+        "execution_id": "EXEC_BANK_100005_005",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "agent_id": "BANK_STATEMENT_AGENT",
+        "parent_execution_id": null,
+        "sequence_number": 5,
+        "input_data": {
+          "account_id": 100005,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 55000.0,
+            "average_monthly_expense": 45036.833333333336,
+            "average_monthly_surplus": 9963.166666666664,
+            "emi_to_income_ratio": 0.1600090909090909,
+            "savings_ratio": 0.1811484848484848,
+            "income_stability": 1.0
+          }
+        },
+        "input_hash": "f6c018a86ecc5094b19a3b817f0a302bcf6771451f68eebe3203190e62fcb0f4",
+        "model_id": "bank-statement-rules-v1",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "rule_version": "1.0",
+        "output_data": {
+          "financial_health": "MODERATE_RISK",
+          "financial_risk_flag_count": 1,
+          "agent_score": 85,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.85,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 55000.00 and average monthly expenses of INR 45036.83. Average monthly surplus is INR 9963.17. EMI-to-income ratio is 16.00% and savings ratio is 18.11%. Income stability score is 1.00. The applicant has a low monthly surplus, providing a limited repayment buffer. Overall bank statement indicators support repayment affordability."
+        },
+        "output_hash": "5b901bec936e717c98b67b63539a7767120fdf4552627d059a2e45a88262fd1a",
+        "start_time": "2026-09-10T17:47:53.280578+00:00",
+        "end_time": "2026-09-10T17:47:53.280578+00:00",
+        "status": "COMPLETED"
+      },
+      {
+        "execution_id": "EXEC_BANK_100006_006",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "agent_id": "BANK_STATEMENT_AGENT",
+        "parent_execution_id": null,
+        "sequence_number": 6,
+        "input_data": {
+          "account_id": 100006,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 50000.0,
+            "average_monthly_expense": 42060.0,
+            "average_monthly_surplus": 7940.0,
+            "emi_to_income_ratio": 0.1753433333333333,
+            "savings_ratio": 0.1588,
+            "income_stability": 1.0
+          }
+        },
+        "input_hash": "6dd3df0379b6a7f7a97ab947fcbcb7b8c6f17d094156cbe2e0ffc78973dd8bcc",
+        "model_id": "bank-statement-rules-v1",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "rule_version": "1.0",
+        "output_data": {
+          "financial_health": "MODERATE_RISK",
+          "financial_risk_flag_count": 1,
+          "agent_score": 85,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.85,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 50000.00 and average monthly expenses of INR 42060.00. Average monthly surplus is INR 7940.00. EMI-to-income ratio is 17.53% and savings ratio is 15.88%. Income stability score is 1.00. The applicant has a low monthly surplus, providing a limited repayment buffer. Overall bank statement indicators support repayment affordability."
+        },
+        "output_hash": "f05547ced02620e07475dba1585eec786d4b3d3c95f466720ebc6c468b70fe75",
+        "start_time": "2026-09-10T17:47:53.280578+00:00",
+        "end_time": "2026-09-10T17:47:53.280578+00:00",
+        "status": "COMPLETED"
+      },
+      {
+        "execution_id": "EXEC_BANK_100007_007",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "agent_id": "BANK_STATEMENT_AGENT",
+        "parent_execution_id": null,
+        "sequence_number": 7,
+        "input_data": {
+          "account_id": 100007,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 90000.0,
+            "average_monthly_expense": 43080.66666666666,
+            "average_monthly_surplus": 46919.333333333336,
+            "emi_to_income_ratio": 0.0918574074074074,
+            "savings_ratio": 0.521325925925926,
+            "income_stability": 1.0
+          }
+        },
+        "input_hash": "9eab4a7153697e6455c56f74b11d9d0c7670d06954d03fd06127ead47183d8d3",
+        "model_id": "bank-statement-rules-v1",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "rule_version": "1.0",
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 90000.00 and average monthly expenses of INR 43080.67. Average monthly surplus is INR 46919.33. EMI-to-income ratio is 9.19% and savings ratio is 52.13%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "output_hash": "917725bae621a199ec9df70e095a708aeac929a0dd2645de7109779ac7e73cb9",
+        "start_time": "2026-09-10T17:47:53.280578+00:00",
+        "end_time": "2026-09-10T17:47:53.280578+00:00",
+        "status": "COMPLETED"
+      },
+      {
+        "execution_id": "EXEC_BANK_100008_008",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "agent_id": "BANK_STATEMENT_AGENT",
+        "parent_execution_id": null,
+        "sequence_number": 8,
+        "input_data": {
+          "account_id": 100008,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 40000.0,
+            "average_monthly_expense": 41972.833333333336,
+            "average_monthly_surplus": -1972.833333333336,
+            "emi_to_income_ratio": 0.197175,
+            "savings_ratio": -0.0493208333333334,
+            "income_stability": 1.0
+          }
+        },
+        "input_hash": "cbf90cea59573efbd91bf3484710a469ee20d88cb9dd7a9bf5603eeba872181e",
+        "model_id": "bank-statement-rules-v1",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "rule_version": "1.0",
+        "output_data": {
+          "financial_health": "HIGH_RISK",
+          "financial_risk_flag_count": 3,
+          "agent_score": 20,
+          "decision_output": "NOT_ELIGIBLE",
+          "confidence_score": 0.2,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 40000.00 and average monthly expenses of INR 41972.83. Average monthly surplus is INR -1972.83. EMI-to-income ratio is 19.72% and savings ratio is -4.93%. Income stability score is 1.00. The applicant has a negative monthly surplus, indicating that expenses exceed income. The savings ratio is negative or zero. Monthly expenses exceed monthly income. The observed financial position does not support sufficient repayment affordability."
+        },
+        "output_hash": "6bed1e60d6c5138b26e657240ada4f3cfc4a20d59f6445c85700f7e6edc049b4",
+        "start_time": "2026-09-10T17:47:53.280578+00:00",
+        "end_time": "2026-09-10T17:47:53.280578+00:00",
+        "status": "COMPLETED"
+      },
+      {
+        "execution_id": "EXEC_BANK_100009_009",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "agent_id": "BANK_STATEMENT_AGENT",
+        "parent_execution_id": null,
+        "sequence_number": 9,
+        "input_data": {
+          "account_id": 100009,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 65000.0,
+            "average_monthly_expense": 44430.16666666666,
+            "average_monthly_surplus": 20569.833333333336,
+            "emi_to_income_ratio": 0.1274282051282051,
+            "savings_ratio": 0.3164589743589744,
+            "income_stability": 1.0
+          }
+        },
+        "input_hash": "77640d069a149cd67c2b22c58f5d3a063eddb00330f906fa782da148cfb5b40c",
+        "model_id": "bank-statement-rules-v1",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "rule_version": "1.0",
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 65000.00 and average monthly expenses of INR 44430.17. Average monthly surplus is INR 20569.83. EMI-to-income ratio is 12.74% and savings ratio is 31.65%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "output_hash": "cb23ff702d5d5d995ff6b09b31af21e6936fc55241311024b7d930facae480f1",
+        "start_time": "2026-09-10T17:47:53.280578+00:00",
+        "end_time": "2026-09-10T17:47:53.280578+00:00",
+        "status": "COMPLETED"
+      },
+      {
+        "execution_id": "EXEC_BANK_100010_010",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "agent_id": "BANK_STATEMENT_AGENT",
+        "parent_execution_id": null,
+        "sequence_number": 10,
+        "input_data": {
+          "account_id": 100010,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 75000.0,
+            "average_monthly_expense": 43926.333333333336,
+            "average_monthly_surplus": 31073.666666666664,
+            "emi_to_income_ratio": 0.1039888888888889,
+            "savings_ratio": 0.4143155555555555,
+            "income_stability": 1.0
+          }
+        },
+        "input_hash": "43841ab977d63bd6d5267358e768d34a52361bfb884bd1d21465d4546ff24cc6",
+        "model_id": "bank-statement-rules-v1",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "rule_version": "1.0",
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 75000.00 and average monthly expenses of INR 43926.33. Average monthly surplus is INR 31073.67. EMI-to-income ratio is 10.40% and savings ratio is 41.43%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "output_hash": "7a17c2cc231d6eaf95a9f46f11d6d5038c09548ede9803876d3a4aaf2808ef61",
+        "start_time": "2026-09-10T17:47:53.280578+00:00",
+        "end_time": "2026-09-10T17:47:53.280578+00:00",
+        "status": "COMPLETED"
+      }
+    ],
+    "AGENT_DECISIONS": [
+      {
+        "decision_id": "DEC_BANK_100001_001",
+        "execution_id": "EXEC_BANK_100001_001",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 1.0,
+        "reasoning": "TAMPERED DATA",
+        "decision_timestamp": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "decision_id": "DEC_BANK_100002_002",
+        "execution_id": "EXEC_BANK_100002_002",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 1.0,
+        "reasoning": "Six-month bank statement analysis shows average monthly income of INR 70000.00 and average monthly expenses of INR 42861.33. Average monthly surplus is INR 27138.67. EMI-to-income ratio is 11.76% and savings ratio is 38.77%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability.",
+        "decision_timestamp": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "decision_id": "DEC_BANK_100003_003",
+        "execution_id": "EXEC_BANK_100003_003",
+        "decision_output": "REVIEW",
+        "confidence_score": 0.75,
+        "reasoning": "Six-month bank statement analysis shows average monthly income of INR 45000.00 and average monthly expenses of INR 44466.00. Average monthly surplus is INR 534.00. EMI-to-income ratio is 18.50% and savings ratio is 1.19%. Income stability score is 1.00. The applicant has a low monthly surplus, providing a limited repayment buffer. The savings ratio is below the defined threshold. The applicant shows some financial concerns and should undergo further review.",
+        "decision_timestamp": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "decision_id": "DEC_BANK_100004_004",
+        "execution_id": "EXEC_BANK_100004_004",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 1.0,
+        "reasoning": "Six-month bank statement analysis shows average monthly income of INR 85000.00 and average monthly expenses of INR 45710.17. Average monthly surplus is INR 39289.83. EMI-to-income ratio is 10.61% and savings ratio is 46.22%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability.",
+        "decision_timestamp": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "decision_id": "DEC_BANK_100005_005",
+        "execution_id": "EXEC_BANK_100005_005",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 0.85,
+        "reasoning": "Six-month bank statement analysis shows average monthly income of INR 55000.00 and average monthly expenses of INR 45036.83. Average monthly surplus is INR 9963.17. EMI-to-income ratio is 16.00% and savings ratio is 18.11%. Income stability score is 1.00. The applicant has a low monthly surplus, providing a limited repayment buffer. Overall bank statement indicators support repayment affordability.",
+        "decision_timestamp": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "decision_id": "DEC_BANK_100006_006",
+        "execution_id": "EXEC_BANK_100006_006",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 0.85,
+        "reasoning": "Six-month bank statement analysis shows average monthly income of INR 50000.00 and average monthly expenses of INR 42060.00. Average monthly surplus is INR 7940.00. EMI-to-income ratio is 17.53% and savings ratio is 15.88%. Income stability score is 1.00. The applicant has a low monthly surplus, providing a limited repayment buffer. Overall bank statement indicators support repayment affordability.",
+        "decision_timestamp": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "decision_id": "DEC_BANK_100007_007",
+        "execution_id": "EXEC_BANK_100007_007",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 1.0,
+        "reasoning": "Six-month bank statement analysis shows average monthly income of INR 90000.00 and average monthly expenses of INR 43080.67. Average monthly surplus is INR 46919.33. EMI-to-income ratio is 9.19% and savings ratio is 52.13%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability.",
+        "decision_timestamp": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "decision_id": "DEC_BANK_100008_008",
+        "execution_id": "EXEC_BANK_100008_008",
+        "decision_output": "NOT_ELIGIBLE",
+        "confidence_score": 0.2,
+        "reasoning": "Six-month bank statement analysis shows average monthly income of INR 40000.00 and average monthly expenses of INR 41972.83. Average monthly surplus is INR -1972.83. EMI-to-income ratio is 19.72% and savings ratio is -4.93%. Income stability score is 1.00. The applicant has a negative monthly surplus, indicating that expenses exceed income. The savings ratio is negative or zero. Monthly expenses exceed monthly income. The observed financial position does not support sufficient repayment affordability.",
+        "decision_timestamp": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "decision_id": "DEC_BANK_100009_009",
+        "execution_id": "EXEC_BANK_100009_009",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 1.0,
+        "reasoning": "Six-month bank statement analysis shows average monthly income of INR 65000.00 and average monthly expenses of INR 44430.17. Average monthly surplus is INR 20569.83. EMI-to-income ratio is 12.74% and savings ratio is 31.65%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability.",
+        "decision_timestamp": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "decision_id": "DEC_BANK_100010_010",
+        "execution_id": "EXEC_BANK_100010_010",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 1.0,
+        "reasoning": "Six-month bank statement analysis shows average monthly income of INR 75000.00 and average monthly expenses of INR 43926.33. Average monthly surplus is INR 31073.67. EMI-to-income ratio is 10.40% and savings ratio is 41.43%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability.",
+        "decision_timestamp": "2026-09-10T17:47:53.280578+00:00"
+      }
+    ],
+    "EVIDENCE": [
+      {
+        "evidence_id": "EVID_BANK_100001_001",
+        "execution_id": "EXEC_BANK_100001_001",
+        "evidence_type": "FINANCIAL_FEATURES",
+        "source": "synthetic_bank_statement",
+        "data_reference": "account_100001",
+        "model_id": "bank-statement-rules-v1",
+        "rule_id": "bank-affordability-rules-v1",
+        "policy_id": null,
+        "retrieval_score": 1.0,
+        "evidence_hash": "80675c56e70a1216a2b628ab3a6a64b3917dca1b0ad1e6d29aba4d020b7a9b20",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "evidence_data": {
+          "account_id": 100001,
+          "average_monthly_income": 60000.0,
+          "average_monthly_expense": 42367.833333333336,
+          "average_monthly_surplus": 17632.166666666664,
+          "emi_to_income_ratio": 0.1302444444444444,
+          "savings_ratio": 0.2938694444444444,
+          "income_stability": 1.0,
+          "financial_risk_flag_count": 0
+        }
+      },
+      {
+        "evidence_id": "EVID_BANK_100002_002",
+        "execution_id": "EXEC_BANK_100002_002",
+        "evidence_type": "FINANCIAL_FEATURES",
+        "source": "synthetic_bank_statement",
+        "data_reference": "account_100002",
+        "model_id": "bank-statement-rules-v1",
+        "rule_id": "bank-affordability-rules-v1",
+        "policy_id": null,
+        "retrieval_score": 1.0,
+        "evidence_hash": "fd8d2c10282fd511486774ed1589145619167765f04af38def08ca243a05e07f",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "evidence_data": {
+          "account_id": 100002,
+          "average_monthly_income": 70000.0,
+          "average_monthly_expense": 42861.333333333336,
+          "average_monthly_surplus": 27138.666666666664,
+          "emi_to_income_ratio": 0.117597619047619,
+          "savings_ratio": 0.387695238095238,
+          "income_stability": 1.0,
+          "financial_risk_flag_count": 0
+        }
+      },
+      {
+        "evidence_id": "EVID_BANK_100003_003",
+        "execution_id": "EXEC_BANK_100003_003",
+        "evidence_type": "FINANCIAL_FEATURES",
+        "source": "synthetic_bank_statement",
+        "data_reference": "account_100003",
+        "model_id": "bank-statement-rules-v1",
+        "rule_id": "bank-affordability-rules-v1",
+        "policy_id": null,
+        "retrieval_score": 1.0,
+        "evidence_hash": "5fab8bea93cf290269a16bc7c92742db81079b318bf2c275d4f71da52f843c73",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "evidence_data": {
+          "account_id": 100003,
+          "average_monthly_income": 45000.0,
+          "average_monthly_expense": 44466.0,
+          "average_monthly_surplus": 534.0,
+          "emi_to_income_ratio": 0.185,
+          "savings_ratio": 0.0118666666666666,
+          "income_stability": 1.0,
+          "financial_risk_flag_count": 2
+        }
+      },
+      {
+        "evidence_id": "EVID_BANK_100004_004",
+        "execution_id": "EXEC_BANK_100004_004",
+        "evidence_type": "FINANCIAL_FEATURES",
+        "source": "synthetic_bank_statement",
+        "data_reference": "account_100004",
+        "model_id": "bank-statement-rules-v1",
+        "rule_id": "bank-affordability-rules-v1",
+        "policy_id": null,
+        "retrieval_score": 1.0,
+        "evidence_hash": "bcb92ef0e0e3a325a1cf1995bed5aa0b9e1cd539cc2b9c4258a8358a50ac7842",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "evidence_data": {
+          "account_id": 100004,
+          "average_monthly_income": 85000.0,
+          "average_monthly_expense": 45710.16666666666,
+          "average_monthly_surplus": 39289.833333333336,
+          "emi_to_income_ratio": 0.1061470588235294,
+          "savings_ratio": 0.4622333333333334,
+          "income_stability": 1.0,
+          "financial_risk_flag_count": 0
+        }
+      },
+      {
+        "evidence_id": "EVID_BANK_100005_005",
+        "execution_id": "EXEC_BANK_100005_005",
+        "evidence_type": "FINANCIAL_FEATURES",
+        "source": "synthetic_bank_statement",
+        "data_reference": "account_100005",
+        "model_id": "bank-statement-rules-v1",
+        "rule_id": "bank-affordability-rules-v1",
+        "policy_id": null,
+        "retrieval_score": 1.0,
+        "evidence_hash": "ca32750b40db0ffbb947b7be878fbd33d127de04ffb21ae8b25623e2ec33fd92",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "evidence_data": {
+          "account_id": 100005,
+          "average_monthly_income": 55000.0,
+          "average_monthly_expense": 45036.833333333336,
+          "average_monthly_surplus": 9963.166666666664,
+          "emi_to_income_ratio": 0.1600090909090909,
+          "savings_ratio": 0.1811484848484848,
+          "income_stability": 1.0,
+          "financial_risk_flag_count": 1
+        }
+      },
+      {
+        "evidence_id": "EVID_BANK_100006_006",
+        "execution_id": "EXEC_BANK_100006_006",
+        "evidence_type": "FINANCIAL_FEATURES",
+        "source": "synthetic_bank_statement",
+        "data_reference": "account_100006",
+        "model_id": "bank-statement-rules-v1",
+        "rule_id": "bank-affordability-rules-v1",
+        "policy_id": null,
+        "retrieval_score": 1.0,
+        "evidence_hash": "c21e716799c55db9576098f52f61592ad9b25ef4780556300f5f14ccd73e2882",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "evidence_data": {
+          "account_id": 100006,
+          "average_monthly_income": 50000.0,
+          "average_monthly_expense": 42060.0,
+          "average_monthly_surplus": 7940.0,
+          "emi_to_income_ratio": 0.1753433333333333,
+          "savings_ratio": 0.1588,
+          "income_stability": 1.0,
+          "financial_risk_flag_count": 1
+        }
+      },
+      {
+        "evidence_id": "EVID_BANK_100007_007",
+        "execution_id": "EXEC_BANK_100007_007",
+        "evidence_type": "FINANCIAL_FEATURES",
+        "source": "synthetic_bank_statement",
+        "data_reference": "account_100007",
+        "model_id": "bank-statement-rules-v1",
+        "rule_id": "bank-affordability-rules-v1",
+        "policy_id": null,
+        "retrieval_score": 1.0,
+        "evidence_hash": "3435baad2a4b9336ff3fcdeed220a2996ee41b3d142bb3543ed62a84f348ba97",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "evidence_data": {
+          "account_id": 100007,
+          "average_monthly_income": 90000.0,
+          "average_monthly_expense": 43080.66666666666,
+          "average_monthly_surplus": 46919.333333333336,
+          "emi_to_income_ratio": 0.0918574074074074,
+          "savings_ratio": 0.521325925925926,
+          "income_stability": 1.0,
+          "financial_risk_flag_count": 0
+        }
+      },
+      {
+        "evidence_id": "EVID_BANK_100008_008",
+        "execution_id": "EXEC_BANK_100008_008",
+        "evidence_type": "FINANCIAL_FEATURES",
+        "source": "synthetic_bank_statement",
+        "data_reference": "account_100008",
+        "model_id": "bank-statement-rules-v1",
+        "rule_id": "bank-affordability-rules-v1",
+        "policy_id": null,
+        "retrieval_score": 1.0,
+        "evidence_hash": "9cc68469671d3751299bc7ed53e5ec658acfd6c5d96c0db44e350f515f8de24e",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "evidence_data": {
+          "account_id": 100008,
+          "average_monthly_income": 40000.0,
+          "average_monthly_expense": 41972.833333333336,
+          "average_monthly_surplus": -1972.833333333336,
+          "emi_to_income_ratio": 0.197175,
+          "savings_ratio": -0.0493208333333334,
+          "income_stability": 1.0,
+          "financial_risk_flag_count": 3
+        }
+      },
+      {
+        "evidence_id": "EVID_BANK_100009_009",
+        "execution_id": "EXEC_BANK_100009_009",
+        "evidence_type": "FINANCIAL_FEATURES",
+        "source": "synthetic_bank_statement",
+        "data_reference": "account_100009",
+        "model_id": "bank-statement-rules-v1",
+        "rule_id": "bank-affordability-rules-v1",
+        "policy_id": null,
+        "retrieval_score": 1.0,
+        "evidence_hash": "cf867e8c7ce5669153c8aeb09d41c78c378fdbe676c3277cea1d4c0b8e554a06",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "evidence_data": {
+          "account_id": 100009,
+          "average_monthly_income": 65000.0,
+          "average_monthly_expense": 44430.16666666666,
+          "average_monthly_surplus": 20569.833333333336,
+          "emi_to_income_ratio": 0.1274282051282051,
+          "savings_ratio": 0.3164589743589744,
+          "income_stability": 1.0,
+          "financial_risk_flag_count": 0
+        }
+      },
+      {
+        "evidence_id": "EVID_BANK_100010_010",
+        "execution_id": "EXEC_BANK_100010_010",
+        "evidence_type": "FINANCIAL_FEATURES",
+        "source": "synthetic_bank_statement",
+        "data_reference": "account_100010",
+        "model_id": "bank-statement-rules-v1",
+        "rule_id": "bank-affordability-rules-v1",
+        "policy_id": null,
+        "retrieval_score": 1.0,
+        "evidence_hash": "e590a6f17e2e5a0816fbb31d17e3fb569bb3d01c19c6f9cfb338854bea7eb8db",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "evidence_data": {
+          "account_id": 100010,
+          "average_monthly_income": 75000.0,
+          "average_monthly_expense": 43926.333333333336,
+          "average_monthly_surplus": 31073.666666666664,
+          "emi_to_income_ratio": 0.1039888888888889,
+          "savings_ratio": 0.4143155555555555,
+          "income_stability": 1.0,
+          "financial_risk_flag_count": 0
+        }
+      }
+    ],
+    "ACCOUNTABILITY_SCORES": [
+      {
+        "score_id": "ACC_BANK_100001_001",
+        "execution_id": "EXEC_BANK_100001_001",
+        "irreversibility_score": 6,
+        "impact_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "score_id": "ACC_BANK_100002_002",
+        "execution_id": "EXEC_BANK_100002_002",
+        "irreversibility_score": 6,
+        "impact_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "score_id": "ACC_BANK_100003_003",
+        "execution_id": "EXEC_BANK_100003_003",
+        "irreversibility_score": 7,
+        "impact_score": 8,
+        "explainability_score": 9,
+        "composite_risk_score": 5.5,
+        "risk_level": "Medium",
+        "review_required": true,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "score_id": "ACC_BANK_100004_004",
+        "execution_id": "EXEC_BANK_100004_004",
+        "irreversibility_score": 6,
+        "impact_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "score_id": "ACC_BANK_100005_005",
+        "execution_id": "EXEC_BANK_100005_005",
+        "irreversibility_score": 7,
+        "impact_score": 8,
+        "explainability_score": 9,
+        "composite_risk_score": 5.5,
+        "risk_level": "Medium",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "score_id": "ACC_BANK_100006_006",
+        "execution_id": "EXEC_BANK_100006_006",
+        "irreversibility_score": 7,
+        "impact_score": 8,
+        "explainability_score": 9,
+        "composite_risk_score": 5.5,
+        "risk_level": "Medium",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "score_id": "ACC_BANK_100007_007",
+        "execution_id": "EXEC_BANK_100007_007",
+        "irreversibility_score": 6,
+        "impact_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "score_id": "ACC_BANK_100008_008",
+        "execution_id": "EXEC_BANK_100008_008",
+        "irreversibility_score": 8,
+        "impact_score": 9,
+        "explainability_score": 9,
+        "composite_risk_score": 7.5,
+        "risk_level": "High",
+        "review_required": true,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "score_id": "ACC_BANK_100009_009",
+        "execution_id": "EXEC_BANK_100009_009",
+        "irreversibility_score": 6,
+        "impact_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-10T17:47:53.280578+00:00"
+      },
+      {
+        "score_id": "ACC_BANK_100010_010",
+        "execution_id": "EXEC_BANK_100010_010",
+        "irreversibility_score": 6,
+        "impact_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 2.5,
+        "risk_level": "Low",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-10T17:47:53.280578+00:00"
+      }
+    ],
+    "PROVENANCE_RECORDS": [
+      {
+        "record_id": "PROV_BANK_100001_001",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "execution_id": "EXEC_BANK_100001_001",
+        "event_type": "BANK_STATEMENT_AGENT_COMPLETED",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "input_hash": "75e768e33969f337cc3ddaf82eb08167c33f8c23cb91cee82157ee5b453ec780",
+        "output_hash": "4f9439d7772f9ad15678edb7ce213bebccbe7d2bbc8c60e346dbc45983ac7df6",
+        "previous_record_hash": null,
+        "input_data": {
+          "account_id": 100001,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 60000.0,
+            "average_monthly_expense": 42367.833333333336,
+            "average_monthly_surplus": 17632.166666666664,
+            "emi_to_income_ratio": 0.1302444444444444,
+            "savings_ratio": 0.2938694444444444,
+            "income_stability": 1.0
+          }
+        },
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 60000.00 and average monthly expenses of INR 42367.83. Average monthly surplus is INR 17632.17. EMI-to-income ratio is 13.02% and savings ratio is 29.39%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "record_hash": "63298d362eec4015fb45598d9472a255d8c3477c1cb932f05e18801013f97e0b"
+      },
+      {
+        "record_id": "PROV_BANK_100002_002",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "execution_id": "EXEC_BANK_100002_002",
+        "event_type": "BANK_STATEMENT_AGENT_COMPLETED",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "input_hash": "85d470ce362b8b0c8aa99250afc43219d683bf86fee09cc22497e55c740e70e1",
+        "output_hash": "c6acfee3b32e31bcbde4e6bd72b5869d4e8b912b1c33bc9ec8bf5aac6ad0f66a",
+        "previous_record_hash": "63298d362eec4015fb45598d9472a255d8c3477c1cb932f05e18801013f97e0b",
+        "input_data": {
+          "account_id": 100002,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 70000.0,
+            "average_monthly_expense": 42861.333333333336,
+            "average_monthly_surplus": 27138.666666666664,
+            "emi_to_income_ratio": 0.117597619047619,
+            "savings_ratio": 0.387695238095238,
+            "income_stability": 1.0
+          }
+        },
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 70000.00 and average monthly expenses of INR 42861.33. Average monthly surplus is INR 27138.67. EMI-to-income ratio is 11.76% and savings ratio is 38.77%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "record_hash": "81f8404fe763afa406abe6a9f54c0682acf34ef7ffdbf5bb64e3ce568fda8f00"
+      },
+      {
+        "record_id": "PROV_BANK_100003_003",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "execution_id": "EXEC_BANK_100003_003",
+        "event_type": "BANK_STATEMENT_AGENT_COMPLETED",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "input_hash": "01a729a36886f0904a7196f98211c114b490d728c3a5d1d9dd27ceee011579a3",
+        "output_hash": "051fac721d6a69da6b7052bcc4578c8a5cf3baeba999fb96aa704abf3cd4cef9",
+        "previous_record_hash": "81f8404fe763afa406abe6a9f54c0682acf34ef7ffdbf5bb64e3ce568fda8f00",
+        "input_data": {
+          "account_id": 100003,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 45000.0,
+            "average_monthly_expense": 44466.0,
+            "average_monthly_surplus": 534.0,
+            "emi_to_income_ratio": 0.185,
+            "savings_ratio": 0.0118666666666666,
+            "income_stability": 1.0
+          }
+        },
+        "output_data": {
+          "financial_health": "MODERATE_RISK",
+          "financial_risk_flag_count": 2,
+          "agent_score": 75,
+          "decision_output": "REVIEW",
+          "confidence_score": 0.75,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 45000.00 and average monthly expenses of INR 44466.00. Average monthly surplus is INR 534.00. EMI-to-income ratio is 18.50% and savings ratio is 1.19%. Income stability score is 1.00. The applicant has a low monthly surplus, providing a limited repayment buffer. The savings ratio is below the defined threshold. The applicant shows some financial concerns and should undergo further review."
+        },
+        "record_hash": "04c535b7e058e9265d5ef0770a6dcc13bc9269399ab95b4ee19c59443f5d5fde"
+      },
+      {
+        "record_id": "PROV_BANK_100004_004",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "execution_id": "EXEC_BANK_100004_004",
+        "event_type": "BANK_STATEMENT_AGENT_COMPLETED",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "input_hash": "f377acebfe069339f6ce34f4cdf291a04d1fdd521805f7233a04c0888315fe7c",
+        "output_hash": "2d6f348ad35d92f563e83e6faf8b32ae2246dcf972b67a4ec606f1d19724a8ff",
+        "previous_record_hash": "04c535b7e058e9265d5ef0770a6dcc13bc9269399ab95b4ee19c59443f5d5fde",
+        "input_data": {
+          "account_id": 100004,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 85000.0,
+            "average_monthly_expense": 45710.16666666666,
+            "average_monthly_surplus": 39289.833333333336,
+            "emi_to_income_ratio": 0.1061470588235294,
+            "savings_ratio": 0.4622333333333334,
+            "income_stability": 1.0
+          }
+        },
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 85000.00 and average monthly expenses of INR 45710.17. Average monthly surplus is INR 39289.83. EMI-to-income ratio is 10.61% and savings ratio is 46.22%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "record_hash": "14a7edc8cae046923e83c5b969598c01ddd7e904cd78f51ddce19e603bc26f1a"
+      },
+      {
+        "record_id": "PROV_BANK_100005_005",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "execution_id": "EXEC_BANK_100005_005",
+        "event_type": "BANK_STATEMENT_AGENT_COMPLETED",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "input_hash": "f6c018a86ecc5094b19a3b817f0a302bcf6771451f68eebe3203190e62fcb0f4",
+        "output_hash": "5b901bec936e717c98b67b63539a7767120fdf4552627d059a2e45a88262fd1a",
+        "previous_record_hash": "14a7edc8cae046923e83c5b969598c01ddd7e904cd78f51ddce19e603bc26f1a",
+        "input_data": {
+          "account_id": 100005,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 55000.0,
+            "average_monthly_expense": 45036.833333333336,
+            "average_monthly_surplus": 9963.166666666664,
+            "emi_to_income_ratio": 0.1600090909090909,
+            "savings_ratio": 0.1811484848484848,
+            "income_stability": 1.0
+          }
+        },
+        "output_data": {
+          "financial_health": "MODERATE_RISK",
+          "financial_risk_flag_count": 1,
+          "agent_score": 85,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.85,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 55000.00 and average monthly expenses of INR 45036.83. Average monthly surplus is INR 9963.17. EMI-to-income ratio is 16.00% and savings ratio is 18.11%. Income stability score is 1.00. The applicant has a low monthly surplus, providing a limited repayment buffer. Overall bank statement indicators support repayment affordability."
+        },
+        "record_hash": "2d71fcda3a6149fdbed647f6686bbc39fd10368a161fc3db49ed363d08c6c81e"
+      },
+      {
+        "record_id": "PROV_BANK_100006_006",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "execution_id": "EXEC_BANK_100006_006",
+        "event_type": "BANK_STATEMENT_AGENT_COMPLETED",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "input_hash": "6dd3df0379b6a7f7a97ab947fcbcb7b8c6f17d094156cbe2e0ffc78973dd8bcc",
+        "output_hash": "f05547ced02620e07475dba1585eec786d4b3d3c95f466720ebc6c468b70fe75",
+        "previous_record_hash": "2d71fcda3a6149fdbed647f6686bbc39fd10368a161fc3db49ed363d08c6c81e",
+        "input_data": {
+          "account_id": 100006,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 50000.0,
+            "average_monthly_expense": 42060.0,
+            "average_monthly_surplus": 7940.0,
+            "emi_to_income_ratio": 0.1753433333333333,
+            "savings_ratio": 0.1588,
+            "income_stability": 1.0
+          }
+        },
+        "output_data": {
+          "financial_health": "MODERATE_RISK",
+          "financial_risk_flag_count": 1,
+          "agent_score": 85,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.85,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 50000.00 and average monthly expenses of INR 42060.00. Average monthly surplus is INR 7940.00. EMI-to-income ratio is 17.53% and savings ratio is 15.88%. Income stability score is 1.00. The applicant has a low monthly surplus, providing a limited repayment buffer. Overall bank statement indicators support repayment affordability."
+        },
+        "record_hash": "afdedec1d07c47f111332b99f259ca707b3438fba7567a5c10d301be7e7fdf2e"
+      },
+      {
+        "record_id": "PROV_BANK_100007_007",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "execution_id": "EXEC_BANK_100007_007",
+        "event_type": "BANK_STATEMENT_AGENT_COMPLETED",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "input_hash": "9eab4a7153697e6455c56f74b11d9d0c7670d06954d03fd06127ead47183d8d3",
+        "output_hash": "917725bae621a199ec9df70e095a708aeac929a0dd2645de7109779ac7e73cb9",
+        "previous_record_hash": "afdedec1d07c47f111332b99f259ca707b3438fba7567a5c10d301be7e7fdf2e",
+        "input_data": {
+          "account_id": 100007,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 90000.0,
+            "average_monthly_expense": 43080.66666666666,
+            "average_monthly_surplus": 46919.333333333336,
+            "emi_to_income_ratio": 0.0918574074074074,
+            "savings_ratio": 0.521325925925926,
+            "income_stability": 1.0
+          }
+        },
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 90000.00 and average monthly expenses of INR 43080.67. Average monthly surplus is INR 46919.33. EMI-to-income ratio is 9.19% and savings ratio is 52.13%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "record_hash": "0afc5b214efaed16e200a2af01bb5b958718ce072ee7a99c753930c6e2d40464"
+      },
+      {
+        "record_id": "PROV_BANK_100008_008",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "execution_id": "EXEC_BANK_100008_008",
+        "event_type": "BANK_STATEMENT_AGENT_COMPLETED",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "input_hash": "cbf90cea59573efbd91bf3484710a469ee20d88cb9dd7a9bf5603eeba872181e",
+        "output_hash": "6bed1e60d6c5138b26e657240ada4f3cfc4a20d59f6445c85700f7e6edc049b4",
+        "previous_record_hash": "0afc5b214efaed16e200a2af01bb5b958718ce072ee7a99c753930c6e2d40464",
+        "input_data": {
+          "account_id": 100008,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 40000.0,
+            "average_monthly_expense": 41972.833333333336,
+            "average_monthly_surplus": -1972.833333333336,
+            "emi_to_income_ratio": 0.197175,
+            "savings_ratio": -0.0493208333333334,
+            "income_stability": 1.0
+          }
+        },
+        "output_data": {
+          "financial_health": "HIGH_RISK",
+          "financial_risk_flag_count": 3,
+          "agent_score": 20,
+          "decision_output": "NOT_ELIGIBLE",
+          "confidence_score": 0.2,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 40000.00 and average monthly expenses of INR 41972.83. Average monthly surplus is INR -1972.83. EMI-to-income ratio is 19.72% and savings ratio is -4.93%. Income stability score is 1.00. The applicant has a negative monthly surplus, indicating that expenses exceed income. The savings ratio is negative or zero. Monthly expenses exceed monthly income. The observed financial position does not support sufficient repayment affordability."
+        },
+        "record_hash": "189c71a325e30b31423ed7043d9cca2afe723a4310835849d0b0d3fc245d9114"
+      },
+      {
+        "record_id": "PROV_BANK_100009_009",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "execution_id": "EXEC_BANK_100009_009",
+        "event_type": "BANK_STATEMENT_AGENT_COMPLETED",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "input_hash": "77640d069a149cd67c2b22c58f5d3a063eddb00330f906fa782da148cfb5b40c",
+        "output_hash": "cb23ff702d5d5d995ff6b09b31af21e6936fc55241311024b7d930facae480f1",
+        "previous_record_hash": "189c71a325e30b31423ed7043d9cca2afe723a4310835849d0b0d3fc245d9114",
+        "input_data": {
+          "account_id": 100009,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 65000.0,
+            "average_monthly_expense": 44430.16666666666,
+            "average_monthly_surplus": 20569.833333333336,
+            "emi_to_income_ratio": 0.1274282051282051,
+            "savings_ratio": 0.3164589743589744,
+            "income_stability": 1.0
+          }
+        },
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 65000.00 and average monthly expenses of INR 44430.17. Average monthly surplus is INR 20569.83. EMI-to-income ratio is 12.74% and savings ratio is 31.65%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "record_hash": "ef07c3c895b8da7034f100d8811b2af7944d62f050b312a4e3491dadcc8550b1"
+      },
+      {
+        "record_id": "PROV_BANK_100010_010",
+        "orchestration_id": "ORCH_BANK_STATEMENT_STANDALONE_001",
+        "execution_id": "EXEC_BANK_100010_010",
+        "event_type": "BANK_STATEMENT_AGENT_COMPLETED",
+        "timestamp": "2026-09-10T17:47:53.280578+00:00",
+        "input_hash": "43841ab977d63bd6d5267358e768d34a52361bfb884bd1d21465d4546ff24cc6",
+        "output_hash": "7a17c2cc231d6eaf95a9f46f11d6d5038c09548ede9803876d3a4aaf2808ef61",
+        "previous_record_hash": "ef07c3c895b8da7034f100d8811b2af7944d62f050b312a4e3491dadcc8550b1",
+        "input_data": {
+          "account_id": 100010,
+          "statement_period": "2022-01 to 2022-06",
+          "source": "synthetic_bank_statement",
+          "financial_features": {
+            "average_monthly_income": 75000.0,
+            "average_monthly_expense": 43926.333333333336,
+            "average_monthly_surplus": 31073.666666666664,
+            "emi_to_income_ratio": 0.1039888888888889,
+            "savings_ratio": 0.4143155555555555,
+            "income_stability": 1.0
+          }
+        },
+        "output_data": {
+          "financial_health": "HEALTHY",
+          "financial_risk_flag_count": 0,
+          "agent_score": 100,
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 1.0,
+          "reasoning": "Six-month bank statement analysis shows average monthly income of INR 75000.00 and average monthly expenses of INR 43926.33. Average monthly surplus is INR 31073.67. EMI-to-income ratio is 10.40% and savings ratio is 41.43%. Income stability score is 1.00. Overall bank statement indicators support repayment affordability."
+        },
+        "record_hash": "8d1113d28e5e5c54b55d774b50e2c64300d4dd95b397e178f7cd04d47be5db3e"
+      }
+    ]
+  }
+}
