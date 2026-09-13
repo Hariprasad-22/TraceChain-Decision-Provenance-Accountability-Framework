@@ -120,7 +120,8 @@ Guardrails and deterministic rules constrain the workflow, relevant knowledge is
 
 TraceChain is structured as a layered architecture in which the application and API route requests into a LangGraph-based orchestrator. The orchestrator coordinates the four specialized verification agents, while the same controlled execution pattern is applied inside every agent.
 
-![TraceChain System Architecture](tracechain-system-architecture.png)
+<img width="1536" height="1024" alt="tracechain-system-architecture" src="https://github.com/user-attachments/assets/9dc9d38f-0e5f-47c6-967e-49dc2c8a3365" />
+
 
 ### Architecture flow
 
@@ -146,21 +147,8 @@ Traceable response + audit trail
 
 Every specialized agent follows the same controlled reasoning pattern:
 
-```text
-Input
-  ↓
-Guardrails
-  ↓
-Rule Engine
-  ↓
-Knowledge Retrieval
-  ↓
-LLM Reasoning
-  ↓
-Structured Output
-  ↓
-TraceChain Record
-```
+<img width="1983" height="793" alt="agent_workflow" src="https://github.com/user-attachments/assets/04a5446b-b91e-4282-92d8-ea7e7de1348f" />
+
 
 The purpose of this shared pattern is consistency across heterogeneous agents. Guardrails validate the request and data, the rule engine enforces deterministic policy, knowledge retrieval supplies relevant domain guidance, and the LLM generates contextual reasoning. The final structured output is captured as a traceable execution record.
 
@@ -233,49 +221,6 @@ The same structure can be used to answer:
 
 ---
 
-## Repository Structure
-
-```text
-TraceChain-Decision-Provenance-Accountability-Framework/
-│
-├── agents/
-│   ├── aadhar/
-│   ├── cibil/
-│   ├── payslip/
-│   └── bank_statement/
-│
-├── orchestrator/
-├── schemas/
-│
-├── backend/
-│   ├── database/
-│   ├── models/
-│   └── services/
-│
-├── frontend/
-│
-├── data/
-│   ├── sample/
-│   └── results/
-│       ├── aadhaar/
-│       ├── cibil/
-│       ├── payslip/
-│       ├── bank_statement/
-│       └── end_to_end/
-│
-├── docs/
-│   ├── architecture/
-│   ├── agent_contracts/
-│   └── demo/
-│
-├── tests/
-│   ├── integration/
-│   └── end_to_end/
-│
-└── examples/
-```
-
----
 
 ## Key Design Principles
 
@@ -384,20 +329,6 @@ The goal is to move from:
 to:
 
 > **“Here is exactly how this decision was produced, what supported it, which agents contributed, and how the decision can be reconstructed.”**
-
----
-
-## Current Prototype Status
-
-TraceChain is being developed as a working capstone prototype with:
-
-- four specialized loan-verification agents,
-- an orchestration layer,
-- structured execution/provenance records,
-- accountability scoring,
-- evidence and policy retrieval,
-- a dashboard/audit interface,
-- end-to-end decision tracing.
 
 ---
 
