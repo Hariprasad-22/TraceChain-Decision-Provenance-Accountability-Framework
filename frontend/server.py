@@ -292,6 +292,7 @@ def general_loan_answer(question: str, assume_relevant: bool = False) -> str:
     is loan/process related even if it doesn't hit a keyword (e.g. "what
     documents do I need?"), so we skip the out-of-scope refusal in that context.
     """
+    STATS["queries_answered"] += 1
     reply = ask_gemini(question)
     if reply is not None:
         if reply.strip().upper().startswith("OUT_OF_SCOPE") and not assume_relevant:
@@ -403,9 +404,23 @@ CHIPS = {
 
 SESSIONS: dict[str, dict] = {}
 
+# Process-wide activity counters for the dashboard page. Deliberately simple
+# (no locking) -- this is a demo/dev server, not a production analytics store.
+STATS = {
+    "applications_started": 0,
+    "queries_answered": 0,
+    "reasonings_given": 0,
+    "decisions_total": 0,
+    "chain_verified_count": 0,
+    "decision_counts": {"Approved": 0, "Rejected": 0, "Manual Review": 0},
+    "server_started_at": datetime.now(timezone.utc).isoformat(),
+}
 
-def new_session() -> dict:
-    # Persistent numeric user ids: maintain a small counter in Frontend/user_counter.json
+
+def _next_user_id() -> tuple[str, str]:
+    """Persistent numeric user/application ids via Frontend/user_counter.json --
+    shared by new_session() and reset_state() so every application (not just
+    every browser session) gets a fresh, real sequential id."""
     counter_file = BASE_DIR / "user_counter.json"
     try:
         if counter_file.exists():
@@ -417,16 +432,17 @@ def new_session() -> dict:
     except Exception:
         next_id = 100001
 
-    # increment counter atomically-ish (best effort)
     try:
         with counter_file.open("w", encoding="utf-8") as f:
             json.dump({"next": next_id + 1}, f)
     except Exception:
         pass
 
-    user_id = str(next_id)
-    application_id = f"APP-{next_id}"
+    return str(next_id), f"APP-{next_id}"
 
+
+def new_session() -> dict:
+    user_id, application_id = _next_user_id()
     return {
         "id": str(uuid.uuid4()),
         "flow_stage": None,  # None = idle/general mode
@@ -485,13 +501,15 @@ def build_response(
 
 
 def reset_state(session: dict) -> None:
+    STATS["applications_started"] += 1
+    user_id, application_id = _next_user_id()
     session["flow_stage"] = "name"
     session["result"] = None
     session["reason_given"] = False
     session["retry_count"] = 0
     session["state"] = {
-        "user_id": str(100001),
-        "application_id": "APP-100001",
+        "user_id": user_id,
+        "application_id": application_id,
         "applicant_data": {},
         # optional fields the orchestrator accepts but this short flow doesn't ask for
         "applicant_dob": None,
@@ -679,38 +697,48 @@ def handle_stage_input(session: dict, stage: str, text: str) -> tuple[str, bool]
 
 # ─── decision rendering + application-specific Q&A ─────────────────────────────
 
+def _agent_symbol(decision_output: Optional[str]) -> str:
+    d = (decision_output or "").lower()
+    if d in ("verified", "approve", "approved"):
+        return "✅"
+    if d in ("rejected", "high_risk", "high_risk_auto"):
+        return "❌"
+    return "⚠️"
+
+
+def format_agent_breakdown(agent_breakdown: list) -> str:
+    """Each agent as its own clearly separated block: verdict line, then its
+    reasoning on the next line, with a blank line between agents -- not one
+    clumped paragraph."""
+    blocks = []
+    for a in agent_breakdown:
+        sym = _agent_symbol(a.get("decision_output"))
+        header = (f"{sym} **{a.get('agent_name', a.get('agent_id'))}** — `{a.get('decision_output')}` "
+                  f"({a.get('confidence_score', 0):.0%} confidence, risk {a.get('composite_risk_score', 0):.1f}/10)")
+        reasoning = a.get("reasoning") or "No further detail recorded."
+        blocks.append(f"{header}\n{reasoning}")
+    return "\n\n\n".join(blocks)
+
+
 def render_result_markdown(result: dict) -> str:
     decision = result.get("loan_decision", "Unknown")
     emoji = {"Approved": "✅", "Rejected": "❌", "Manual Review": "⚠️"}.get(decision, "ℹ️")
     oa = result.get("overall_accountability", {})
     responsible = result.get("responsible_agent") or result.get("responsible_agent_id")
-    responsible_label = {
-        "A001": "Aadhaar Verification",
-        "A002": "Payslip Income Verification",
-        "A003": "Bank Statement Analysis",
-        "A004": "CIBIL Score",
-    }.get(str(responsible), str(responsible or "—"))
+    responsible_label = AGENT_DISPLAY_NAMES.get(str(responsible), str(responsible or "—"))
 
     lines = [
         f"## {emoji} Decision: {decision}",
-        "",
-        result.get("reasoning", ""),
         "",
         f"**Driving agent:** {responsible_label}",
         f"**Overall risk score:** {oa.get('composite_score', 0):.2f}/10 ({oa.get('risk_level', '—')})",
         f"**Chain verified:** {'✅ Yes' if result.get('chain_verified') else '❌ No'}",
         f"**Orchestration ID:** `{result.get('orchestration_id')}`",
         "",
-        "### Agent breakdown",
+        "### Per-agent reasoning",
+        "",
+        format_agent_breakdown(result.get("agent_breakdown", [])),
     ]
-    for a in result.get("agent_breakdown", []):
-        d = (a.get("decision_output") or "").lower()
-        sym = "✅" if d in ("verified", "approve", "approved") else \
-              "❌" if d in ("rejected", "high_risk", "high_risk_auto") else "⚠️"
-        lines.append(
-            f"- {sym} **{a['agent_name']}** — `{a.get('decision_output')}` "
-            f"({a.get('confidence_score', 0):.0%} confidence, risk {a.get('composite_risk_score', 0):.1f}/10)"
-        )
     return "\n".join(lines)
 
 
@@ -734,8 +762,7 @@ def answer_from_result(session: dict, question: str) -> str:
     for keyword, agent_id in by_name.items():
         if keyword in q and agent_id in breakdown:
             a = breakdown[agent_id]
-            sym = "✅" if a["decision_output"] == "verified" else \
-                  "❌" if a["decision_output"] in ("rejected", "high_risk") else "⚠️"
+            sym = _agent_symbol(a["decision_output"])
             return (
                 f"{sym} **{a['agent_name']}** decided `{a['decision_output']}` "
                 f"with {a['confidence_score']:.0%} confidence "
@@ -767,8 +794,7 @@ def answer_from_result(session: dict, question: str) -> str:
     if any(k in q for k in ["agent", "breakdown", "steps", "pipeline"]):
         lines = []
         for a in breakdown.values():
-            sym = "✅" if a["decision_output"] == "verified" else \
-                  "❌" if a["decision_output"] in ("rejected", "high_risk") else "⚠️"
+            sym = _agent_symbol(a["decision_output"])
             lines.append(f"{sym} **{a['agent_name']}** ({a['agent_id']}): {a['decision_output']} "
                          f"({a['confidence_score']:.0%} confidence)")
         return "Here's how each agent ruled:\n\n" + "\n".join(lines)
@@ -787,33 +813,33 @@ def reason_reply(session: dict) -> str:
         return "There's no completed decision to explain yet -- want to apply for a loan? 📝"
 
     orchestration_id = result.get("orchestration_id")
-    db_reasoning = fetch_reasoning_from_db(orchestration_id) if orchestration_id else None
+    result_breakdown = result.get("agent_breakdown") or []
+    result_agent_ids = {a["agent_id"] for a in result_breakdown}
 
-    # Prefer in-memory result reasoning if it includes the Bank agent (A003),
-    # otherwise fall back to the DB-stored reasoning. This ensures the UI shows
-    # A003's decision immediately after a fresh run even if the DB record was
-    # written earlier without A003.
-    result_breakdown = {a["agent_id"] for a in (result.get("agent_breakdown") or [])}
-    db_breakdown = set()
-    if orchestration_id:
+    # Prefer the in-memory result's breakdown if it includes the Bank agent
+    # (A003); otherwise pull the fuller breakdown from the DB so A003 still
+    # shows up even if the live result omitted it.
+    breakdown = result_breakdown
+    used_db = False
+    if "A003" not in result_agent_ids and orchestration_id:
         try:
             db_rows = fetch_agent_breakdown_from_db(orchestration_id)
-            db_breakdown = {a["agent_id"] for a in db_rows}
         except Exception:
-            db_breakdown = set()
+            db_rows = []
+        if any(a["agent_id"] == "A003" for a in db_rows):
+            breakdown = db_rows
+            used_db = True
 
-    if "A003" in result_breakdown:
-        reasoning = result.get("reasoning", db_reasoning or "No reasoning was recorded for this decision.")
-    else:
-        reasoning = db_reasoning or result.get("reasoning", "No reasoning was recorded for this decision.")
     session["reason_given"] = True
+    STATS["reasonings_given"] += 1
 
     emoji = {"Approved": "✅", "Rejected": "❌", "Manual Review": "⚠️"}.get(result.get("loan_decision"), "ℹ️")
-    source_note = "_(retrieved from the `final_decisions` record)_" if db_reasoning else ""
+    source_note = " _(cross-checked against the database record)_" if used_db else ""
+    breakdown_text = format_agent_breakdown(breakdown)
     return (
         f"{emoji} Here's the reasoning behind the **{result.get('loan_decision')}** decision "
-        f"for orchestration `{orchestration_id}`: {source_note}\n\n"
-        f"{reasoning}\n\n"
+        f"for orchestration `{orchestration_id}`:{source_note}\n\n"
+        f"{breakdown_text}\n\n"
         "That's the full picture for this application 🙌. Ask me a general loan question, "
         "or start a new application whenever you're ready."
     )
@@ -1132,6 +1158,12 @@ def api_verify(session_id: str = Form(...)):
         reply = friendly_error_reply(str(result.get("error", "")))
         chips = ["📝 New application"]
     else:
+        STATS["decisions_total"] += 1
+        if result.get("chain_verified"):
+            STATS["chain_verified_count"] += 1
+        decision_key = result.get("loan_decision")
+        if decision_key in STATS["decision_counts"]:
+            STATS["decision_counts"][decision_key] += 1
         reply = render_result_markdown(result)
         chips = CHIPS["post_decision_approved"] if result.get("loan_decision") == "Approved" \
             else CHIPS["post_decision_review"]
@@ -1145,5 +1177,84 @@ def health():
         "status": "ok",
         "orchestrator_available": ORCHESTRATOR_AVAILABLE,
         "orchestrator_import_error": ORCHESTRATOR_IMPORT_ERROR,
+        "gemini_configured": bool(GEMINI_API_KEY),
+    })
+
+
+def fetch_db_stats() -> Optional[dict]:
+    """Real aggregate numbers straight from the orchestrator's own tables. None if unreachable."""
+    if not ORCHESTRATOR_AVAILABLE:
+        return None
+    try:
+        from db.connection import get_conn, release_conn
+        conn = get_conn()
+        try:
+            with conn.cursor() as cur:
+                cur.execute("SELECT COUNT(*) FROM orchestrations;")
+                total_orchestrations = cur.fetchone()[0]
+
+                cur.execute("SELECT status, COUNT(*) FROM orchestrations GROUP BY status;")
+                orchestration_status = {row[0]: row[1] for row in cur.fetchall()}
+
+                cur.execute("SELECT answer, COUNT(*) FROM final_decisions GROUP BY answer;")
+                decision_breakdown = {row[0]: row[1] for row in cur.fetchall()}
+
+                cur.execute("SELECT COALESCE(AVG(risk_score), 0) FROM final_decisions;")
+                avg_risk_score = float(cur.fetchone()[0])
+
+                cur.execute("SELECT COUNT(*) FROM agent_executions;")
+                total_agent_executions = cur.fetchone()[0]
+
+                cur.execute("SELECT agent_id, COUNT(*) FROM agent_executions GROUP BY agent_id;")
+                per_agent_executions = {row[0]: row[1] for row in cur.fetchall()}
+
+                cur.execute("SELECT COUNT(DISTINCT user_id) FROM users;")
+                total_users = cur.fetchone()[0]
+
+            return {
+                "total_orchestrations": total_orchestrations,
+                "orchestration_status": orchestration_status,
+                "decision_breakdown": decision_breakdown,
+                "avg_risk_score": round(avg_risk_score, 2),
+                "total_agent_executions": total_agent_executions,
+                "per_agent_executions": per_agent_executions,
+                "total_users": total_users,
+            }
+        finally:
+            release_conn(conn)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Stats DB query failed: %s", exc)
+        return None
+
+
+AGENT_DISPLAY_NAMES = {
+    "A001": "Aadhaar Verification",
+    "A002": "Payslip Income",
+    "A003": "Bank Statement",
+    "A004": "CIBIL Score",
+}
+
+
+@app.get("/api/stats")
+def api_stats():
+    db_stats = fetch_db_stats()
+    chain_rate = (
+        round(100 * STATS["chain_verified_count"] / STATS["decisions_total"], 1)
+        if STATS["decisions_total"] else None
+    )
+    return JSONResponse({
+        "db_available": db_stats is not None,
+        "db": db_stats,
+        "agent_display_names": AGENT_DISPLAY_NAMES,
+        "live": {
+            "applications_started": STATS["applications_started"],
+            "decisions_total": STATS["decisions_total"],
+            "decision_counts": STATS["decision_counts"],
+            "queries_answered": STATS["queries_answered"],
+            "reasonings_given": STATS["reasonings_given"],
+            "chain_verified_rate": chain_rate,
+            "server_started_at": STATS["server_started_at"],
+        },
+        "orchestrator_available": ORCHESTRATOR_AVAILABLE,
         "gemini_configured": bool(GEMINI_API_KEY),
     })
