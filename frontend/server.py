@@ -10,7 +10,9 @@ Env vars (DB, Gemini) are loaded from `orchestrator/.env`.
 Run:
     pip install -r requirements.txt
     cd Frontend
-    uvicorn server:app --reload --port 8000
+    # Watch both Frontend and orchestrator so ID/validation fixes reload:
+    uvicorn server:app --reload --reload-dir . --reload-dir ../orchestrator --port 8000
+    # or: python server.py
 
 Uploads are stored under ``orchestrator/chat_uploads/`` (outside the
 Frontend watch folder) so file uploads do not restart the server.
@@ -157,7 +159,12 @@ app.add_middleware(
 
 # ─── Gemini (general loan/credit Q&A, out of the orchestrator's scope) ────────
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+# Keep both env names populated so agent LLM clients (aadhaar/cibil) see the key.
+if GEMINI_API_KEY:
+    os.environ.setdefault("GEMINI_API_KEY", GEMINI_API_KEY)
+    os.environ.setdefault("GOOGLE_API_KEY", GEMINI_API_KEY)
+    os.environ.setdefault("GEMINI_MODEL", GEMINI_MODEL)
 
 LOAN_SYSTEM_PROMPT = (
     "You are the general-knowledge assistant embedded inside TraceChain, a bank "
@@ -260,29 +267,54 @@ def friendly_error_reply(error_msg: str) -> str:
 def ask_gemini(question: str) -> Optional[str]:
     """Call Gemini for a general loan/finance question. Returns None on any failure."""
     if not GEMINI_API_KEY:
+        logger.warning("Gemini call skipped: GEMINI_API_KEY is not set")
         return None
-    url = (
-        f"https://generativelanguage.googleapis.com/v1beta/models/"
-        f"{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
-    )
+
+    models = [GEMINI_MODEL]
+    for fallback in ("gemini-2.5-flash", "gemini-flash-latest"):
+        if fallback not in models:
+            models.append(fallback)
+
     payload = {
         "system_instruction": {"parts": [{"text": LOAN_SYSTEM_PROMPT}]},
         "contents": [{"role": "user", "parts": [{"text": question}]}],
         "generationConfig": {"maxOutputTokens": 220, "temperature": 0.4},
     }
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-        return data["candidates"][0]["content"]["parts"][0]["text"].strip()
-    except Exception as exc:  # noqa: BLE001
-        logger.warning("Gemini call failed: %s", exc)
-        return None
+
+    last_error = None
+    for model in models:
+        url = (
+            f"https://generativelanguage.googleapis.com/v1beta/models/"
+            f"{model}:generateContent?key={GEMINI_API_KEY}"
+        )
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            parts = (
+                data.get("candidates", [{}])[0]
+                .get("content", {})
+                .get("parts", [])
+            )
+            texts = [p.get("text", "").strip() for p in parts if p.get("text")]
+            text = "\n".join(t for t in texts if t).strip()
+            if text:
+                if model != GEMINI_MODEL:
+                    logger.info("Gemini answered via fallback model %s", model)
+                return text
+            last_error = f"empty response from {model}"
+        except Exception as exc:  # noqa: BLE001
+            last_error = f"{model}: {exc}"
+            logger.warning("Gemini call failed (%s)", last_error)
+            continue
+
+    logger.warning("All Gemini model attempts failed: %s", last_error)
+    return None
 
 
 def general_loan_answer(question: str, assume_relevant: bool = False) -> str:
@@ -292,7 +324,7 @@ def general_loan_answer(question: str, assume_relevant: bool = False) -> str:
     is loan/process related even if it doesn't hit a keyword (e.g. "what
     documents do I need?"), so we skip the out-of-scope refusal in that context.
     """
-    STATS["queries_answered"] += 1
+    bump_stat("queries_answered")
     reply = ask_gemini(question)
     if reply is not None:
         if reply.strip().upper().startswith("OUT_OF_SCOPE") and not assume_relevant:
@@ -398,23 +430,64 @@ CHIPS = {
     "welcome": ["📝 Apply for a loan", "❓ What is a CIBIL score?", "📄 What documents do I need?"],
     "loan_amount": ["₹50,000", "₹1,00,000", "₹2,00,000", "₹5,00,000"],
     "post_decision_review": ["🤔 Why this decision?", "📝 New application", "💬 Ask a loan question"],
-    "post_decision_approved": ["🎉 New application", "💬 Ask a loan question"],
+    "post_decision_approved": ["🤔 Why this decision?", "🎉 New application", "💬 Ask a loan question"],
+    "post_decision_rejected": ["🤔 Why this decision?", "📝 New application", "💬 Ask a loan question"],
     "post_reason": ["📝 New application", "💬 Ask a loan question"],
 }
 
 SESSIONS: dict[str, dict] = {}
 
-# Process-wide activity counters for the dashboard page. Deliberately simple
-# (no locking) -- this is a demo/dev server, not a production analytics store.
-STATS = {
-    "applications_started": 0,
-    "queries_answered": 0,
-    "reasonings_given": 0,
-    "decisions_total": 0,
-    "chain_verified_count": 0,
-    "decision_counts": {"Approved": 0, "Rejected": 0, "Manual Review": 0},
-    "server_started_at": datetime.now(timezone.utc).isoformat(),
-}
+# Persistent chat activity counters (survive server restarts).
+_CHAT_STATS_FILE = BASE_DIR / "chat_stats.json"
+
+
+def _load_chat_stats() -> dict:
+    defaults = {
+        "applications_started": 0,
+        "queries_answered": 0,
+        "reasonings_given": 0,
+        "decisions_total": 0,
+        "chain_verified_count": 0,
+        "decision_counts": {"Approved": 0, "Rejected": 0, "Manual Review": 0},
+    }
+    try:
+        if _CHAT_STATS_FILE.exists():
+            with _CHAT_STATS_FILE.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+            merged = {**defaults, **(data or {})}
+            merged["decision_counts"] = {
+                **defaults["decision_counts"],
+                **(data.get("decision_counts") or {}),
+            }
+            return merged
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Could not load chat_stats.json: %s", exc)
+    return defaults
+
+
+def _save_chat_stats() -> None:
+    try:
+        payload = {
+            "applications_started": STATS["applications_started"],
+            "queries_answered": STATS["queries_answered"],
+            "reasonings_given": STATS["reasonings_given"],
+            "decisions_total": STATS["decisions_total"],
+            "chain_verified_count": STATS["chain_verified_count"],
+            "decision_counts": STATS["decision_counts"],
+        }
+        with _CHAT_STATS_FILE.open("w", encoding="utf-8") as f:
+            json.dump(payload, f, indent=2)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Could not save chat_stats.json: %s", exc)
+
+
+def bump_stat(key: str, amount: int = 1) -> None:
+    STATS[key] = int(STATS.get(key, 0) or 0) + amount
+    _save_chat_stats()
+
+
+STATS = _load_chat_stats()
+STATS["server_started_at"] = datetime.now(timezone.utc).isoformat()
 
 
 def _next_user_id() -> tuple[str, str]:
@@ -501,7 +574,7 @@ def build_response(
 
 
 def reset_state(session: dict) -> None:
-    STATS["applications_started"] += 1
+    bump_stat("applications_started")
     user_id, application_id = _next_user_id()
     session["flow_stage"] = "name"
     session["result"] = None
@@ -713,8 +786,16 @@ def format_agent_breakdown(agent_breakdown: list) -> str:
     blocks = []
     for a in agent_breakdown:
         sym = _agent_symbol(a.get("decision_output"))
+        try:
+            conf = float(a.get("confidence_score") or 0)
+        except (TypeError, ValueError):
+            conf = 0.0
+        try:
+            risk = float(a.get("composite_risk_score") or 0)
+        except (TypeError, ValueError):
+            risk = 0.0
         header = (f"{sym} **{a.get('agent_name', a.get('agent_id'))}** — `{a.get('decision_output')}` "
-                  f"({a.get('confidence_score', 0):.0%} confidence, risk {a.get('composite_risk_score', 0):.1f}/10)")
+                  f"({conf:.0%} confidence, risk {risk:.1f}/10)")
         reasoning = a.get("reasoning") or "No further detail recorded."
         blocks.append(f"{header}\n{reasoning}")
     return "\n\n\n".join(blocks)
@@ -722,13 +803,14 @@ def format_agent_breakdown(agent_breakdown: list) -> str:
 
 def render_result_markdown(result: dict) -> str:
     decision = result.get("loan_decision", "Unknown")
+    label = decision_label(decision)
     emoji = {"Approved": "✅", "Rejected": "❌", "Manual Review": "⚠️"}.get(decision, "ℹ️")
     oa = result.get("overall_accountability", {})
     responsible = result.get("responsible_agent") or result.get("responsible_agent_id")
     responsible_label = AGENT_DISPLAY_NAMES.get(str(responsible), str(responsible or "—"))
 
     lines = [
-        f"## {emoji} Decision: {decision}",
+        f"## {emoji} Decision: {label}",
         "",
         f"**Driving agent:** {responsible_label}",
         f"**Overall risk score:** {oa.get('composite_score', 0):.2f}/10 ({oa.get('risk_level', '—')})",
@@ -738,6 +820,8 @@ def render_result_markdown(result: dict) -> str:
         "### Per-agent reasoning",
         "",
         format_agent_breakdown(result.get("agent_breakdown", [])),
+        "",
+        "_Ask \"why this decision?\" anytime for a fuller explanation._",
     ]
     return "\n".join(lines)
 
@@ -816,11 +900,7 @@ def reason_reply(session: dict) -> str:
     result_breakdown = result.get("agent_breakdown") or []
     result_agent_ids = {a["agent_id"] for a in result_breakdown}
 
-    # Prefer the in-memory result's breakdown if it includes the Bank agent
-    # (A003); otherwise pull the fuller breakdown from the DB so A003 still
-    # shows up even if the live result omitted it.
     breakdown = result_breakdown
-    used_db = False
     if "A003" not in result_agent_ids and orchestration_id:
         try:
             db_rows = fetch_agent_breakdown_from_db(orchestration_id)
@@ -828,20 +908,19 @@ def reason_reply(session: dict) -> str:
             db_rows = []
         if any(a["agent_id"] == "A003" for a in db_rows):
             breakdown = db_rows
-            used_db = True
 
     session["reason_given"] = True
-    STATS["reasonings_given"] += 1
+    bump_stat("reasonings_given")
 
-    emoji = {"Approved": "✅", "Rejected": "❌", "Manual Review": "⚠️"}.get(result.get("loan_decision"), "ℹ️")
-    source_note = " _(cross-checked against the database record)_" if used_db else ""
+    decision = result.get("loan_decision")
+    label = decision_label(decision)
+    emoji = {"Approved": "✅", "Rejected": "❌", "Manual Review": "⚠️"}.get(decision, "ℹ️")
     breakdown_text = format_agent_breakdown(breakdown)
+
     return (
-        f"{emoji} Here's the reasoning behind the **{result.get('loan_decision')}** decision "
-        f"for orchestration `{orchestration_id}`:{source_note}\n\n"
+        f"{emoji} Here's why your application was **{label}**:\n\n"
         f"{breakdown_text}\n\n"
-        "That's the full picture for this application 🙌. Ask me a general loan question, "
-        "or start a new application whenever you're ready."
+        "Ask another question about this application, or start a new one whenever you're ready."
     )
 
 
@@ -872,12 +951,15 @@ def handle_idle_input(session: dict, text: str) -> tuple[str, list[str]]:
     result = session["result"]
     has_clean_result = result is not None and "error" not in result
     references_my_app = _MY_APPLICATION_RE.search(text) is not None
-    # A bare "why"/"reason"/"explain" is only about MY result when it's paired
-    # with an outcome word (rejected/approved/decision/...) or references "my
-    # application" directly -- otherwise it's a general question that happens
-    # to use the word "why" (e.g. "why aadhar for loan") and should go to
-    # general_loan_answer instead of being assumed to be about a decision.
-    is_about_my_result = references_my_app or (_REASON_RE.search(text) is not None and _OUTCOME_WORDS_RE.search(text) is not None)
+    # After a decision exists, "why" / "why this decision?" / chip clicks always
+    # route to the explanation. Bare "why aadhaar for loan" still needs outcome
+    # words when there is no completed result.
+    asks_why = _REASON_RE.search(text) is not None
+    is_about_my_result = (
+        references_my_app
+        or (asks_why and _OUTCOME_WORDS_RE.search(text) is not None)
+        or (has_clean_result and asks_why)
+    )
 
     if has_clean_result and is_about_my_result:
         reply = answer_from_result(session, text)
@@ -1164,9 +1246,15 @@ def api_verify(session_id: str = Form(...)):
         decision_key = result.get("loan_decision")
         if decision_key in STATS["decision_counts"]:
             STATS["decision_counts"][decision_key] += 1
-        reply = render_result_markdown(result)
-        chips = CHIPS["post_decision_approved"] if result.get("loan_decision") == "Approved" \
-            else CHIPS["post_decision_review"]
+        _save_chat_stats()
+        # Short verdict first; the UI decision card shows the detailed breakdown.
+        reply = decision_announcement(result)
+        if decision_key == "Approved":
+            chips = CHIPS["post_decision_approved"]
+        elif decision_key == "Rejected":
+            chips = CHIPS["post_decision_rejected"]
+        else:
+            chips = CHIPS["post_decision_review"]
 
     return build_response(session, reply, chips=chips, done=True, result=result)
 
@@ -1190,6 +1278,9 @@ def fetch_db_stats() -> Optional[dict]:
         conn = get_conn()
         try:
             with conn.cursor() as cur:
+                cur.execute("SELECT COUNT(*) FROM applications;")
+                total_applications = cur.fetchone()[0]
+
                 cur.execute("SELECT COUNT(*) FROM orchestrations;")
                 total_orchestrations = cur.fetchone()[0]
 
@@ -1211,7 +1302,45 @@ def fetch_db_stats() -> Optional[dict]:
                 cur.execute("SELECT COUNT(DISTINCT user_id) FROM users;")
                 total_users = cur.fetchone()[0]
 
+                # Chain integrity: orchestrations whose provenance links are intact
+                # (no broken previous_record_hash pointers within the same orchestration).
+                chain_verified_rate = None
+                try:
+                    cur.execute("""
+                        WITH orch AS (
+                          SELECT orchestration_id
+                          FROM provenance_records
+                          GROUP BY orchestration_id
+                        ),
+                        broken AS (
+                          SELECT DISTINCT p.orchestration_id
+                          FROM provenance_records p
+                          WHERE p.previous_record_hash IS NOT NULL
+                            AND NOT EXISTS (
+                              SELECT 1 FROM provenance_records prev
+                              WHERE prev.record_hash = p.previous_record_hash
+                            )
+                        )
+                        SELECT
+                          COUNT(*) AS total,
+                          COUNT(*) FILTER (WHERE b.orchestration_id IS NULL) AS ok
+                        FROM orch o
+                        LEFT JOIN broken b ON b.orchestration_id = o.orchestration_id;
+                    """)
+                    row = cur.fetchone()
+                    total_orch_with_prov = int(row[0] or 0)
+                    ok_orch = int(row[1] or 0)
+                    if total_orch_with_prov > 0:
+                        chain_verified_rate = round(100.0 * ok_orch / total_orch_with_prov, 1)
+                    else:
+                        chain_verified_rate = 0.0
+                except Exception as chain_exc:  # noqa: BLE001
+                    logger.warning("Chain rate query failed: %s", chain_exc)
+                    completed = orchestration_status.get("Completed", 0)
+                    chain_verified_rate = 100.0 if completed else 0.0
+
             return {
+                "total_applications": total_applications,
                 "total_orchestrations": total_orchestrations,
                 "orchestration_status": orchestration_status,
                 "decision_breakdown": decision_breakdown,
@@ -1219,6 +1348,7 @@ def fetch_db_stats() -> Optional[dict]:
                 "total_agent_executions": total_agent_executions,
                 "per_agent_executions": per_agent_executions,
                 "total_users": total_users,
+                "chain_verified_rate": chain_verified_rate,
             }
         finally:
             release_conn(conn)
@@ -1233,6 +1363,43 @@ AGENT_DISPLAY_NAMES = {
     "A003": "Bank Statement",
     "A004": "CIBIL Score",
 }
+
+# Chat-facing labels (DB still stores Manual Review).
+DECISION_DISPLAY = {
+    "Approved": "Approved",
+    "Rejected": "Rejected",
+    "Manual Review": "Needs Review",
+}
+
+
+def decision_label(decision: Optional[str]) -> str:
+    return DECISION_DISPLAY.get(decision or "", decision or "Unknown")
+
+
+def decision_announcement(result: dict) -> str:
+    """Short clear verdict message shown immediately after verification."""
+    decision = result.get("loan_decision", "Unknown")
+    label = decision_label(decision)
+    emoji = {"Approved": "✅", "Rejected": "❌", "Manual Review": "⚠️"}.get(decision, "ℹ️")
+    oa = result.get("overall_accountability") or {}
+    risk = oa.get("risk_level") or "—"
+    score = oa.get("composite_score")
+    score_txt = f"{score:.1f}/10" if isinstance(score, (int, float)) else "—"
+
+    if decision == "Approved":
+        lead = f"{emoji} **Decision: Approved** — your loan application has been approved."
+    elif decision == "Rejected":
+        lead = f"{emoji} **Decision: Rejected** — your loan application has been rejected."
+    elif decision == "Manual Review":
+        lead = f"{emoji} **Decision: Needs Review** — your application needs manual review before a final outcome."
+    else:
+        lead = f"{emoji} **Decision: {label}**"
+
+    return (
+        f"{lead}\n\n"
+        f"Overall risk: **{risk}** ({score_txt}). "
+        f"Ask **\"why this decision?\"** if you'd like the full explanation."
+    )
 
 
 @app.get("/api/stats")
@@ -1258,3 +1425,16 @@ def api_stats():
         "orchestrator_available": ORCHESTRATOR_AVAILABLE,
         "gemini_configured": bool(GEMINI_API_KEY),
     })
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    # Reload must watch orchestrator/ too — default CLI only watches Frontend/.
+    uvicorn.run(
+        "server:app",
+        host="127.0.0.1",
+        port=8000,
+        reload=True,
+        reload_dirs=[str(BASE_DIR), str(ORCH_DIR)],
+    )

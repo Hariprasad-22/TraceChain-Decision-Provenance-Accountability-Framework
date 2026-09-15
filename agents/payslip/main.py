@@ -449,6 +449,26 @@ def same_money(
     ) < 0.01
 
 
+def _normalize_person_name(name):
+    if not name:
+        return ""
+    text = re.sub(r"[^a-zA-Z\s]", " ", str(name))
+    return re.sub(r"\s+", " ", text).strip().lower()
+
+
+def _names_equivalent(name_a, name_b):
+    """Case/space-insensitive equality with light fuzzy tolerance."""
+    a = _normalize_person_name(name_a)
+    b = _normalize_person_name(name_b)
+    if not a or not b:
+        return False
+    if a == b:
+        return True
+    # Allow minor OCR spelling drift (e.g. missing middle initial).
+    from difflib import SequenceMatcher
+    return SequenceMatcher(None, a, b).ratio() >= 0.90
+
+
 # =========================================================
 # PAYSLIP ↔ AADHAAR IDENTITY CHECK
 # =========================================================
@@ -459,36 +479,34 @@ def verify_identity(
 ):
 
     aadhaar_name = (
-        aadhaar_record["name"]
+        aadhaar_record.get("name") or ""
     )
 
     payslip_name = (
-        payslip_data["employee_name"]
+        payslip_data.get("employee_name") or ""
     )
 
     aadhaar_dob = (
-        aadhaar_record["dob"]
-    )
+        (aadhaar_record.get("dob") or "")
+    ).strip()
 
     payslip_dob = (
-        payslip_data["dob"]
+        (payslip_data.get("dob") or "")
+    ).strip()
+
+    name_match = _names_equivalent(
+        aadhaar_name,
+        payslip_name
     )
 
-    name_match = (
-        aadhaar_name.strip().lower()
-        ==
-        payslip_name.strip().lower()
-        if payslip_name
-        else False
-    )
-
-    dob_match = (
-        aadhaar_dob
-        ==
-        payslip_dob
-        if payslip_dob
-        else False
-    )
+    # If either side has no DOB (common in the chat UI flow), do not fail
+    # identity solely on DOB — name match is enough.
+    if not aadhaar_dob or not payslip_dob:
+        dob_match = True
+        dob_checked = False
+    else:
+        dob_match = (aadhaar_dob == payslip_dob)
+        dob_checked = True
 
     return {
 
@@ -497,6 +515,9 @@ def verify_identity(
 
         "dob_match":
             dob_match,
+
+        "dob_checked":
+            dob_checked,
 
         "identity_verified":
             name_match and dob_match,
@@ -578,6 +599,10 @@ def create_decision(
 
     if scenario == "everything_correct":
 
+        # When the application did not declare income, trust the payslip net.
+        if declared_income is None and payslip_income is not None:
+            declared_income = payslip_income
+
         income_valid = same_money(
             declared_income,
             payslip_income
@@ -605,6 +630,36 @@ def create_decision(
                         "and the declared income matches the "
                         "payslip-supported net income."
                     ),
+            }
+
+        # Specific reasons instead of a generic catch-all.
+        problems = []
+        if not identity["name_match"]:
+            problems.append(
+                "employee name on the payslip does not match the application name"
+            )
+        elif identity.get("dob_checked") and not identity["dob_match"]:
+            problems.append(
+                "date of birth on the payslip does not match the application record"
+            )
+        if not salary_math_valid:
+            problems.append(
+                "gross/deductions/net salary figures on the payslip are inconsistent"
+            )
+        if not income_valid:
+            problems.append(
+                "declared income does not match the payslip net salary"
+            )
+
+        if problems:
+            return {
+                "decision": "manual_review",
+                "confidence": 0.70,
+                "reasoning": (
+                    "Payslip verification needs review because "
+                    + "; ".join(problems)
+                    + "."
+                ),
             }
 
         return {

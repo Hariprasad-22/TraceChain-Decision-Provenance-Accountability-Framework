@@ -60,7 +60,7 @@ Return ONLY valid JSON, no other text, in this exact shape:
   "explainability": <int 0-10, how clearly this decision can be justified from the score/utilization/precedent alone>
 }}"""
             response = client.models.generate_content(
-                model="gemini-2.0-flash",
+                model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
                 contents=prompt,
             )
             text = response.text.strip().replace("```json", "").replace("```", "").strip()

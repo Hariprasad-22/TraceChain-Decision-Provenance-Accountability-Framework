@@ -43,6 +43,11 @@ try:
 except ImportError:  # pragma: no cover - script-style execution from orchestrator/
     from agents.import_isolation import prepare_agent_import, restore_orchestrator_path
 
+try:
+    from ..name_match import annotate_name_mismatch
+except ImportError:  # pragma: no cover
+    from name_match import annotate_name_mismatch
+
 # Load the real payslip module directly from its source file to avoid legacy
 # folder path assumptions and namespace collisions.
 _ORCH_DIR = Path(__file__).resolve().parent.parent
@@ -165,6 +170,17 @@ def run(state: dict, orchestration_id: str) -> dict:
     )
 
     result = _normalise(raw, orchestration_id)
+
+    # Annotate only — do not override Payslip's own decision_output.
+    payslip = ((result.get("execution") or {}).get("input_data") or {}).get("extracted_payslip") or {}
+    doc_name = (payslip.get("employee_name") or "").strip() or None
+    if annotate_name_mismatch(
+        result,
+        agent_label="Payslip",
+        applicant_name=str(state.get("applicant_name", "")),
+        document_name=doc_name,
+    ):
+        logger.warning("[A002] Name mismatch annotated (decision left as agent returned)")
 
     logger.info(
         "[A002] Done — decision=%s confidence=%.2f",

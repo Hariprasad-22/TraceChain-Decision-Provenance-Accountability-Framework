@@ -657,19 +657,19 @@
     <div class="hero-grid">
       <div class="stat-card hero" style="--accent-color:var(--gold)">
         <span class="s-icon">📝</span>
-        <div class="s-value" id="stat-applications" data-raw="1284">1,284</div>
+        <div class="s-value" id="stat-applications" data-raw="0">0</div>
         <div class="s-label">Applications processed</div>
-        <div class="s-sub" id="stat-applications-sub">&nbsp;</div>
+        <div class="s-sub" id="stat-applications-sub">From database</div>
       </div>
       <div class="stat-card hero" style="--accent-color:var(--teal)">
         <span class="s-icon">✅</span>
-        <div class="s-value" id="stat-approval-rate" data-raw="78">78%</div>
+        <div class="s-value" id="stat-approval-rate" data-raw="0">0%</div>
         <div class="s-label">Approval rate</div>
         <div class="s-sub">Approved of all decisions made</div>
       </div>
       <div class="stat-card hero" style="--accent-color:#8b6cff">
         <span class="s-icon">🤖</span>
-        <div class="s-value" id="stat-agent-runs" data-raw="5074">5,074</div>
+        <div class="s-value" id="stat-agent-runs" data-raw="0">0</div>
         <div class="s-label">Agent executions</div>
         <div class="s-sub">Across 4 independent agents</div>
       </div>
@@ -698,22 +698,22 @@
       <div class="dash-panel">
         <h3>Decision outcomes</h3>
         <div class="decision-stack" id="decision-stack">
-          <div class="seg approved" style="width:78.5%"></div>
-          <div class="seg review" style="width:15.1%"></div>
-          <div class="seg rejected" style="width:6.4%"></div>
+          <div class="seg approved" style="width:0%"></div>
+          <div class="seg review" style="width:0%"></div>
+          <div class="seg rejected" style="width:0%"></div>
         </div>
         <div class="decision-legend">
-          <span class="lg-item"><span class="sw approved"></span>Approved <b id="leg-approved">1,008</b></span>
-          <span class="lg-item"><span class="sw review"></span>Manual review <b id="leg-review">194</b></span>
-          <span class="lg-item"><span class="sw rejected"></span>Rejected <b id="leg-rejected">82</b></span>
+          <span class="lg-item"><span class="sw approved"></span>Approved <b id="leg-approved">0</b></span>
+          <span class="lg-item"><span class="sw review"></span>Needs review <b id="leg-review">0</b></span>
+          <span class="lg-item"><span class="sw rejected"></span>Rejected <b id="leg-rejected">0</b></span>
         </div>
         <div style="margin-top:18px; display:flex; gap:24px;">
           <div>
-            <div class="s-value" style="font-size:22px;" id="stat-avg-risk">3.4</div>
+            <div class="s-value" style="font-size:22px;" id="stat-avg-risk">0.0</div>
             <div class="s-sub">Avg. risk score /10</div>
           </div>
           <div>
-            <div class="s-value" style="font-size:22px;" id="stat-chain-rate">98%</div>
+            <div class="s-value" style="font-size:22px;" id="stat-chain-rate">0%</div>
             <div class="s-sub">Chain verified rate</div>
           </div>
         </div>
@@ -721,8 +721,8 @@
     </div>
 
     <div class="mini-row">
-      <div class="mini-stat"><span class="mini-icon">💬</span><span class="mini-value" id="stat-queries" data-raw="342">342</span><span class="mini-label">questions answered</span></div>
-      <div class="mini-stat"><span class="mini-icon">🧾</span><span class="mini-value" id="stat-reasonings" data-raw="96">96</span><span class="mini-label">reasonings explained</span></div>
+      <div class="mini-stat"><span class="mini-icon">💬</span><span class="mini-value" id="stat-queries" data-raw="0">0</span><span class="mini-label">questions answered</span></div>
+      <div class="mini-stat"><span class="mini-icon">🧾</span><span class="mini-value" id="stat-reasonings" data-raw="0">0</span><span class="mini-label">reasonings explained</span></div>
     </div>
 
     <div class="dash-panel" style="margin-bottom:20px;">
@@ -998,15 +998,17 @@ function escapeHtml(s){
 }
 
 function addDecisionCard(result, chips){
-  const decision = result.loan_decision;
-  const statusClass = decision === 'Approved' ? 'approved' : decision === 'Rejected' ? 'rejected' : 'review';
-  const color = decision === 'Approved' ? 'var(--teal)' : decision === 'Rejected' ? 'var(--danger)' : 'var(--warn)';
+  const decisionRaw = result.loan_decision;
+  const decision = decisionRaw === 'Manual Review' ? 'Needs Review' : decisionRaw;
+  const statusClass = decisionRaw === 'Approved' ? 'approved' : decisionRaw === 'Rejected' ? 'rejected' : 'review';
+  const color = decisionRaw === 'Approved' ? 'var(--teal)' : decisionRaw === 'Rejected' ? 'var(--danger)' : 'var(--warn)';
   const oa = result.overall_accountability || {};
   const wrap = document.createElement('div');
   wrap.className = 'decision-card';
 
   const agents = (result.agent_breakdown || []).map(a => {
-    const sym = a.decision_output === 'verified' ? '✅' : (a.decision_output === 'rejected' || a.decision_output === 'high_risk') ? '❌' : '⚠️';
+    const out = (a.decision_output || '').toLowerCase();
+    const sym = out === 'verified' ? '✅' : (out === 'rejected' || out === 'high_risk' || out === 'high_risk_auto') ? '❌' : '⚠️';
     return `<div class="agent-block">
       <div class="agent-row">
         <span class="a-sym">${sym}</span>
@@ -1021,14 +1023,14 @@ function addDecisionCard(result, chips){
     <div class="decision-head decision-status ${statusClass}">
       ${gaugeSvg(oa.composite_score || 0, color)}
       <div>
-        <p class="decision-title">${decision}</p>
-        <p class="decision-sub">${(result.reasoning || '').split('\n')[0]}</p>
+        <p class="decision-title">${escapeHtml(decision)}</p>
+        <p class="decision-sub">${escapeHtml((result.reasoning || '').split('\n')[0])}</p>
       </div>
     </div>
     <div class="decision-meta">
-      <span>Risk level: <b>${oa.risk_level || '—'}</b></span>
+      <span>Risk level: <b>${escapeHtml(oa.risk_level || '—')}</b></span>
       <span>Chain verified: <b>${result.chain_verified ? 'Yes' : 'No'}</b></span>
-      <span>Orchestration: <code>${result.orchestration_id || '—'}</code></span>
+      <span>Orchestration: <code>${escapeHtml(result.orchestration_id || '—')}</code></span>
     </div>
     <div class="agent-list">
       <h4 class="agent-list-title">Per-agent reasoning</h4>
@@ -1048,6 +1050,8 @@ function handleServerResponse(data){
   setStatus(data.flow_stage, data.done);
 
   if(data.result && !data.result.error){
+    // Announce the verdict in chat, then show the detailed decision card.
+    if(data.reply) addBotBubble(data.reply);
     addDecisionCard(data.result, data.chips);
   } else {
     addBotBubble(data.reply);
@@ -1235,20 +1239,7 @@ function setStatusPill(dotId, txtId, ok, label){
   txt.textContent = label;
 }
 
-// Realistic baseline activity -- this is a live demo instance, not a brand
-// new install, so the dashboard reflects a plausible amount of prior history
-// rather than showing zero. Real activity from this session adds on top.
-const BASELINE = {
-  decisionCounts: { Approved: 1008, 'Manual Review': 194, Rejected: 82 }, // -> 1284 applications
-  perAgent: { A001: 1284, A002: 1266, A003: 1240, A004: 1284 },
-  queries: 342,
-  reasonings: 96,
-  avgRisk: 3.4,
-  chainRatePct: 98,
-};
-const BASELINE_APPLICATIONS = Object.values(BASELINE.decisionCounts).reduce((a, b) => a + b, 0);
-const BASELINE_AGENT_RUNS = Object.values(BASELINE.perAgent).reduce((a, b) => a + b, 0);
-
+// Dashboard numbers come only from /api/stats (database when available).
 async function loadStats(){
   try{
     const res = await fetch('/api/stats');
@@ -1256,26 +1247,26 @@ async function loadStats(){
     const live = data.live || {};
     const db = data.db;
 
-    const realApplications = db ? db.total_orchestrations : live.applications_started;
-    animateNumber(document.getElementById('stat-applications'), BASELINE_APPLICATIONS + (realApplications || 0));
+    const applications = db
+      ? (db.total_applications ?? db.total_orchestrations ?? 0)
+      : (live.applications_started || 0);
+    animateNumber(document.getElementById('stat-applications'), applications || 0);
     document.getElementById('stat-applications-sub').textContent =
-      db ? 'All-time (database)' : 'All-time · live session adds on top';
+      db ? `All-time from database · ${db.total_users || 0} users` : 'Live session (database offline)';
 
-    const realAgentRuns = db ? db.total_agent_executions : ((live.decisions_total || 0) * 4);
-    animateNumber(document.getElementById('stat-agent-runs'), BASELINE_AGENT_RUNS + (realAgentRuns || 0));
+    const agentRuns = db ? (db.total_agent_executions || 0) : ((live.decisions_total || 0) * 4);
+    animateNumber(document.getElementById('stat-agent-runs'), agentRuns || 0);
 
-    animateNumber(document.getElementById('stat-queries'), BASELINE.queries + (live.queries_answered || 0));
-    animateNumber(document.getElementById('stat-reasonings'), BASELINE.reasonings + (live.reasonings_given || 0));
+    animateNumber(document.getElementById('stat-queries'), live.queries_answered || 0);
+    animateNumber(document.getElementById('stat-reasonings'), live.reasonings_given || 0);
 
-    const realPerAgent = db ? (db.per_agent_executions || {}) : {};
-    const perAgent = {};
-    AGENT_ORDER.forEach(id => { perAgent[id] = (BASELINE.perAgent[id] || 0) + (realPerAgent[id] || 0); });
+    const perAgent = db ? (db.per_agent_executions || {}) : {};
     renderAgentBars(perAgent, data.agent_display_names, 5);
 
-    const realDecisionCounts = (db && db.decision_breakdown) || live.decision_counts || {};
-    const approved = BASELINE.decisionCounts.Approved + (realDecisionCounts['Approved'] || 0);
-    const review = BASELINE.decisionCounts['Manual Review'] + (realDecisionCounts['Manual Review'] || 0);
-    const rejected = BASELINE.decisionCounts.Rejected + (realDecisionCounts['Rejected'] || 0);
+    const decisionCounts = (db && db.decision_breakdown) || live.decision_counts || {};
+    const approved = decisionCounts['Approved'] || 0;
+    const review = decisionCounts['Manual Review'] || 0;
+    const rejected = decisionCounts['Rejected'] || 0;
     const total = Math.max(approved + review + rejected, 1);
     animateNumber(document.getElementById('stat-approval-rate'), Math.round(approved / total * 100), { suffix: '%' });
     const stack = document.getElementById('decision-stack');
@@ -1286,19 +1277,13 @@ async function loadStats(){
     document.getElementById('leg-review').textContent = review.toLocaleString('en-IN');
     document.getElementById('leg-rejected').textContent = rejected.toLocaleString('en-IN');
 
-    // Weighted blend: baseline history + whatever real decisions this session made.
-    const realDecisionsTotal = live.decisions_total || 0;
-    const realAvgRisk = db ? db.avg_risk_score : null;
-    const blendedAvgRisk = (realDecisionsTotal > 0 && realAvgRisk !== null)
-      ? ((BASELINE.avgRisk * BASELINE_APPLICATIONS) + (realAvgRisk * realDecisionsTotal)) / (BASELINE_APPLICATIONS + realDecisionsTotal)
-      : BASELINE.avgRisk;
-    document.getElementById('stat-avg-risk').textContent = blendedAvgRisk.toFixed(1);
+    const avgRisk = db ? (db.avg_risk_score ?? 0) : 0;
+    document.getElementById('stat-avg-risk').textContent = Number(avgRisk).toFixed(1);
 
-    const realChainRate = live.chain_verified_rate;
-    const blendedChainRate = (realDecisionsTotal > 0 && realChainRate !== null && realChainRate !== undefined)
-      ? Math.round(((BASELINE.chainRatePct * BASELINE_APPLICATIONS) + (realChainRate * realDecisionsTotal)) / (BASELINE_APPLICATIONS + realDecisionsTotal))
-      : BASELINE.chainRatePct;
-    document.getElementById('stat-chain-rate').textContent = blendedChainRate + '%';
+    const chainRate = (db && db.chain_verified_rate != null)
+      ? db.chain_verified_rate
+      : (live.chain_verified_rate ?? 0);
+    document.getElementById('stat-chain-rate').textContent = Math.round(chainRate) + '%';
 
     setStatusPill('dot-orchestrator', 'txt-orchestrator', data.orchestrator_available, data.orchestrator_available ? 'Orchestrator connected' : 'Orchestrator offline');
     setStatusPill('dot-gemini', 'txt-gemini', data.gemini_configured, data.gemini_configured ? 'Gemini configured' : 'Gemini not configured');

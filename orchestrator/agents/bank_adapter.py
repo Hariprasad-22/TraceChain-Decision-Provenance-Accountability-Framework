@@ -14,6 +14,11 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
+try:
+    from ..name_match import annotate_name_mismatch
+except ImportError:  # pragma: no cover
+    from name_match import annotate_name_mismatch
+
 AGENT_ID = "A003"
 SEQUENCE_NUMBER = 3
 
@@ -51,24 +56,50 @@ def _first_present(df, *candidates):
     return None
 
 
+def _read_bank_dataframe(file_path: str | Path) -> pd.DataFrame:
+    path = Path(file_path)
+    ext = path.suffix.lower()
+    if ext in (".xls", ".xlsx"):
+        try:
+            return pd.read_excel(path)
+        except Exception:
+            return pd.read_csv(path)
+    try:
+        return pd.read_csv(path)
+    except Exception:
+        return pd.read_excel(path)
+
+
+def _extract_account_holder_name(file_path: str | Path, df: pd.DataFrame | None = None) -> str:
+    """Best-effort account holder name from CSV/Excel bank statement."""
+    try:
+        frame = df if df is not None else _read_bank_dataframe(file_path)
+    except Exception:
+        return ""
+    if frame is None or frame.empty:
+        return ""
+    name_col = _first_present(
+        frame,
+        "account_holder_name", "account_holder", "customer_name",
+        "applicant_name", "name", "holder_name",
+    )
+    if not name_col:
+        return ""
+    value = frame[name_col].dropna()
+    if value.empty:
+        return ""
+    return str(value.iloc[0]).strip()
+
+
 def _fallback_bank_metrics(file_path: str | Path) -> dict:
     """Fallback parser for bank statements (.csv, .xls, .xlsx) if bank_statement_agent module fails."""
     path = Path(file_path)
-    ext = path.suffix.lower()
-
-    if ext in (".xls", ".xlsx"):
-        try:
-            df = pd.read_excel(path)
-        except Exception:
-            df = pd.read_csv(path)
-    else:
-        try:
-            df = pd.read_csv(path)
-        except Exception:
-            df = pd.read_excel(path)
+    df = _read_bank_dataframe(path)
 
     if df.empty:
         raise ValueError("Bank statement file is empty")
+
+    account_holder_name = _extract_account_holder_name(path, df)
 
     income_col = _first_present(df, "average_monthly_income", "monthly_income", "income", "salary", "net_income", "credit", "inflow", "deposit")
     expense_col = _first_present(df, "average_monthly_expense", "monthly_expense", "expenses", "expense", "debit", "outflow", "withdrawal")
@@ -117,6 +148,7 @@ def _fallback_bank_metrics(file_path: str | Path) -> dict:
         "agent_score": score,
         "decision_output": decision_output,
         "confidence_score": round(score / 100, 2),
+        "account_holder_name": account_holder_name,
         "reasoning": (
             f"Bank statement analysis found average monthly income ₹{avg_income:,.2f}, "
             f"monthly expense ₹{avg_expense:,.2f}, surplus ₹{avg_surplus:,.2f}, "
@@ -156,6 +188,7 @@ def run(state: dict, orchestration_id: str) -> dict:
     record_id = str(uuid.uuid4())
 
     raw_agent_output = None
+    account_holder_name = ""
     if _bank_agent_module and hasattr(_bank_agent_module, "bank_statement_agent"):
         try:
             raw_agent_output = _bank_agent_module.bank_statement_agent(
@@ -168,6 +201,12 @@ def run(state: dict, orchestration_id: str) -> dict:
 
     if raw_agent_output:
         output_sec = raw_agent_output.get("output", {})
+        exec_input = raw_agent_output.get("execution_input", {})
+        account_holder_name = str(
+            exec_input.get("applicant_name")
+            or exec_input.get("account_holder_name")
+            or ""
+        ).strip()
         dec_raw = output_sec.get("decision", "ELIGIBLE")
         confidence_score = float(output_sec.get("confidence", 0.95))
         agent_score = int(output_sec.get("score", 85))
@@ -190,6 +229,7 @@ def run(state: dict, orchestration_id: str) -> dict:
         confidence_score = metrics["confidence_score"]
         agent_score = metrics["agent_score"]
         reasoning = metrics["reasoning"]
+        account_holder_name = metrics.get("account_holder_name") or _extract_account_holder_name(csv_path)
         fin_metrics = {
             "average_monthly_income": metrics["average_monthly_income"],
             "average_monthly_expense": metrics["average_monthly_expense"],
@@ -202,6 +242,9 @@ def run(state: dict, orchestration_id: str) -> dict:
         comp_risk = 1.5 if decision_output == "verified" else (4.0 if decision_output == "needs_review" else 7.5)
         review_req = (decision_output == "needs_review")
 
+    if not account_holder_name:
+        account_holder_name = _extract_account_holder_name(csv_path)
+
     execution = {
         "execution_id": execution_id,
         "orchestration_id": orchestration_id,
@@ -211,6 +254,8 @@ def run(state: dict, orchestration_id: str) -> dict:
         "input_data": {
             "bank_statement_file_path": str(csv_path),
             "application_id": state.get("application_id"),
+            "account_holder_name": account_holder_name,
+            "applicant_name": state.get("applicant_name"),
         },
         "output_data": {
             "decision_output": decision_output,
@@ -218,6 +263,7 @@ def run(state: dict, orchestration_id: str) -> dict:
             "agent_score": agent_score,
             "reasoning": reasoning,
             "financial_metrics": fin_metrics,
+            "account_holder_name": account_holder_name,
         },
         "model_id": "bank-statement-rules-v1",
         "model_version": "1.0",
@@ -273,10 +319,21 @@ def run(state: dict, orchestration_id: str) -> dict:
     }
 
     logger.info("[A003] Done — decision=%s confidence=%.2f risk=%.1f", decision_output, confidence_score, comp_risk)
-    return {
+    result = {
         "execution": execution,
         "decision": decision,
         "evidence": evidence,
         "accountability": accountability,
         "provenance": provenance,
     }
+
+    # Annotate only — do not override Bank agent's own decision_output.
+    if annotate_name_mismatch(
+        result,
+        agent_label="Bank statement",
+        applicant_name=str(state.get("applicant_name", "")),
+        document_name=account_holder_name or None,
+    ):
+        logger.warning("[A003] Name mismatch annotated (decision left as agent returned)")
+
+    return result

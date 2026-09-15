@@ -136,9 +136,13 @@ def synthesize(
     for res in agent_results:
         name   = _AGENT_NAMES.get(res["agent_id"], res["agent_id"])
         output = res.get("decision_output", "unknown")
-        conf   = res.get("confidence_score", 0.0)
+        conf_raw = res.get("confidence_score", 0.0)
+        try:
+            conf = float(conf_raw if conf_raw is not None else 0.0)
+        except (TypeError, ValueError):
+            conf = 0.0
         reason = res.get("reasoning", "")
-        composite = res.get("composite_risk_score", 0.0)
+        composite = float(res.get("composite_risk_score") or 0.0)
 
         lines.append(
             f"[{name}] Decision: {output} (confidence: {conf:.0%}, "

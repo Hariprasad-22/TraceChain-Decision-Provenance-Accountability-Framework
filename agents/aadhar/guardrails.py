@@ -37,13 +37,37 @@ def validate_llm_output(output: dict, required_fields: list):
     if missing:
         raise ValidationError(f"LLM output missing fields: {missing}")
 
+    # Coerce null/missing confidence so downstream float/format never crashes.
     conf = output.get("confidence_score")
-    if conf is not None and not (0 <= conf <= 1):
+    if conf is None:
+        output["confidence_score"] = 0.7
+        conf = 0.7
+    try:
+        conf = float(conf)
+        output["confidence_score"] = conf
+    except (TypeError, ValueError) as exc:
+        raise ValidationError(f"confidence_score not numeric: {conf}") from exc
+    if not (0 <= conf <= 1):
         raise ValidationError(f"confidence_score out of range: {conf}")
 
-    for factor in ("irreversibility", "impact", "explainability"):
-        val = output.get("risk_factors", {}).get(factor)
-        if val is not None and not (0 <= val <= 10):
+    if isinstance(output.get("decision_output"), str):
+        output["decision_output"] = output["decision_output"].strip().lower()
+
+    risk = output.setdefault("risk_factors", {})
+    if not isinstance(risk, dict):
+        risk = {}
+        output["risk_factors"] = risk
+    for factor, default in (("irreversibility", 4), ("impact", 5), ("explainability", 8)):
+        val = risk.get(factor)
+        if val is None:
+            risk[factor] = default
+            continue
+        try:
+            val = int(val)
+            risk[factor] = val
+        except (TypeError, ValueError) as exc:
+            raise ValidationError(f"{factor} not numeric: {val}") from exc
+        if not (0 <= val <= 10):
             raise ValidationError(f"{factor} out of range: {val}")
     return True
 

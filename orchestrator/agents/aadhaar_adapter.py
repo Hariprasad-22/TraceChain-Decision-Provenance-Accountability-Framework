@@ -100,6 +100,8 @@ def run(state: dict, orchestration_id: str) -> dict:
     result["execution"]["sequence_number"]  = SEQUENCE_NUMBER
     result["provenance"]["orchestration_id"] = orchestration_id
 
+    # Pass Aadhaar agent decision through unchanged — no name-match overlay.
+
     logger.info(
         "[A001] Done — decision=%s confidence=%.2f",
         result["decision"]["decision_output"],

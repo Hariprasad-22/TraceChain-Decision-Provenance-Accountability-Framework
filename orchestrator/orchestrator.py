@@ -48,6 +48,14 @@ for candidate in _env_candidates:
     if candidate.exists():
         load_dotenv(candidate)
         break
+
+# Ensure agent LLM clients see the same Gemini credentials.
+_gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+if _gemini_key:
+    os.environ.setdefault("GEMINI_API_KEY", _gemini_key)
+    os.environ.setdefault("GOOGLE_API_KEY", _gemini_key)
+os.environ.setdefault("GEMINI_MODEL", os.getenv("GEMINI_MODEL", "gemini-2.5-flash"))
+
 ORCHESTRATOR_VERSION = os.getenv("ORCHESTRATOR_VERSION", "v1.0.0")
 
 # ─── internal imports ─────────────────────────────────────────────────────────
@@ -84,8 +92,10 @@ _REQUIRED_TOP_LEVEL = [
 ]
 _REQUIRED_APPLICANT_DATA = ["aadhar_image_path", "payslip_file_path", "bank_statement_file_path"]
 _REQUIRED_CIBIL = ["cibil_score"]
-_USER_ID_RE = re.compile(r"^10000[1-9]\d*$")
-_APPLICATION_ID_RE = re.compile(r"^APP-10000[1-9]\d*$")
+# Numeric IDs must be >= 100001 (sequential from the frontend counter).
+_USER_ID_RE = re.compile(r"^\d+$")
+_APPLICATION_ID_RE = re.compile(r"^APP-(\d+)$")
+_MIN_ID = 100001
 
 
 # ─── state validation ─────────────────────────────────────────────────────────
@@ -111,11 +121,12 @@ def validate_state(state: dict) -> None:
             raise ValueError(f"Missing required field: '{field}'")
 
     user_id = str(state.get("user_id", ""))
-    if not _USER_ID_RE.fullmatch(user_id):
+    if not _USER_ID_RE.fullmatch(user_id) or int(user_id) < _MIN_ID:
         raise ValueError(f"user_id must start from 100001, got: {user_id}")
 
     application_id = str(state.get("application_id", ""))
-    if not _APPLICATION_ID_RE.fullmatch(application_id):
+    app_match = _APPLICATION_ID_RE.fullmatch(application_id)
+    if not app_match or int(app_match.group(1)) < _MIN_ID:
         raise ValueError(f"application_id must start from APP-100001, got: {application_id}")
 
     loan = state.get("loan_amount", 0)
@@ -178,11 +189,16 @@ def _write_agent_result(
     )
 
     # 2. AGENT_DECISIONS
+    conf_raw = decision_data.get("confidence_score")
+    try:
+        confidence_score = float(conf_raw if conf_raw is not None else 0.0)
+    except (TypeError, ValueError):
+        confidence_score = 0.0
     db.write_agent_decision(
         decision_id=decision_data["decision_id"],
         execution_id=execution_id,
         decision_output=decision_data["decision_output"],
-        confidence_score=float(decision_data["confidence_score"]),
+        confidence_score=confidence_score,
         reasoning=decision_data["reasoning"],
         decision_timestamp=decision_data.get("timestamp", datetime.now(timezone.utc).isoformat()),
     )
@@ -377,6 +393,10 @@ def run_pipeline(state: dict) -> dict:
         )
 
         # ── Audit trail ───────────────────────────────────────────────────────
+        try:
+            conf = float((result.get("decision") or {}).get("confidence_score") or 0.0)
+        except (TypeError, ValueError):
+            conf = 0.0
         db.write_audit_event(
             orchestration_id=orchestration_id,
             execution_id=execution_id,
@@ -385,7 +405,7 @@ def run_pipeline(state: dict) -> dict:
             description=(
                 f"Agent {agent_id} decided: "
                 f"{result['decision']['decision_output']} "
-                f"(confidence={result['decision']['confidence_score']:.0%})"
+                f"(confidence={conf:.0%})"
             ),
             record_hash=provenance["record_hash"],
         )
@@ -396,12 +416,15 @@ def run_pipeline(state: dict) -> dict:
 
         # ── Collect for scoring + synthesis ──────────────────────────────────
         norm_acc = normalise_agent_score(result["accountability"])
+        output_data = (result.get("execution") or {}).get("output_data") or {}
         active_agent_results.append({
             "agent_id":            agent_id,
             "decision_output":     result["decision"]["decision_output"],
             "confidence_score":    result["decision"]["confidence_score"],
             "reasoning":           result["decision"]["reasoning"],
             "composite_risk_score": norm_acc["composite_risk_score"],
+            "name_mismatch":       bool(output_data.get("name_mismatch")),
+            "name_mismatch_reason": output_data.get("name_mismatch_reason"),
         })
         all_accountabilities.append(norm_acc)
 
@@ -427,6 +450,26 @@ def run_pipeline(state: dict) -> dict:
         overall_risk_level=overall["overall_risk_level"],
         responsible_agent_id=responsible_agent,
     )
+
+    # Name mismatch on any document agent → final Rejected, that agent drives.
+    # Agent decision_output values themselves are left unchanged in the breakdown.
+    mismatch_driver = next((a for a in active_agent_results if a.get("name_mismatch")), None)
+    if mismatch_driver:
+        responsible_agent = mismatch_driver["agent_id"]
+        mismatch_reason = mismatch_driver.get("name_mismatch_reason") or (
+            "The name does not match the inputs given."
+        )
+        final["answer"] = "Rejected"
+        final["responsible_agent_id"] = responsible_agent
+        final["reasoning"] = (
+            f"The application was rejected because the name does not match the inputs given. "
+            f"Driving agent: {responsible_agent}.\n\n{mismatch_reason}"
+        )
+        logger.info(
+            "Final decision overridden to Rejected by name mismatch on %s",
+            responsible_agent,
+        )
+
     final_decision_id = str(uuid.uuid4())
     db.write_final_decision(
         final_decision_id=final_decision_id,

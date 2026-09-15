@@ -130,6 +130,21 @@ def aadhar_verification_agent(state: dict, orchestration_id: str = None) -> dict
     try:
         validate_age(extracted.get("dob"))
     except ValidationError as e:
+        # Distinguish unreadable DOB from a true underage applicant so we don't
+        # hard-reject OCR failures as "underage".
+        msg = str(e).lower()
+        if "unparseable" in msg or not extracted.get("dob"):
+            output = {
+                "decision_output": "needs_review", "confidence_score": 0.7,
+                "reasoning": scrub_text(
+                    f"Aadhaar date of birth could not be verified from the image ({e}).",
+                    extracted,
+                ),
+            }
+            return _assemble(orchestration_id, execution_id, agent_input, output,
+                              model_id="rule-engine", rule_id="validate_age",
+                              start_time=start_time, status="completed", evidence_items=[],
+                              risk_factors={"irreversibility": 4, "impact": 5, "explainability": 8})
         output = {
             "decision_output": "underage_applicant", "confidence_score": 1.0,
             "reasoning": scrub_text(f"Rejected at guardrail: {e}", extracted),
@@ -141,10 +156,16 @@ def aadhar_verification_agent(state: dict, orchestration_id: str = None) -> dict
 
     # --- Soft checks: build a query describing what's uncertain, not a hard fail ---
     concerns = []
-    sim = name_similarity(extracted.get("name"), scoped["applicant_name"])
-    if sim < NAME_MATCH_THRESHOLD:
-        concerns.append(f"name similarity only {sim:.2f} between Aadhaar ('{extracted.get('name')}') "
-                        f"and application ('{scoped['applicant_name']}')")
+    extracted_name = (extracted.get("name") or "").strip()
+    # Skip name comparison when OCR/vision could not read a name (fallback path).
+    # Comparing against a missing/fake name always produced false needs_review.
+    if extracted_name and not extracted.get("_extraction_fallback"):
+        sim = name_similarity(extracted_name, scoped["applicant_name"])
+        if sim < NAME_MATCH_THRESHOLD:
+            concerns.append(
+                f"name similarity only {sim:.2f} between Aadhaar ('{extracted_name}') "
+                f"and application ('{scoped['applicant_name']}')"
+            )
 
     if scoped.get("applicant_dob") and not dob_matches(extracted.get("dob"), scoped["applicant_dob"]):
         concerns.append(f"DOB mismatch: Aadhaar shows {extracted.get('dob')}, "
