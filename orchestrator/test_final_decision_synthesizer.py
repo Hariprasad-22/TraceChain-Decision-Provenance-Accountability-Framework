@@ -5,8 +5,8 @@ from frontend.server import friendly_error_reply
 def test_classify_approved_wording():
     assert _classify("approved") == "Approved"
     assert _classify("verified") == "Approved"
-    assert _classify("needs_review") == "Manual Review"
-    assert _classify("manual_review") == "Manual Review"
+    assert _classify("needs_review") == "Rejected"
+    assert _classify("manual_review") == "Rejected"
 
 
 def test_synthesize_honors_approved_agent_outputs():

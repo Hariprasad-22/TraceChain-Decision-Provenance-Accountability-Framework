@@ -268,7 +268,7 @@ def run_pipeline(state: dict) -> dict:
     Returns
     -------
     dict
-        loan_decision           str   'Approved' | 'Rejected' | 'Manual Review'
+        loan_decision           str   'Approved' | 'Rejected'
         overall_accountability  dict  composite score + risk level
         agent_breakdown         list  per-agent decision + scores + reasoning
         reasoning               str   full synthesized explanation
@@ -360,7 +360,7 @@ def run_pipeline(state: dict) -> dict:
             )
             return {
                 "error": f"Agent {agent_id} failed: {exc}",
-                "loan_decision": "Manual Review",
+                "loan_decision": "Rejected",
                 "orchestration_id": orchestration_id,
                 "application_id": application_id,
             }
@@ -484,11 +484,11 @@ def run_pipeline(state: dict) -> dict:
 
     # ── 6. Update Application + Orchestration status ──────────────────────────
     answer_to_status = {
-        "Approved":      "approved",
-        "Rejected":      "rejected",
-        "Manual Review": "under_review",
+        "Approved": "approved",
+        "Rejected": "rejected",
+        "Manual Review": "rejected",  # legacy: treat review as rejected
     }
-    db.update_application_status(application_id, answer_to_status[final["answer"]])
+    db.update_application_status(application_id, answer_to_status.get(final["answer"], "rejected"))
     db.update_orchestration(orchestration_id, status="Completed")
 
     # ── 7. Verify the full hash chain ─────────────────────────────────────────

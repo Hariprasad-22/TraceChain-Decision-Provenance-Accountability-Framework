@@ -392,9 +392,11 @@ def simulate_cibil_lookup(state: dict) -> int:
 
 # ─── session model ─────────────────────────────────────────────────────────────
 
-COLLECT_STAGES = ["name", "aadhaar_upload", "payslip_upload", "bank_upload", "loan_amount"]
+COLLECT_STAGES = ["name", "aadhaar_upload", "payslip_upload", "bank_upload", "loan_amount", "tenure"]
 
 STEP_LABELS = ["Welcome", "Details", "Documents", "Loan Amount", "Verifying", "Decision"]
+
+MAX_TENURE_MONTHS = 60
 
 
 def step_index(session: dict) -> int:
@@ -405,7 +407,7 @@ def step_index(session: dict) -> int:
         return 1
     if fs in ("aadhaar_upload", "payslip_upload", "bank_upload"):
         return 2
-    if fs == "loan_amount":
+    if fs in ("loan_amount", "tenure"):
         return 3
     if fs == "verifying":
         return 4
@@ -417,7 +419,8 @@ PROMPTS = {
     "aadhaar_upload": "Thanks! 🪪 Please **upload the Aadhaar image** below.",
     "payslip_upload": "Got it ✅ Now let's grab the **payslip** 📄 (PDF or image).",
     "bank_upload": "Excellent ✅ Please upload the **bank statement file** (.csv, .xls, .xlsx) 🏦 for the financial review.",
-    "loan_amount": "Last step! 💰 How much would you like to borrow? (up to ₹50,00,000)",
+    "loan_amount": "Great ✅ How much would you like to borrow? (up to ₹50,00,000) 💰",
+    "tenure": "Last step! 📅 What **repayment tenure** do you want? (in months, 1–60)",
 }
 
 UPLOAD_HINTS = {
@@ -429,9 +432,10 @@ UPLOAD_HINTS = {
 CHIPS = {
     "welcome": ["📝 Apply for a loan", "❓ What is a CIBIL score?", "📄 What documents do I need?"],
     "loan_amount": ["₹50,000", "₹1,00,000", "₹2,00,000", "₹5,00,000"],
-    "post_decision_review": ["🤔 Why this decision?", "📝 New application", "💬 Ask a loan question"],
-    "post_decision_approved": ["🤔 Why this decision?", "🎉 New application", "💬 Ask a loan question"],
-    "post_decision_rejected": ["🤔 Why this decision?", "📝 New application", "💬 Ask a loan question"],
+    "tenure": ["12 months", "24 months", "36 months", "60 months"],
+    "post_decision_review": ["📝 New application", "💬 Ask a loan question"],
+    "post_decision_approved": ["🎉 New application", "💬 Ask a loan question"],
+    "post_decision_rejected": ["📝 New application", "💬 Ask a loan question"],
     "post_reason": ["📝 New application", "💬 Ask a loan question"],
 }
 
@@ -448,7 +452,7 @@ def _load_chat_stats() -> dict:
         "reasonings_given": 0,
         "decisions_total": 0,
         "chain_verified_count": 0,
-        "decision_counts": {"Approved": 0, "Rejected": 0, "Manual Review": 0},
+        "decision_counts": {"Approved": 0, "Rejected": 0},
     }
     try:
         if _CHAT_STATS_FILE.exists():
@@ -547,6 +551,7 @@ def session_summary(session: dict) -> dict:
         "name": s.get("applicant_name"),
         "cibil": s.get("cibil_score"),
         "loan_amount": s.get("loan_amount"),
+        "tenure_months": s.get("repayment_period_months"),
         "aadhaar_uploaded": bool(ad.get("aadhar_image_path")),
         "payslip_uploaded": bool(ad.get("payslip_file_path")),
         "bank_uploaded": bool(ad.get("bank_statement_file_path")),
@@ -763,6 +768,13 @@ def handle_stage_input(session: dict, stage: str, text: str) -> tuple[str, bool]
         if val is None or not (0 < val <= 5_000_000):
             return "Please enter a loan amount between ₹1 and ₹50,00,000 (numbers only) 💰", False
         state["loan_amount"] = val
+        return "", True
+
+    if stage == "tenure":
+        val = _parse_int(text)
+        if val is None or not (1 <= val <= MAX_TENURE_MONTHS):
+            return f"Please enter a tenure between 1 and {MAX_TENURE_MONTHS} months (whole numbers only) 📅", False
+        state["repayment_period_months"] = val
         return "", True
 
     return "", False
@@ -1005,6 +1017,7 @@ FIELD_LABELS = {
     "payslip_upload": "the payslip",
     "bank_upload": "the bank statement file",
     "loan_amount": "the loan amount",
+    "tenure": "the repayment tenure",
 }
 
 # "wrong aadhaar" / "change my name" / "redo the payslip" -- lets someone fix a
@@ -1015,6 +1028,7 @@ FIELD_EDIT_TRIGGERS = {
     "payslip_upload": re.compile(r"\b(change|edit|fix|wrong|redo|re-?upload)\b.*\bpayslip\b", re.I),
     "bank_upload": re.compile(r"\b(change|edit|fix|wrong|redo|re-?upload)\b.*\b(bank|statement|csv|excel|xls|xlsx)\b", re.I),
     "loan_amount": re.compile(r"\b(change|edit|fix|wrong|redo)\b.*\b(amount|loan amount)\b", re.I),
+    "tenure": re.compile(r"\b(change|edit|fix|wrong|redo)\b.*\b(tenure|repayment|months)\b", re.I),
 }
 
 
@@ -1036,6 +1050,8 @@ def clear_field(state: dict, field_stage: str) -> None:
         state.get("applicant_data", {}).pop("bank_statement_file_path", None)
     elif field_stage == "loan_amount":
         state.pop("loan_amount", None)
+    elif field_stage == "tenure":
+        state.pop("repayment_period_months", None)
 
 
 def next_incomplete_stage(state: dict) -> Optional[str]:
@@ -1051,6 +1067,8 @@ def next_incomplete_stage(state: dict) -> Optional[str]:
         return "bank_upload"
     if not state.get("loan_amount"):
         return "loan_amount"
+    if not state.get("repayment_period_months"):
+        return "tenure"
     return None
 
 
@@ -1217,7 +1235,7 @@ def api_verify(session_id: str = Form(...)):
         result = run_pipeline(state)
     except Exception as exc:  # noqa: BLE001
         logger.exception("Pipeline execution failed")
-        result = {"error": str(exc), "loan_decision": "Manual Review"}
+        result = {"error": str(exc), "loan_decision": "Rejected"}
 
     session["result"] = result
     session["flow_stage"] = None
@@ -1240,6 +1258,8 @@ def api_verify(session_id: str = Form(...)):
         reply = friendly_error_reply(str(result.get("error", "")))
         chips = ["📝 New application"]
     else:
+        # Final outcome is only Approved or Rejected (no Needs Review).
+        result["loan_decision"] = normalize_loan_decision(result.get("loan_decision"))
         STATS["decisions_total"] += 1
         if result.get("chain_verified"):
             STATS["chain_verified_count"] += 1
@@ -1247,14 +1267,12 @@ def api_verify(session_id: str = Form(...)):
         if decision_key in STATS["decision_counts"]:
             STATS["decision_counts"][decision_key] += 1
         _save_chat_stats()
-        # Short verdict first; the UI decision card shows the detailed breakdown.
+        # Short verdict in chat; Trace page holds the explanation.
         reply = decision_announcement(result)
         if decision_key == "Approved":
             chips = CHIPS["post_decision_approved"]
-        elif decision_key == "Rejected":
-            chips = CHIPS["post_decision_rejected"]
         else:
-            chips = CHIPS["post_decision_review"]
+            chips = CHIPS["post_decision_rejected"]
 
     return build_response(session, reply, chips=chips, done=True, result=result)
 
@@ -1364,42 +1382,38 @@ AGENT_DISPLAY_NAMES = {
     "A004": "CIBIL Score",
 }
 
-# Chat-facing labels (DB still stores Manual Review).
+# Chat-facing labels.
 DECISION_DISPLAY = {
     "Approved": "Approved",
     "Rejected": "Rejected",
-    "Manual Review": "Needs Review",
+    "Manual Review": "Rejected",
+    "Needs Review": "Rejected",
 }
 
 
+def normalize_loan_decision(decision: Optional[str]) -> str:
+    """Final UI/API decision is only Approved or Rejected."""
+    if decision == "Approved":
+        return "Approved"
+    if decision in ("Rejected", "Manual Review", "Needs Review"):
+        return "Rejected"
+    if decision:
+        return "Rejected"
+    return "Unknown"
+
+
 def decision_label(decision: Optional[str]) -> str:
-    return DECISION_DISPLAY.get(decision or "", decision or "Unknown")
+    return DECISION_DISPLAY.get(decision or "", normalize_loan_decision(decision))
 
 
 def decision_announcement(result: dict) -> str:
-    """Short clear verdict message shown immediately after verification."""
-    decision = result.get("loan_decision", "Unknown")
-    label = decision_label(decision)
-    emoji = {"Approved": "✅", "Rejected": "❌", "Manual Review": "⚠️"}.get(decision, "ℹ️")
-    oa = result.get("overall_accountability") or {}
-    risk = oa.get("risk_level") or "—"
-    score = oa.get("composite_score")
-    score_txt = f"{score:.1f}/10" if isinstance(score, (int, float)) else "—"
-
+    """Short verdict only — explanations live on the Trace page."""
+    decision = normalize_loan_decision(result.get("loan_decision"))
     if decision == "Approved":
-        lead = f"{emoji} **Decision: Approved** — your loan application has been approved."
-    elif decision == "Rejected":
-        lead = f"{emoji} **Decision: Rejected** — your loan application has been rejected."
-    elif decision == "Manual Review":
-        lead = f"{emoji} **Decision: Needs Review** — your application needs manual review before a final outcome."
-    else:
-        lead = f"{emoji} **Decision: {label}**"
-
-    return (
-        f"{lead}\n\n"
-        f"Overall risk: **{risk}** ({score_txt}). "
-        f"Ask **\"why this decision?\"** if you'd like the full explanation."
-    )
+        return "✅ **Approved**"
+    if decision == "Rejected":
+        return "❌ **Rejected**"
+    return f"ℹ️ **{decision_label(decision)}**"
 
 
 @app.get("/api/stats")

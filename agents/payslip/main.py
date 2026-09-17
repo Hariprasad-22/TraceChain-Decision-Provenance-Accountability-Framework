@@ -944,9 +944,14 @@ def build_execution(
     aadhaar_record,
     payslip_path,
     scenario,
+    loan_amount=None,
+    repayment_period_months=None,
 ):
     """
     Run one complete execution.
+
+    Optional loan_amount and repayment_period_months are recorded on the
+    execution input (used by the chat/orchestrator affordability path).
     """
 
     execution_id = str(
@@ -1048,6 +1053,12 @@ def build_execution(
 
         "declared_monthly_income":
             declared_income,
+
+        "loan_amount":
+            loan_amount,
+
+        "repayment_period_months":
+            repayment_period_months,
 
         "aadhaar_reference":
             {

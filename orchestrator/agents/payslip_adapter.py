@@ -80,6 +80,8 @@ def _scope(state: dict) -> dict:
     return {
         "applicant_name":        state["applicant_name"],
         "declared_monthly_income": state.get("declared_monthly_income"),
+        "loan_amount":           state.get("loan_amount"),
+        "repayment_period_months": state.get("repayment_period_months"),
         "payslip_file_path":     Path(state["applicant_data"]["payslip_file_path"]),
         "aadhaar_reference": {
             "name":    state["applicant_name"],
@@ -139,6 +141,8 @@ def run(state: dict, orchestration_id: str) -> dict:
           - applicant_dob (optional but recommended)
           - declared_monthly_income (float)
           - applicant_data.payslip_file_path  (str path to PDF)
+          - loan_amount (optional, used for EMI affordability)
+          - repayment_period_months (optional, used for EMI affordability)
           - applicant_data.gender (optional)
           - applicant_data.address (optional)
           - applicant_data.scenario (optional, defaults to 'everything_correct')
@@ -160,13 +164,22 @@ def run(state: dict, orchestration_id: str) -> dict:
         "address": scoped["aadhaar_reference"]["address"],
     }
 
-    logger.info("[A002] Running Payslip agent for account_id=%s scenario=%s", account_id, scenario)
+    logger.info(
+        "[A002] Running Payslip agent for account_id=%s scenario=%s "
+        "loan_amount=%s tenure_months=%s",
+        account_id,
+        scenario,
+        scoped.get("loan_amount"),
+        scoped.get("repayment_period_months"),
+    )
 
     raw = _payslip_build_execution(
         account_id=account_id,
         aadhaar_record=aadhaar_record,
         payslip_path=scoped["payslip_file_path"],
         scenario=scenario,
+        loan_amount=scoped.get("loan_amount"),
+        repayment_period_months=scoped.get("repayment_period_months"),
     )
 
     result = _normalise(raw, orchestration_id)

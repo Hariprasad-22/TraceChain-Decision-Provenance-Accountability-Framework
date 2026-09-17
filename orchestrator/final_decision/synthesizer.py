@@ -5,16 +5,17 @@ Generates the human-readable final loan decision and reasoning
 after all agents have run.
 
 Decision rules (deterministic, then explanatory):
-  - 'Rejected'       — any agent output contains a hard reject keyword.
-  - 'Manual Review'  — any agent output contains a review/uncertain keyword
-                       and no hard rejection occurred.
-  - 'Approved'       — all active agents verified successfully.
+  - 'Rejected'  — any agent output is a hard reject OR needs review / uncertain.
+  - 'Approved'  — all active agents verified successfully.
+
+There is no final "Manual Review" / "Needs Review" outcome: any review-style
+agent output is treated as Rejected for the final decision.
 
 Rejected keywords (hard stops):
     rejected, high_risk_auto, high_risk, invalid_format,
     underage_applicant, invalid_score, invalid_input, missing_data
 
-Review keywords (soft flags):
+Review keywords (also become final Rejected):
     needs_review, manual_review, needs_human_review
 
 Approved keyword:
@@ -36,9 +37,7 @@ _REJECT_KEYWORDS = {
     "rejected", "high_risk_auto", "high_risk",
     "invalid_format", "underage_applicant",
     "invalid_score", "invalid_input", "missing_data",
-}
-
-_REVIEW_KEYWORDS = {
+    # Review-style outcomes are final Rejected (no Needs Review final answer).
     "needs_review", "manual_review", "needs_human_review",
 }
 
@@ -48,9 +47,8 @@ _APPROVE_KEYWORDS = {
 
 # Map to FINAL_DECISIONS.answer CHECK constraint values
 _DB_ANSWER_MAP = {
-    "Approved":      "Approved",
-    "Rejected":      "Rejected",
-    "Manual Review": "Manual Review",
+    "Approved": "Approved",
+    "Rejected": "Rejected",
 }
 
 # Agent display names for human-readable output
@@ -63,15 +61,13 @@ _AGENT_NAMES = {
 
 
 def _classify(decision_output: str) -> str:
-    """Return 'Rejected', 'Manual Review', or 'Approved' for a single agent output."""
+    """Return 'Rejected' or 'Approved' for a single agent output."""
     d = (decision_output or "").strip().lower()
 
     # Accept both canonical lowercase values and human-facing title-case labels.
     d = d.replace(" ", "_")
     if d in _REJECT_KEYWORDS:
         return "Rejected"
-    if d in _REVIEW_KEYWORDS:
-        return "Manual Review"
     if d in _APPROVE_KEYWORDS:
         return "Approved"
 
@@ -79,13 +75,11 @@ def _classify(decision_output: str) -> str:
     alt = d.replace("-", "_")
     if alt in _REJECT_KEYWORDS:
         return "Rejected"
-    if alt in _REVIEW_KEYWORDS:
-        return "Manual Review"
     if alt in _APPROVE_KEYWORDS:
         return "Approved"
 
-    logger.warning("Unknown decision_output '%s' — defaulting to Manual Review", decision_output)
-    return "Manual Review"
+    logger.warning("Unknown decision_output '%s' — defaulting to Rejected", decision_output)
+    return "Rejected"
 
 
 # ─── main synthesizer ─────────────────────────────────────────────────────────
@@ -128,8 +122,6 @@ def synthesize(
         if classification == "Rejected":
             final_answer = "Rejected"
             break                          # hard stop — no need to check further
-        if classification == "Manual Review":
-            final_answer = "Manual Review" # soft flag — continue checking others
 
     # ── step 2: build per-agent summary lines ─────────────────────────────────
     lines = []
@@ -152,9 +144,8 @@ def synthesize(
     # ── step 3: compose the full reasoning paragraph ───────────────────────────
     resp_name = _AGENT_NAMES.get(responsible_agent_id, responsible_agent_id)
     intro_map = {
-        "Approved":      "All verification checks passed.",
-        "Rejected":      f"The application was rejected. Driving agent: {resp_name}.",
-        "Manual Review": f"The application requires manual review. Key concern raised by: {resp_name}.",
+        "Approved": "All verification checks passed.",
+        "Rejected": f"The application was rejected. Driving agent: {resp_name}.",
     }
     intro = intro_map[final_answer]
 

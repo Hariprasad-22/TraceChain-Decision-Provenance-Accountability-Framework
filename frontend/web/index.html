@@ -9,24 +9,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0a0e1a;
-    --bg-radial: radial-gradient(1100px 700px at 14% -8%, #12192e 0%, #0a0e1a 55%);
-    --panel:#111629;
-    --panel-2:#151b31;
-    --card:#131a30;
-    --border:#232c48;
-    --border-soft:#1b2238;
-    --text:#eceef5;
-    --muted:#8790aa;
-    --muted-2:#5c6683;
-    --gold:#d9a544;
-    --gold-soft:rgba(217,165,68,.14);
-    --teal:#3fc7b4;
-    --teal-soft:rgba(63,199,180,.14);
-    --danger:#e1626b;
-    --danger-soft:rgba(225,98,107,.14);
-    --warn:#e8983d;
-    --warn-soft:rgba(232,152,61,.14);
+    --black:#000000;
+    --white:#ffffff;
+    --bg:#ffffff;
+    --bg-radial:#ffffff;
+    --panel:#ffffff;
+    --panel-2:#f7f7f7;
+    --card:#ffffff;
+    --border:#e5e5e5;
+    --border-soft:#eeeeee;
+    --text:#000000;
+    --heading:#000000;
+    --muted:#000000;
+    --muted-2:#000000;
+    --parrot:#86bc25;
+    --parrot-dark:#6fa01c;
+    --parrot-soft:rgba(134,188,37,.12);
+    --gold:#86bc25;
+    --gold-soft:rgba(134,188,37,.12);
+    --teal:#86bc25;
+    --teal-soft:rgba(134,188,37,.12);
+    --danger:#d64550;
+    --danger-soft:rgba(214,69,80,.12);
+    --warn:#d48a1a;
+    --warn-soft:rgba(212,138,26,.12);
     --serif:'Fraunces', Georgia, serif;
     --sans:'Manrope', system-ui, -apple-system, sans-serif;
     --mono:'JetBrains Mono', ui-monospace, monospace;
@@ -36,7 +42,7 @@
   html,body{height:100%;}
   body{
     margin:0;
-    background:var(--bg-radial);
+    background:var(--white);
     color:var(--text);
     font-family:var(--sans);
     display:flex;
@@ -44,10 +50,16 @@
     overflow:hidden;
   }
   ::-webkit-scrollbar{width:8px; height:8px;}
-  ::-webkit-scrollbar-thumb{background:#242c48; border-radius:8px;}
-  ::selection{background:var(--gold-soft); color:var(--text);}
+  ::-webkit-scrollbar-thumb{background:#cfcfcf; border-radius:8px;}
+  ::selection{background:var(--parrot-soft); color:var(--heading);}
 
-  /* ───────────────────────── top nav ───────────────────────── */
+  h1, h2, h3, .dash-header h1, .trace-header h1, #topbar h1,
+  .how-panel h3, .dash-panel h3, .sidebar-live-head h2,
+  .stat-card .s-value, .mini-value, .fact-stat{
+    color:var(--heading);
+  }
+
+  /* ───────────────────────── top nav (black bar) ───────────────────────── */
   #topnav{
     flex-shrink:0;
     height:56px;
@@ -55,39 +67,43 @@
     align-items:center;
     gap:22px;
     padding:0 24px;
-    background:var(--panel);
-    border-bottom:1px solid var(--border-soft);
+    background:var(--black);
+    border-bottom:none;
+    box-shadow:none;
     z-index:10;
   }
   #topnav .brand-mini{ display:flex; align-items:center; gap:8px; margin-right:8px; }
-  #topnav .brand-mini span{ font-family:var(--serif); font-weight:600; font-size:15px; }
+  #topnav .brand-mini span{
+    font-family:var(--serif); font-weight:600; font-size:15px; color:var(--white);
+  }
   .nav-tab{
-    background:transparent; border:none; color:var(--muted);
+    background:transparent; border:none; color:rgba(255,255,255,.72);
     font-family:var(--sans); font-size:14px; font-weight:700;
     padding:8px 4px; cursor:pointer; position:relative;
   }
-  .nav-tab.active{ color:var(--text); }
+  .nav-tab:hover{ color:var(--white); }
+  .nav-tab.active{ color:var(--white); }
   .nav-tab.active::after{
     content:''; position:absolute; left:0; right:0; bottom:-17px;
-    height:2px; background:var(--gold);
+    height:3px; background:var(--parrot);
   }
   #nav-live-dot{
     margin-left:auto; display:flex; align-items:center; gap:7px;
-    font-size:12px; color:var(--muted-2);
+    font-size:12px; color:rgba(255,255,255,.65);
   }
   #nav-live-dot .pulse-dot{
-    width:8px; height:8px; border-radius:50%; background:var(--teal);
-    box-shadow:0 0 8px var(--teal); animation:pulse-glow 1.8s infinite ease-in-out;
+    width:8px; height:8px; border-radius:50%; background:var(--parrot);
+    box-shadow:0 0 8px rgba(134,188,37,.55); animation:pulse-glow 1.8s infinite ease-in-out;
   }
   @keyframes pulse-glow{ 0%,100%{opacity:.5; transform:scale(.85);} 50%{opacity:1; transform:scale(1.1);} }
 
   .nav-arrow{
-    background:var(--panel-2); border:1px solid var(--border-soft); color:var(--muted);
-    width:28px; height:28px; border-radius:8px; font-size:16px; line-height:1;
+    background:transparent; border:1px solid rgba(255,255,255,.28); color:rgba(255,255,255,.8);
+    width:28px; height:28px; border-radius:999px; font-size:16px; line-height:1;
     cursor:pointer; display:flex; align-items:center; justify-content:center;
-    transition:border-color .15s, color .15s;
+    transition:border-color .15s, color .15s, background .15s;
   }
-  .nav-arrow:hover{ border-color:var(--teal); color:var(--text); }
+  .nav-arrow:hover{ border-color:var(--parrot); color:var(--white); background:rgba(134,188,37,.15); }
 
   #page-wrap{ flex:1; display:flex; overflow:hidden; min-height:0; }
   #page-assistant{ flex:1; display:none; min-height:0; }
@@ -96,26 +112,36 @@
   /* ───────────────────────── dashboard page ───────────────────────── */
   #page-dashboard{
     flex:1; overflow-y:auto; display:none;
-    background:
-      radial-gradient(900px 500px at 85% -10%, rgba(63,199,180,.08) 0%, transparent 60%),
-      radial-gradient(700px 500px at 5% 0%, rgba(217,165,68,.08) 0%, transparent 55%),
-      var(--bg-radial);
+    background:var(--white);
   }
   #page-dashboard.active{ display:block; }
-  .dash-inner{ max-width:1180px; margin:0 auto; padding:34px 32px 60px; }
-  .dash-header{ margin-bottom:28px; }
+  .dash-inner{ max-width:1180px; margin:0 auto; padding:0 0 60px; }
+
+  /* Deloitte-style green section bar */
+  .section-bar{
+    background:var(--parrot);
+    color:var(--white);
+    padding:14px 32px;
+    font-family:var(--sans);
+    font-size:18px;
+    font-weight:700;
+    margin:0;
+    width:100%;
+  }
+  .dash-content{ padding:0 32px; }
+  .dash-header{ margin-bottom:24px; padding-top:28px; }
   .dash-header h1{
-    font-family:var(--serif); font-size:30px; font-weight:600; margin:0 0 6px;
-    display:flex; align-items:center; gap:12px;
+    font-family:var(--sans); font-size:32px; font-weight:500; margin:0 0 8px;
+    display:flex; align-items:center; gap:12px; color:var(--black);
   }
   .dash-header p{ color:var(--muted); font-size:14px; margin:0; }
   .dash-header .live-badge{
-    font-size:11px; font-weight:700; color:var(--teal); background:var(--teal-soft);
-    border:1px solid rgba(63,199,180,.35); padding:3px 10px; border-radius:999px;
+    font-size:11px; font-weight:700; color:var(--black); background:var(--parrot-soft);
+    border:1px solid rgba(134,188,37,.4); padding:3px 10px; border-radius:999px;
     display:inline-flex; align-items:center; gap:6px;
   }
   .dash-header .live-badge .dot{
-    width:6px; height:6px; border-radius:50%; background:var(--teal);
+    width:6px; height:6px; border-radius:50%; background:var(--parrot);
     animation:pulse-glow 1.8s infinite ease-in-out;
   }
 
@@ -131,6 +157,7 @@
     background:var(--card); border:1px solid var(--border-soft); border-radius:var(--r-lg);
     padding:20px 20px 18px; position:relative; overflow:hidden;
     transition:transform .18s ease, border-color .18s ease;
+    box-shadow:0 6px 18px rgba(10,10,10,.04);
   }
   .stat-card.hero{ padding:26px 24px 22px; }
   .stat-card::before{
@@ -138,37 +165,36 @@
     background:var(--accent-color, var(--gold));
   }
   .stat-card:hover{ transform:translateY(-2px); border-color:var(--border); }
-  .stat-card .s-icon{ font-size:20px; margin-bottom:10px; display:block; }
-  .stat-card.hero .s-icon{ font-size:24px; }
+  .stat-card .s-label{ font-size:12.5px; color:var(--muted); font-weight:600; margin-bottom:8px; }
+  .stat-card.hero .s-label{ font-size:14px; margin-bottom:10px; }
   .stat-card .s-value{
     font-family:var(--serif); font-size:34px; font-weight:600; line-height:1;
     margin-bottom:6px; transition:transform .25s ease;
   }
   .stat-card.hero .s-value{ font-size:44px; }
   .stat-card .s-value.bump{ transform:scale(1.08); }
-  .stat-card .s-label{ font-size:12.5px; color:var(--muted); font-weight:600; }
-  .stat-card.hero .s-label{ font-size:14px; }
   .stat-card .s-sub{ font-size:11px; color:var(--muted-2); margin-top:4px; }
 
   /* ── did-you-know fact carousel ── */
   .fact-card{
-    background:linear-gradient(120deg, rgba(217,165,68,.10), rgba(63,199,180,.06));
-    border:1px solid var(--border-soft); border-radius:var(--r-lg);
+    background:var(--white);
+    border:1px solid var(--border); border-radius:var(--r-lg);
     padding:22px 26px; margin-bottom:20px; position:relative; overflow:hidden;
     min-height:78px;
+    box-shadow:0 2px 10px rgba(0,0,0,.04);
   }
   .fact-card.big{ padding:30px 34px; min-height:96px; }
   .fact-card.big .fact-tag{ font-size:12.5px; }
   .fact-card.big .fact-stat{ font-size:42px; }
   .fact-card.big .fact-text{ font-size:16.5px; max-width:640px; }
-  .fact-tag{ font-size:11.5px; font-weight:700; color:var(--gold); margin-bottom:8px; }
+  .fact-tag{ font-size:11.5px; font-weight:700; color:var(--parrot-dark); margin-bottom:8px; }
   .fact-body{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
   .fact-stat{ font-family:var(--serif); font-size:32px; font-weight:600; color:var(--text); }
   .fact-text{ font-size:14.5px; color:var(--text); line-height:1.5; max-width:560px; }
   .fact-src{ font-size:11.5px; color:var(--muted-2); margin-top:10px; font-style:italic; }
   .fact-dots{ position:absolute; right:22px; bottom:18px; display:flex; gap:5px; }
   .fact-dots span{ width:6px; height:6px; border-radius:50%; background:var(--border); transition:background .3s; }
-  .fact-dots span.on{ background:var(--gold); }
+  .fact-dots span.on{ background:var(--parrot); }
   .fact-card.fade .fact-stat, .fact-card.fade .fact-text, .fact-card.fade .fact-src{ opacity:0; transition:opacity .25s; }
 
   /* ── how it works strip ── */
@@ -176,14 +202,17 @@
     background:var(--card); border:1px solid var(--border-soft); border-radius:var(--r-lg);
     padding:20px 24px; margin-bottom:20px;
   }
-  .how-panel h3{ font-family:var(--serif); font-size:16px; margin:0 0 16px; font-weight:600; }
+  .how-panel h3, .dash-panel h3{
+    font-family:var(--sans); font-size:16px; margin:0 0 16px; font-weight:700; color:var(--black);
+    border-left:4px solid var(--parrot); padding-left:10px;
+  }
   .how-strip{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
   .how-step{
     display:flex; flex-direction:column; align-items:center; gap:6px;
     background:var(--panel-2); border:1px solid var(--border-soft); border-radius:var(--r-md);
     padding:14px 16px; min-width:92px;
   }
-  .how-step.final{ border-color:rgba(217,165,68,.4); background:var(--gold-soft); }
+  .how-step.final{ border-color:rgba(134,188,37,.45); background:var(--parrot-soft); }
   .how-icon{ font-size:22px; }
   .how-label{ font-size:11.5px; color:var(--muted); font-weight:600; text-align:center; }
   .how-arrow{ color:var(--muted-2); font-size:16px; }
@@ -191,13 +220,12 @@
 
   .mini-row{ display:flex; gap:16px; margin-bottom:20px; }
   .mini-stat{
-    flex:1; display:flex; align-items:center; gap:12px;
+    flex:1; display:flex; flex-direction:column; align-items:flex-start; gap:6px;
     background:var(--card); border:1px solid var(--border-soft); border-radius:var(--r-md);
     padding:14px 18px;
   }
-  .mini-icon{ font-size:18px; }
+  .mini-label{ font-size:12.5px; color:var(--muted); font-weight:600; }
   .mini-value{ font-family:var(--serif); font-size:20px; font-weight:600; }
-  .mini-label{ font-size:12.5px; color:var(--muted); }
 
   .dash-row{ display:grid; grid-template-columns:1.3fr 1fr; gap:16px; margin-bottom:20px; }
   @media (max-width: 980px){ .dash-row{ grid-template-columns:1fr; } }
@@ -205,7 +233,10 @@
     background:var(--card); border:1px solid var(--border-soft); border-radius:var(--r-lg);
     padding:22px;
   }
-  .dash-panel h3{ font-family:var(--serif); font-size:16px; margin:0 0 16px; font-weight:600; }
+  .dash-panel h3{
+    font-family:var(--sans); font-size:16px; margin:0 0 16px; font-weight:700; color:var(--black);
+    border-left:4px solid var(--parrot); padding-left:10px;
+  }
 
   .agent-bar-row{ margin-bottom:14px; }
   .agent-bar-row:last-child{ margin-bottom:0; }
@@ -215,7 +246,7 @@
   .agent-bar-track{ height:8px; border-radius:999px; background:var(--panel-2); overflow:hidden; }
   .agent-bar-fill{
     height:100%; border-radius:999px; width:0%;
-    background:linear-gradient(90deg, var(--teal), #2d8f83);
+    background:linear-gradient(90deg, var(--parrot), var(--parrot-dark));
     transition:width .7s cubic-bezier(.2,.8,.2,1);
   }
 
@@ -243,100 +274,97 @@
 
   .dash-cta{
     margin-top:6px; display:flex; align-items:center; justify-content:space-between;
-    background:linear-gradient(120deg, var(--gold-soft), transparent);
-    border:1px solid rgba(217,165,68,.3); border-radius:var(--r-lg);
+    background:linear-gradient(120deg, var(--black), #1a1a1a);
+    border:1px solid var(--black); border-radius:var(--r-lg);
     padding:18px 22px;
   }
-  .dash-cta div p{ margin:0; }
-  .dash-cta div p.big{ font-family:var(--serif); font-size:16px; font-weight:600; margin-bottom:3px; }
-  .dash-cta div p.small{ font-size:12.5px; color:var(--muted); }
+  .dash-cta div p{ margin:0; color:rgba(255,255,255,.85); }
+  .dash-cta div p.big{ font-family:var(--sans); font-size:16px; font-weight:600; margin-bottom:3px; color:var(--white); }
+  .dash-cta div p.small{ font-size:12.5px; color:rgba(255,255,255,.65); }
   #dash-cta-btn{
-    background:var(--gold); color:#1c1404; border:none; font-weight:700;
-    font-family:var(--sans); font-size:13.5px; padding:11px 20px; border-radius:11px;
+    background:var(--white); color:var(--black); border:none; font-weight:700;
+    font-family:var(--sans); font-size:13.5px; padding:11px 22px; border-radius:999px;
     cursor:pointer; flex-shrink:0;
   }
 
-  /* ───────────────────────── sidebar ───────────────────────── */
+  /* ───────────────────────── sidebar (assistant live panel) ───────────────────────── */
 
   #sidebar{
-    width:296px;
+    width:300px;
     flex-shrink:0;
     height:100%;
-    background:var(--panel);
+    background:#ffffff;
     border-right:1px solid var(--border-soft);
     display:flex;
     flex-direction:column;
-    padding:26px 22px 20px;
+    padding:20px 18px 16px;
+    overflow:hidden;
   }
-  .brand{
+  .sidebar-live-head{
     display:flex;
     align-items:center;
+    justify-content:space-between;
     gap:10px;
-    margin-bottom:6px;
+    margin-bottom:16px;
+    flex-shrink:0;
   }
-  .brand svg{flex-shrink:0;}
-  .brand-word{
+  .sidebar-live-head h2{
+    margin:0;
     font-family:var(--serif);
+    font-size:17px;
     font-weight:600;
-    font-size:21px;
     letter-spacing:.2px;
   }
-  .brand-tag{
+  .sidebar-live-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:11px;
+    font-weight:700;
+    color:var(--parrot-dark);
+    background:var(--parrot-soft);
+    border:1px solid rgba(134,188,37,.35);
+    padding:4px 9px;
+    border-radius:999px;
+  }
+  .sidebar-live-badge .dot{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--parrot);
+    box-shadow:0 0 0 0 rgba(134,188,37,.55);
+    animation:livePulse 1.8s infinite;
+  }
+  @keyframes livePulse{
+    0%{ box-shadow:0 0 0 0 rgba(134,188,37,.55); }
+    70%{ box-shadow:0 0 0 7px rgba(134,188,37,0); }
+    100%{ box-shadow:0 0 0 0 rgba(134,188,37,0); }
+  }
+  .sidebar-stage{
     font-size:12.5px;
     color:var(--muted);
-    margin:0 0 30px;
-    padding-left:34px;
+    margin:0 0 14px;
+    flex-shrink:0;
   }
+  .sidebar-stage b{ color:var(--text); font-weight:600; }
 
-  .timeline{ position:relative; margin-left:8px; }
-  .timeline-item{
-    position:relative;
-    padding:0 0 26px 26px;
+  .sidebar-scroll{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding-right:2px;
     display:flex;
     flex-direction:column;
   }
-  .timeline-item:last-child{padding-bottom:0;}
-  .timeline-item::before{ /* connecting line */
-    content:'';
-    position:absolute;
-    left:5px; top:16px; bottom:-10px;
-    width:1px;
-    background:var(--border);
-  }
-  .timeline-item:last-child::before{display:none;}
-  .timeline-dot{
-    position:absolute; left:0; top:2px;
-    width:11px; height:11px; border-radius:50%;
-    background:var(--panel-2);
-    border:1.5px solid var(--border);
-    transition:all .35s ease;
-  }
-  .timeline-label{
-    font-size:14px;
-    color:var(--muted-2);
-    font-weight:600;
-    transition:color .35s ease;
-  }
-  .timeline-item.done .timeline-dot{
-    background:var(--gold); border-color:var(--gold);
-    box-shadow:0 0 0 3px var(--gold-soft);
-  }
-  .timeline-item.done .timeline-label{ color:var(--muted); }
-  .timeline-item.active .timeline-dot{
-    background:var(--teal); border-color:var(--teal);
-    box-shadow:0 0 0 4px var(--teal-soft);
-  }
-  .timeline-item.active .timeline-label{ color:var(--text); }
 
   .case-card{
-    margin-top:28px;
+    margin-top:0;
     background:var(--card);
     border:1px solid var(--border-soft);
-    border-left:2px solid var(--gold);
+    border-left:2px solid var(--parrot);
     border-radius:var(--r-md);
-    padding:16px 16px 14px;
-    font-size:13px;
-    display:none;
+    padding:16px 14px 14px;
+    font-size:13.5px;
+    display:block;
+    flex:1;
   }
   .case-card.visible{display:block;}
   .case-title{
@@ -348,7 +376,8 @@
   .case-row{
     display:flex;
     justify-content:space-between;
-    padding:5px 0;
+    align-items:center;
+    padding:10px 0;
     border-bottom:1px dashed var(--border-soft);
   }
   .case-row:last-child{border-bottom:none;}
@@ -357,15 +386,174 @@
   .case-row .ok{color:var(--teal);}
   .case-row .pending{color:var(--muted-2); font-weight:500;}
 
+  .decision-verdict{
+    margin-top:18px;
+    border-radius:var(--r-md);
+    border:1px solid var(--border-soft);
+    background:var(--card);
+    padding:18px 14px;
+    display:none;
+    text-align:center;
+    flex-shrink:0;
+  }
+  .decision-verdict.visible{display:block;}
+  .decision-verdict .dv-thumb{
+    font-size:36px;
+    line-height:1;
+    margin-bottom:8px;
+  }
+  .decision-verdict .dv-label{
+    font-family:var(--serif);
+    font-size:20px;
+    font-weight:600;
+    margin:0 0 4px;
+  }
+  .decision-verdict .dv-sub{
+    margin:0;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .decision-verdict.approved{
+    border-color:rgba(134,188,37,.4);
+    background:linear-gradient(180deg, rgba(134,188,37,.12), var(--card));
+  }
+  .decision-verdict.approved .dv-label{ color:var(--parrot-dark); }
+  .decision-verdict.rejected{
+    border-color:rgba(232,93,117,.35);
+    background:linear-gradient(180deg, rgba(232,93,117,.12), var(--card));
+  }
+  .decision-verdict.rejected .dv-label{ color:var(--danger); }
+  .decision-verdict.review{
+    border-color:rgba(232,176,74,.35);
+    background:linear-gradient(180deg, rgba(232,176,74,.12), var(--card));
+  }
+  .decision-verdict.review .dv-label{ color:var(--warn); }
+
+  .trace-btn{
+    display:none;
+    width:100%;
+    margin-top:12px;
+    padding:11px 14px;
+    border-radius:999px;
+    border:1px solid var(--black);
+    background:var(--white);
+    color:var(--black);
+    font-family:var(--sans);
+    font-size:13.5px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .15s, border-color .15s, color .15s;
+  }
+  .trace-btn.visible{ display:block; }
+  .trace-btn:hover{
+    border-color:var(--parrot);
+    background:var(--parrot);
+    color:var(--white);
+  }
+
+  /* ───────────────────────── trace page ───────────────────────── */
+  #page-trace{
+    flex:1; overflow-y:auto; display:none;
+    background:var(--white);
+  }
+  #page-trace.active{ display:block; }
+  .trace-inner{ max-width:760px; margin:0 auto; padding:0 0 60px; }
+  .trace-back{
+    display:inline-flex; align-items:center; gap:6px;
+    background:var(--white); border:1px solid var(--border);
+    color:var(--black); font-family:var(--sans); font-size:13px; font-weight:600;
+    padding:8px 14px; border-radius:999px; cursor:pointer; margin:20px 32px 0;
+  }
+  .trace-back:hover{ border-color:var(--parrot); color:var(--black); background:var(--parrot-soft); }
+  .trace-header{ padding:20px 32px 0; }
+  .trace-header h1{
+    font-family:var(--sans); font-size:28px; font-weight:500; margin:0 0 6px; color:var(--black);
+  }
+  .trace-header p{ color:var(--muted); font-size:14px; margin:0 0 24px; }
+  .trace-body{ padding:0 32px; }
+  .trace-final{
+    display:flex; align-items:center; gap:14px;
+    padding:16px 18px; border-radius:var(--r-md);
+    border:1px solid var(--border-soft); background:var(--card);
+    margin-bottom:22px;
+  }
+  .trace-final .tf-thumb{ font-size:28px; line-height:1; }
+  .trace-final .tf-label{
+    font-family:var(--serif); font-size:20px; font-weight:600; margin:0;
+  }
+  .trace-final .tf-sub{ margin:2px 0 0; font-size:13px; color:var(--muted); }
+  .trace-final.approved{ border-color:rgba(134,188,37,.4); background:linear-gradient(180deg, rgba(134,188,37,.1), var(--card)); }
+  .trace-final.approved .tf-label{ color:var(--parrot-dark); }
+  .trace-final.rejected{ border-color:rgba(232,93,117,.35); background:linear-gradient(180deg, rgba(232,93,117,.1), var(--card)); }
+  .trace-final.rejected .tf-label{ color:var(--danger); }
+  .trace-final.review{ border-color:rgba(232,176,74,.35); background:linear-gradient(180deg, rgba(232,176,74,.1), var(--card)); }
+  .trace-final.review .tf-label{ color:var(--warn); }
+
+  .trace-section-title{
+    font-size:12px; font-weight:700; letter-spacing:.04em;
+    text-transform:uppercase; color:var(--muted-2); margin:0 0 12px;
+  }
+  .trace-agent-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+  .trace-agent-row{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:14px 16px; border-radius:12px;
+    background:var(--card); border:1px solid var(--border-soft);
+  }
+  .trace-agent-row .ta-name{ font-weight:700; font-size:14.5px; }
+  .trace-agent-row .ta-word{
+    font-size:13px; font-weight:700; padding:5px 11px; border-radius:999px;
+  }
+  .trace-agent-row .ta-word.ok{
+    color:var(--teal); background:var(--teal-soft);
+  }
+  .trace-agent-row .ta-word.bad{
+    color:var(--danger); background:rgba(232,93,117,.12);
+  }
+  .trace-agent-row .ta-word.warn{
+    color:var(--warn); background:rgba(232,176,74,.12);
+  }
+
+  .why-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--white); color:var(--black); border:1px solid var(--black);
+    font-family:var(--sans); font-size:14px; font-weight:700;
+    padding:12px 20px; border-radius:999px; cursor:pointer;
+  }
+  .why-btn:hover{ background:var(--parrot); border-color:var(--parrot); color:var(--white); filter:none; }
+  .why-btn.hidden{ display:none; }
+
+  #trace-details{
+    display:none;
+    margin-top:22px;
+    animation:rise .3s ease;
+  }
+  #trace-details.visible{ display:block; }
+  .trace-detail-card{
+    background:var(--card); border:1px solid var(--border-soft);
+    border-radius:var(--r-md); padding:16px 18px; margin-bottom:12px;
+  }
+  .trace-detail-card .td-head{
+    display:flex; align-items:center; gap:10px; margin-bottom:8px;
+  }
+  .trace-detail-card .td-name{ font-weight:700; flex:1; }
+  .trace-detail-card .td-meta{ font-size:12px; color:var(--muted-2); }
+  .trace-detail-card .td-body{
+    margin:0; font-size:14px; line-height:1.7; color:var(--muted);
+  }
+  .trace-empty{
+    color:var(--muted); font-size:14px; padding:24px 0;
+  }
+
   #sidebar-footer{
-    margin-top:auto;
-    padding-top:18px;
+    margin-top:14px;
+    padding-top:14px;
     border-top:1px solid var(--border-soft);
     display:flex;
     align-items:center;
     gap:8px;
     font-size:12px;
     color:var(--muted-2);
+    flex-shrink:0;
   }
   #health-dot{
     width:7px; height:7px; border-radius:50%;
@@ -390,12 +578,7 @@
     align-items:baseline;
     justify-content:space-between;
   }
-  #topbar h1{
-    font-family:var(--serif);
-    font-size:19px;
-    font-weight:500;
-    margin:0;
-  }
+  #topbar h1{ font-family:var(--sans); font-size:19px; font-weight:500; margin:0; color:var(--black); }
   #topbar .status{
     font-size:12.5px;
     color:var(--muted);
@@ -419,7 +602,7 @@
     display:flex; align-items:center; justify-content:center;
     font-size:13px; margin-top:2px;
   }
-  .row.bot .av{ background:linear-gradient(150deg, var(--teal), #2d8f83); color:#06211d; font-weight:700;}
+  .row.bot .av{ background:var(--black); color:var(--white); font-weight:700;}
   .row.user .av{ background:var(--panel-2); border:1px solid var(--border); color:var(--muted);}
   .bubble{
     padding:13px 16px;
@@ -430,19 +613,19 @@
   }
   .row.bot .bubble{
     background:var(--panel-2);
-    border:1px solid var(--border-soft);
+    border:1px solid var(--border);
     border-top-left-radius:4px;
   }
   .row.user .bubble{
-    background:var(--gold);
-    color:#1c1404;
+    background:var(--parrot);
+    color:var(--white);
     font-weight:600;
     border-top-right-radius:4px;
   }
-  .bubble strong{color:var(--text); font-weight:700;}
-  .row.user .bubble strong{color:#1c1404;}
+  .bubble strong{color:var(--heading); font-weight:700;}
+  .row.user .bubble strong{color:var(--white);}
   .bubble code{
-    background:#080b14; border:1px solid var(--border-soft);
+    background:#f0f0f0; border:1px solid var(--border);
     padding:1px 6px; border-radius:6px; font-family:var(--mono); font-size:12px;
   }
   .bubble h2, .bubble h3{ font-family:var(--serif); font-weight:600; }
@@ -458,10 +641,10 @@
   /* chips */
   .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-left:42px; margin-top:-6px;}
   .chip{
-    background:transparent;
-    border:1px solid var(--border);
-    color:var(--muted);
-    padding:7px 13px;
+    background:var(--white);
+    border:1px solid var(--black);
+    color:var(--black);
+    padding:7px 14px;
     border-radius:999px;
     font-size:13px;
     font-family:var(--sans);
@@ -469,7 +652,7 @@
     cursor:pointer;
     transition:border-color .15s, color .15s, background .15s;
   }
-  .chip:hover{ border-color:var(--teal); color:var(--text); background:var(--teal-soft); }
+  .chip:hover{ border-color:var(--parrot); color:var(--white); background:var(--parrot); }
 
   /* upload card */
   .upload-card{
@@ -514,7 +697,7 @@
   }
   @keyframes pulse{ 0%,100%{opacity:.3;} 50%{opacity:1;} }
   .v-step.done{ color:var(--muted); }
-  .v-step.done .v-mark{ background:var(--teal); border-color:var(--teal); color:#06211d; font-weight:700; }
+  .v-step.done .v-mark{ background:var(--parrot); border-color:var(--parrot); color:#ffffff; font-weight:700; }
 
   /* decision card */
   .decision-card{
@@ -532,7 +715,7 @@
   .gauge{ flex-shrink:0; }
   .decision-title{ font-family:var(--serif); font-size:24px; font-weight:600; margin:0 0 6px; }
   .decision-sub{ font-size:13.5px; color:var(--muted); margin:0; max-width:380px; line-height:1.5; }
-  .decision-status.approved .decision-title{ color:var(--teal); }
+  .decision-status.approved .decision-title{ color:var(--parrot-dark); }
   .decision-status.rejected .decision-title{ color:var(--danger); }
   .decision-status.review .decision-title{ color:var(--warn); }
 
@@ -584,8 +767,8 @@
     font-size:14.5px; max-height:120px; padding:8px 6px;
   }
   #send-btn{
-    width:38px; height:38px; flex-shrink:0; border-radius:11px; border:none;
-    background:var(--gold); color:#1c1404; cursor:pointer;
+    width:38px; height:38px; flex-shrink:0; border-radius:999px; border:none;
+    background:var(--black); color:var(--white); cursor:pointer;
     display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700;
   }
   #send-btn:disabled{ opacity:.35; cursor:default; }
@@ -598,19 +781,19 @@
   .page-jump-arrow{
     position:fixed; top:50%; transform:translateY(-50%);
     width:52px; height:52px; border-radius:50%;
-    background:var(--gold); color:#1c1404; border:none;
+    background:var(--parrot); color:var(--white); border:none;
     font-size:24px; font-weight:700; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 4px 20px rgba(217,165,68,.4), 0 0 0 6px rgba(217,165,68,.12);
+    box-shadow:0 4px 20px rgba(134,188,37,.35), 0 0 0 6px rgba(134,188,37,.12);
     z-index:20; transition:transform .15s ease, box-shadow .15s ease;
     animation:jump-pulse 2.4s infinite ease-in-out;
   }
   .page-jump-arrow:hover{ transform:translateY(-50%) scale(1.08); }
   .page-jump-arrow.next{ right:26px; }
-  .page-jump-arrow.prev{ left:26px; background:var(--panel-2); color:var(--text); border:1px solid var(--border); box-shadow:none; animation:none; }
+  .page-jump-arrow.prev{ left:26px; background:var(--white); color:var(--black); border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,.08); animation:none; }
   @keyframes jump-pulse{
-    0%,100%{ box-shadow:0 4px 20px rgba(217,165,68,.4), 0 0 0 6px rgba(217,165,68,.12); }
-    50%{ box-shadow:0 4px 24px rgba(217,165,68,.55), 0 0 0 10px rgba(217,165,68,.06); }
+    0%,100%{ box-shadow:0 4px 20px rgba(134,188,37,.35), 0 0 0 6px rgba(134,188,37,.12); }
+    50%{ box-shadow:0 4px 24px rgba(134,188,37,.5), 0 0 0 10px rgba(134,188,37,.06); }
   }
   @media (max-width: 780px){ .page-jump-arrow{ width:42px; height:42px; font-size:20px; } }
 </style>
@@ -623,14 +806,14 @@
 <nav id="topnav">
   <div class="brand-mini">
     <svg width="20" height="20" viewBox="0 0 26 26" fill="none">
-      <circle cx="9" cy="9" r="5.5" stroke="#d9a544" stroke-width="2"/>
-      <circle cx="17" cy="17" r="5.5" stroke="#3fc7b4" stroke-width="2"/>
+      <circle cx="9" cy="9" r="5.5" stroke="#ffffff" stroke-width="2"/>
+      <circle cx="17" cy="17" r="5.5" stroke="#86bc25" stroke-width="2"/>
     </svg>
     <span>TraceChain</span>
   </div>
   <button class="nav-arrow" id="nav-prev" onclick="stepPage(-1)" title="Previous page">‹</button>
-  <button class="nav-tab active" id="tab-dashboard" onclick="showPage('dashboard')">📊 Dashboard</button>
-  <button class="nav-tab" id="tab-assistant" onclick="showPage('assistant')">💬 Assistant</button>
+  <button class="nav-tab active" id="tab-dashboard" onclick="showPage('dashboard')">Dashboard</button>
+  <button class="nav-tab" id="tab-assistant" onclick="showPage('assistant')">Assistant</button>
   <button class="nav-arrow" id="nav-next" onclick="stepPage(1)" title="Next page">›</button>
   <div id="nav-live-dot"><span class="pulse-dot"></span> Live</div>
 </nav>
@@ -638,9 +821,11 @@
 <div id="page-wrap">
 
 <div id="page-dashboard" class="active">
+  <div class="section-bar">Command Center</div>
   <div class="dash-inner">
+    <div class="dash-content">
     <div class="dash-header">
-      <h1>Command Center <span class="live-badge"><span class="dot"></span>Live</span></h1>
+      <h1>Live operations <span class="live-badge"><span class="dot"></span>Live</span></h1>
       <p>Real-time view of every application and agent run across TraceChain.</p>
     </div>
 
@@ -655,22 +840,19 @@
     </div>
 
     <div class="hero-grid">
-      <div class="stat-card hero" style="--accent-color:var(--gold)">
-        <span class="s-icon">📝</span>
-        <div class="s-value" id="stat-applications" data-raw="0">0</div>
+      <div class="stat-card hero" style="--accent-color:var(--parrot)">
         <div class="s-label">Applications processed</div>
+        <div class="s-value" id="stat-applications" data-raw="0">0</div>
         <div class="s-sub" id="stat-applications-sub">From database</div>
       </div>
-      <div class="stat-card hero" style="--accent-color:var(--teal)">
-        <span class="s-icon">✅</span>
-        <div class="s-value" id="stat-approval-rate" data-raw="0">0%</div>
+      <div class="stat-card hero" style="--accent-color:var(--parrot-dark)">
         <div class="s-label">Approval rate</div>
+        <div class="s-value" id="stat-approval-rate" data-raw="0">0%</div>
         <div class="s-sub">Approved of all decisions made</div>
       </div>
-      <div class="stat-card hero" style="--accent-color:#8b6cff">
-        <span class="s-icon">🤖</span>
-        <div class="s-value" id="stat-agent-runs" data-raw="0">0</div>
+      <div class="stat-card hero" style="--accent-color:#1a1a1a">
         <div class="s-label">Agent executions</div>
+        <div class="s-value" id="stat-agent-runs" data-raw="0">0</div>
         <div class="s-sub">Across 4 independent agents</div>
       </div>
     </div>
@@ -699,38 +881,33 @@
         <h3>Decision outcomes</h3>
         <div class="decision-stack" id="decision-stack">
           <div class="seg approved" style="width:0%"></div>
-          <div class="seg review" style="width:0%"></div>
           <div class="seg rejected" style="width:0%"></div>
         </div>
         <div class="decision-legend">
           <span class="lg-item"><span class="sw approved"></span>Approved <b id="leg-approved">0</b></span>
-          <span class="lg-item"><span class="sw review"></span>Needs review <b id="leg-review">0</b></span>
           <span class="lg-item"><span class="sw rejected"></span>Rejected <b id="leg-rejected">0</b></span>
         </div>
         <div style="margin-top:18px; display:flex; gap:24px;">
           <div>
-            <div class="s-value" style="font-size:22px;" id="stat-avg-risk">0.0</div>
             <div class="s-sub">Avg. risk score /10</div>
+            <div class="s-value" style="font-size:22px; margin-top:6px;" id="stat-avg-risk">0.0</div>
           </div>
           <div>
-            <div class="s-value" style="font-size:22px;" id="stat-chain-rate">0%</div>
             <div class="s-sub">Chain verified rate</div>
+            <div class="s-value" style="font-size:22px; margin-top:6px;" id="stat-chain-rate">0%</div>
           </div>
         </div>
       </div>
     </div>
 
     <div class="mini-row">
-      <div class="mini-stat"><span class="mini-icon">💬</span><span class="mini-value" id="stat-queries" data-raw="0">0</span><span class="mini-label">questions answered</span></div>
-      <div class="mini-stat"><span class="mini-icon">🧾</span><span class="mini-value" id="stat-reasonings" data-raw="0">0</span><span class="mini-label">reasonings explained</span></div>
-    </div>
-
-    <div class="dash-panel" style="margin-bottom:20px;">
-      <h3>System status</h3>
-      <div class="status-row">
-        <span class="status-pill"><span class="dot" id="dot-orchestrator"></span><span id="txt-orchestrator">Orchestrator</span></span>
-        <span class="status-pill"><span class="dot" id="dot-gemini"></span><span id="txt-gemini">Gemini API</span></span>
-        <span class="status-pill"><span class="dot" id="dot-db"></span><span id="txt-db">Database</span></span>
+      <div class="mini-stat">
+        <span class="mini-label">Questions answered</span>
+        <span class="mini-value" id="stat-queries" data-raw="0">0</span>
+      </div>
+      <div class="mini-stat">
+        <span class="mini-label">Reasonings explained</span>
+        <span class="mini-value" id="stat-reasonings" data-raw="0">0</span>
       </div>
     </div>
 
@@ -741,31 +918,35 @@
       </div>
       <button id="dash-cta-btn" onclick="showPage('assistant')">Open Assistant →</button>
     </div>
+    </div><!-- /dash-content -->
   </div>
 </div>
 
 <div id="page-assistant">
 
 <aside id="sidebar">
-  <div class="brand">
-    <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-      <circle cx="9" cy="9" r="5.5" stroke="#d9a544" stroke-width="2"/>
-      <circle cx="17" cy="17" r="5.5" stroke="#3fc7b4" stroke-width="2"/>
-    </svg>
-    <span class="brand-word">TraceChain</span>
+  <div class="sidebar-live-head">
+    <h2>Current application</h2>
+    <span class="sidebar-live-badge"><span class="dot"></span>Live</span>
   </div>
-  <p class="brand-tag">Auditable loan decisions</p>
 
-  <div id="timeline" class="timeline"></div>
+  <div class="sidebar-scroll">
+    <div id="case-card" class="case-card visible">
+      <div class="case-row"><span>Applicant</span><span id="c-name">—</span></div>
+      <div class="case-row"><span>CIBIL score</span><span id="c-cibil">—</span></div>
+      <div class="case-row"><span>Loan amount</span><span id="c-amount">—</span></div>
+      <div class="case-row"><span>Tenure</span><span id="c-tenure">—</span></div>
+      <div class="case-row"><span>Aadhaar</span><span id="c-aadhaar" class="pending">Pending</span></div>
+      <div class="case-row"><span>Payslip</span><span id="c-payslip" class="pending">Pending</span></div>
+      <div class="case-row"><span>Bank statement</span><span id="c-bank" class="pending">Pending</span></div>
+    </div>
 
-  <div id="case-card" class="case-card">
-    <p class="case-title">Current application</p>
-    <div class="case-row"><span>Applicant</span><span id="c-name">—</span></div>
-    <div class="case-row"><span>CIBIL score</span><span id="c-cibil">—</span></div>
-    <div class="case-row"><span>Loan amount</span><span id="c-amount">—</span></div>
-    <div class="case-row"><span>Aadhaar</span><span id="c-aadhaar" class="pending">Pending</span></div>
-    <div class="case-row"><span>Payslip</span><span id="c-payslip" class="pending">Pending</span></div>
-    <div class="case-row"><span>Bank statement</span><span id="c-bank" class="pending">Pending</span></div>
+    <div id="decision-verdict" class="decision-verdict" aria-live="polite">
+      <div class="dv-thumb" id="dv-thumb">👍</div>
+      <p class="dv-label" id="dv-label">Approved</p>
+      <p class="dv-sub" id="dv-sub">Final loan decision</p>
+      <button type="button" class="trace-btn" id="trace-btn" onclick="openTracePage()">🔗 Trace</button>
+    </div>
   </div>
 
   <div id="sidebar-footer">
@@ -777,7 +958,6 @@
 <div id="main">
   <div id="topbar">
     <h1>Loan assistant</h1>
-    <span class="status" id="status-text">Welcome</span>
   </div>
   <div id="chat-wrap"><div id="chat"></div></div>
   <div id="composer">
@@ -789,21 +969,53 @@
 </div>
 
 </div><!-- /page-assistant -->
+
+<div id="page-trace">
+  <div class="section-bar">Decision Trace</div>
+  <div class="trace-inner">
+    <button type="button" class="trace-back" onclick="showPage('assistant')">← Back to Assistant</button>
+    <div class="trace-header">
+      <h1>Agent outcomes</h1>
+      <p>Combined agent outcomes for this application — plain words first.</p>
+    </div>
+    <div class="trace-body">
+
+    <div id="trace-final" class="trace-final">
+      <div class="tf-thumb" id="trace-final-thumb">👍</div>
+      <div>
+        <p class="tf-label" id="trace-final-label">—</p>
+        <p class="tf-sub" id="trace-final-sub">Final loan decision</p>
+      </div>
+    </div>
+
+    <p class="trace-section-title">Agent decisions</p>
+    <div id="trace-agent-list" class="trace-agent-list"></div>
+
+    <button type="button" class="why-btn" id="why-btn" onclick="showTraceDetails()">Why this decision?</button>
+
+    <div id="trace-details">
+      <p class="trace-section-title">Detailed agent explanations</p>
+      <div id="trace-detail-list"></div>
+    </div>
+    </div><!-- /trace-body -->
+  </div>
+</div>
+
 </div><!-- /page-wrap -->
 
 <script>
 const chatEl = document.getElementById('chat');
 const inputEl = document.getElementById('msg-input');
 const sendBtn = document.getElementById('send-btn');
-const timelineEl = document.getElementById('timeline');
-const statusText = document.getElementById('status-text');
 const healthDot = document.getElementById('health-dot');
 const healthText = document.getElementById('health-text');
 const caseCard = document.getElementById('case-card');
+const decisionVerdict = document.getElementById('decision-verdict');
+const traceBtn = document.getElementById('trace-btn');
 
 let sessionId = null;
 let currentUpload = null;
-let stepsCache = [];
+let lastResult = null;
 
 // ── health check ─────────────────────────────────────────────
 fetch('/api/health').then(r=>r.json()).then(d=>{
@@ -813,28 +1025,16 @@ fetch('/api/health').then(r=>r.json()).then(d=>{
     : 'Orchestrator offline — chat still works';
 }).catch(()=>{ healthDot.className='bad'; healthText.textContent='Backend unreachable'; });
 
-// ── timeline / sidebar ───────────────────────────────────────
-function renderTimeline(steps, activeIdx){
-  stepsCache = steps;
-  timelineEl.innerHTML = steps.map((label, i) => {
-    let cls = '';
-    if (i < activeIdx) cls = 'done';
-    else if (i === activeIdx) cls = 'active';
-    return `<div class="timeline-item ${cls}">
-      <div class="timeline-dot"></div>
-      <div class="timeline-label">${label}</div>
-    </div>`;
-  }).join('');
-}
-
+// ── sidebar application details ───────────────────────────────
 function renderCase(summary){
   if(!summary) return;
-  const any = summary.name || summary.cibil || summary.loan_amount || summary.aadhaar_uploaded || summary.payslip_uploaded || summary.bank_uploaded;
-  caseCard.classList.toggle('visible', !!any);
+  caseCard.classList.add('visible');
   document.getElementById('c-name').textContent = summary.name || '—';
   document.getElementById('c-cibil').textContent = summary.cibil || '—';
   document.getElementById('c-amount').textContent = summary.loan_amount
     ? '₹' + Number(summary.loan_amount).toLocaleString('en-IN') : '—';
+  document.getElementById('c-tenure').textContent = summary.tenure_months
+    ? summary.tenure_months + ' months' : '—';
   const a = document.getElementById('c-aadhaar');
   a.textContent = summary.aadhaar_uploaded ? 'Uploaded' : 'Pending';
   a.className = summary.aadhaar_uploaded ? 'ok' : 'pending';
@@ -846,13 +1046,129 @@ function renderCase(summary){
   b.className = summary.bank_uploaded ? 'ok' : 'pending';
 }
 
-function setStatus(stage, done){
-  const map = {
-    null: 'Welcome', name:'Collecting details', cibil:'Collecting details',
-    aadhaar_upload:'Awaiting documents', payslip_upload:'Awaiting documents',
-    loan_amount:'Loan amount', verifying:'Verifying application',
-  };
-  statusText.textContent = done ? 'Decision ready' : (map[stage] || 'Welcome');
+function normalizeFinalDecision(raw){
+  if(raw === 'Approved') return 'Approved';
+  if(!raw) return 'Rejected';
+  // Manual Review / Needs Review / anything else → Rejected
+  return 'Rejected';
+}
+
+function renderDecisionVerdict(result){
+  if(!result || result.error){
+    lastResult = null;
+    decisionVerdict.classList.remove('visible', 'approved', 'rejected', 'review');
+    traceBtn.classList.remove('visible');
+    return;
+  }
+  lastResult = result;
+  const raw = normalizeFinalDecision(result.loan_decision);
+  result.loan_decision = raw;
+  const isApproved = raw === 'Approved';
+  const cls = isApproved ? 'approved' : 'rejected';
+  const label = raw;
+  const thumb = isApproved ? '👍' : '👎';
+  const sub = isApproved
+    ? 'Loan application approved'
+    : 'Loan application rejected';
+
+  decisionVerdict.className = `decision-verdict visible ${cls}`;
+  document.getElementById('dv-thumb').textContent = thumb;
+  document.getElementById('dv-label').textContent = label;
+  document.getElementById('dv-sub').textContent = sub;
+  traceBtn.classList.add('visible');
+}
+
+function clearDecisionVerdict(){
+  lastResult = null;
+  decisionVerdict.classList.remove('visible', 'approved', 'rejected', 'review');
+  traceBtn.classList.remove('visible');
+}
+
+const AGENT_SHORT_NAMES = {
+  A001: 'Aadhaar',
+  A002: 'Payslip',
+  A003: 'Bank statement',
+  A004: 'CIBIL',
+};
+
+function agentShortName(agent){
+  if(AGENT_SHORT_NAMES[agent.agent_id]) return AGENT_SHORT_NAMES[agent.agent_id];
+  const name = (agent.agent_name || agent.agent_id || 'Agent').replace(/\s+Verification$/i, '').replace(/\s+Income Verification$/i, '').replace(/\s+Analysis$/i, '').replace(/\s+Score$/i, '');
+  return name || 'Agent';
+}
+
+function agentWordStatus(decisionOutput){
+  const d = (decisionOutput || '').toLowerCase();
+  if(['verified', 'approve', 'approved', 'low_risk', 'pass', 'passed'].includes(d)){
+    return { word: 'approved', cls: 'ok' };
+  }
+  if(['rejected', 'high_risk', 'high_risk_auto', 'fail', 'failed', 'deny', 'denied'].includes(d)){
+    return { word: 'rejected', cls: 'bad' };
+  }
+  return { word: 'needs review', cls: 'warn' };
+}
+
+function openTracePage(){
+  if(!lastResult || lastResult.error) return;
+  populateTracePage(lastResult);
+  showPage('trace');
+}
+
+function populateTracePage(result){
+  const raw = normalizeFinalDecision(result.loan_decision);
+  result.loan_decision = raw;
+  const isApproved = raw === 'Approved';
+  const cls = isApproved ? 'approved' : 'rejected';
+  const label = raw;
+  const thumb = isApproved ? '👍' : '👎';
+  const sub = isApproved
+    ? 'Loan application approved'
+    : 'Loan application rejected';
+
+  const finalEl = document.getElementById('trace-final');
+  finalEl.className = `trace-final ${cls}`;
+  document.getElementById('trace-final-thumb').textContent = thumb;
+  document.getElementById('trace-final-label').textContent = label;
+  document.getElementById('trace-final-sub').textContent = sub;
+
+  const agents = result.agent_breakdown || [];
+  const list = document.getElementById('trace-agent-list');
+  if(!agents.length){
+    list.innerHTML = '<p class="trace-empty">No agent outcomes available for this run.</p>';
+  } else {
+    list.innerHTML = agents.map(a => {
+      const status = agentWordStatus(a.decision_output);
+      return `<div class="trace-agent-row">
+        <span class="ta-name">${escapeHtml(agentShortName(a))}</span>
+        <span class="ta-word ${status.cls}">${status.word}</span>
+      </div>`;
+    }).join('');
+  }
+
+  const detailList = document.getElementById('trace-detail-list');
+  detailList.innerHTML = agents.map(a => {
+    const status = agentWordStatus(a.decision_output);
+    const conf = typeof a.confidence_score === 'number' ? `${(a.confidence_score * 100).toFixed(0)}% confidence` : '';
+    const risk = typeof a.composite_risk_score === 'number' ? `risk ${a.composite_risk_score.toFixed(1)}/10` : '';
+    const meta = [a.decision_output, conf, risk].filter(Boolean).join(' · ');
+    return `<div class="trace-detail-card">
+      <div class="td-head">
+        <span class="ta-word ${status.cls}">${status.word}</span>
+        <span class="td-name">${escapeHtml(agentShortName(a))}</span>
+        <span class="td-meta">${escapeHtml(meta)}</span>
+      </div>
+      <p class="td-body">${escapeHtml(a.reasoning || 'No further detail recorded.')}</p>
+    </div>`;
+  }).join('') || '<p class="trace-empty">No detailed agent reasoning available.</p>';
+
+  document.getElementById('trace-details').classList.remove('visible');
+  document.getElementById('why-btn').classList.remove('hidden');
+}
+
+function showTraceDetails(){
+  document.getElementById('trace-details').classList.add('visible');
+  document.getElementById('why-btn').classList.add('hidden');
+  document.getElementById('trace-details').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ── chat rendering helpers ───────────────────────────────────
@@ -985,11 +1301,11 @@ function gaugeSvg(score, colorVar){
   const r = 26, c = 2*Math.PI*r;
   const offset = c * (1 - pct);
   return `<svg class="gauge" width="72" height="72" viewBox="0 0 72 72">
-    <circle cx="36" cy="36" r="${r}" fill="none" stroke="#1e2540" stroke-width="6"/>
+    <circle cx="36" cy="36" r="${r}" fill="none" stroke="#eeeeee" stroke-width="6"/>
     <circle cx="36" cy="36" r="${r}" fill="none" stroke="${colorVar}" stroke-width="6"
       stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${offset}"
       transform="rotate(-90 36 36)"/>
-    <text x="36" y="41" text-anchor="middle" font-family="JetBrains Mono" font-size="14" fill="#eceef5">${score.toFixed(1)}</text>
+    <text x="36" y="41" text-anchor="middle" font-family="JetBrains Mono" font-size="14" fill="#000000">${score.toFixed(1)}</text>
   </svg>`;
 }
 
@@ -1001,7 +1317,7 @@ function addDecisionCard(result, chips){
   const decisionRaw = result.loan_decision;
   const decision = decisionRaw === 'Manual Review' ? 'Needs Review' : decisionRaw;
   const statusClass = decisionRaw === 'Approved' ? 'approved' : decisionRaw === 'Rejected' ? 'rejected' : 'review';
-  const color = decisionRaw === 'Approved' ? 'var(--teal)' : decisionRaw === 'Rejected' ? 'var(--danger)' : 'var(--warn)';
+  const color = decisionRaw === 'Approved' ? 'var(--parrot)' : decisionRaw === 'Rejected' ? 'var(--danger)' : 'var(--warn)';
   const oa = result.overall_accountability || {};
   const wrap = document.createElement('div');
   wrap.className = 'decision-card';
@@ -1045,15 +1361,14 @@ function addDecisionCard(result, chips){
 // ── server round trips ───────────────────────────────────────
 function handleServerResponse(data){
   sessionId = data.session_id;
-  renderTimeline(data.steps, data.step_index);
   renderCase(data.summary);
-  setStatus(data.flow_stage, data.done);
 
   if(data.result && !data.result.error){
-    // Announce the verdict in chat, then show the detailed decision card.
+    renderDecisionVerdict(data.result);
     if(data.reply) addBotBubble(data.reply);
-    addDecisionCard(data.result, data.chips);
+    addChips(data.chips);
   } else {
+    if(!data.done) clearDecisionVerdict();
     addBotBubble(data.reply);
     if(data.upload) addUploadCard(data.upload);
     addChips(data.chips);
@@ -1124,34 +1439,58 @@ inputEl.addEventListener('keydown', e => {
   }
 });
 
-// ── page navigation (Dashboard <-> Assistant) ──────────────────────
+// ── page navigation (Dashboard <-> Assistant <-> Trace) ────────────
 const PAGE_ORDER = ['dashboard', 'assistant'];
 
 function showPage(name){
   const dash = document.getElementById('page-dashboard');
   const asst = document.getElementById('page-assistant');
+  const trace = document.getElementById('page-trace');
   const tabDash = document.getElementById('tab-dashboard');
   const tabAsst = document.getElementById('tab-assistant');
   const jumpNext = document.getElementById('jump-next');
   const jumpPrev = document.getElementById('jump-prev');
+
+  dash.classList.remove('active');
+  asst.classList.remove('active');
+  trace.classList.remove('active');
+  tabDash.classList.remove('active');
+  tabAsst.classList.remove('active');
+
   if(name === 'dashboard'){
-    dash.classList.add('active'); asst.classList.remove('active');
-    tabDash.classList.add('active'); tabAsst.classList.remove('active');
-    jumpNext.style.display = 'flex'; jumpPrev.style.display = 'none';
+    dash.classList.add('active');
+    tabDash.classList.add('active');
+    jumpNext.style.display = 'flex';
+    jumpPrev.style.display = 'none';
+    jumpNext.onclick = () => showPage('assistant');
+    jumpNext.title = 'Go to Assistant';
     loadStats();
+  } else if(name === 'trace'){
+    trace.classList.add('active');
+    tabAsst.classList.add('active');
+    jumpNext.style.display = 'none';
+    jumpPrev.style.display = 'flex';
+    jumpPrev.onclick = () => showPage('assistant');
+    jumpPrev.title = 'Back to Assistant';
   } else {
-    asst.classList.add('active'); dash.classList.remove('active');
-    tabAsst.classList.add('active'); tabDash.classList.remove('active');
-    jumpNext.style.display = 'none'; jumpPrev.style.display = 'flex';
+    asst.classList.add('active');
+    tabAsst.classList.add('active');
+    jumpNext.style.display = 'none';
+    jumpPrev.style.display = 'flex';
+    jumpPrev.onclick = () => showPage('dashboard');
+    jumpPrev.title = 'Go to Dashboard';
   }
 }
 
 function currentPage(){
+  if(document.getElementById('page-trace').classList.contains('active')) return 'trace';
   return document.getElementById('page-dashboard').classList.contains('active') ? 'dashboard' : 'assistant';
 }
 
 function stepPage(delta){
-  const idx = PAGE_ORDER.indexOf(currentPage());
+  // Trace is opened from the sidebar button, not the main page swipe.
+  const base = currentPage() === 'trace' ? 'assistant' : currentPage();
+  const idx = PAGE_ORDER.indexOf(base);
   const next = (idx + delta + PAGE_ORDER.length) % PAGE_ORDER.length;
   showPage(PAGE_ORDER[next]);
 }
@@ -1232,13 +1571,6 @@ function renderAgentBars(perAgent, names, maxHint){
   });
 }
 
-function setStatusPill(dotId, txtId, ok, label){
-  const dot = document.getElementById(dotId);
-  const txt = document.getElementById(txtId);
-  dot.className = 'dot ' + (ok ? 'ok' : 'bad');
-  txt.textContent = label;
-}
-
 // Dashboard numbers come only from /api/stats (database when available).
 async function loadStats(){
   try{
@@ -1265,16 +1597,14 @@ async function loadStats(){
 
     const decisionCounts = (db && db.decision_breakdown) || live.decision_counts || {};
     const approved = decisionCounts['Approved'] || 0;
-    const review = decisionCounts['Manual Review'] || 0;
-    const rejected = decisionCounts['Rejected'] || 0;
-    const total = Math.max(approved + review + rejected, 1);
+    // Legacy Manual Review counts roll into Rejected for display.
+    const rejected = (decisionCounts['Rejected'] || 0) + (decisionCounts['Manual Review'] || 0);
+    const total = Math.max(approved + rejected, 1);
     animateNumber(document.getElementById('stat-approval-rate'), Math.round(approved / total * 100), { suffix: '%' });
     const stack = document.getElementById('decision-stack');
     stack.children[0].style.width = (approved / total * 100) + '%';
-    stack.children[1].style.width = (review / total * 100) + '%';
-    stack.children[2].style.width = (rejected / total * 100) + '%';
+    stack.children[1].style.width = (rejected / total * 100) + '%';
     document.getElementById('leg-approved').textContent = approved.toLocaleString('en-IN');
-    document.getElementById('leg-review').textContent = review.toLocaleString('en-IN');
     document.getElementById('leg-rejected').textContent = rejected.toLocaleString('en-IN');
 
     const avgRisk = db ? (db.avg_risk_score ?? 0) : 0;
@@ -1284,10 +1614,6 @@ async function loadStats(){
       ? db.chain_verified_rate
       : (live.chain_verified_rate ?? 0);
     document.getElementById('stat-chain-rate').textContent = Math.round(chainRate) + '%';
-
-    setStatusPill('dot-orchestrator', 'txt-orchestrator', data.orchestrator_available, data.orchestrator_available ? 'Orchestrator connected' : 'Orchestrator offline');
-    setStatusPill('dot-gemini', 'txt-gemini', data.gemini_configured, data.gemini_configured ? 'Gemini configured' : 'Gemini not configured');
-    setStatusPill('dot-db', 'txt-db', data.db_available, data.db_available ? 'Database connected' : 'Database offline');
   } catch(err){
     console.warn('Failed to load stats', err);
   }
