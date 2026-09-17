@@ -1,0 +1,1129 @@
+{
+  "agent_id": "A003",
+  "agent_version": "1.0",
+  "schema_version": "TraceChain-A3-v1",
+  "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+  "source_file": "agents/bank_statement/synthetic_data/bank_transactions.csv",
+  "records": [
+    {
+      "execution": {
+        "execution_id": "EXEC-BANK-b61cb34a-1602-408c-b880-a42389c0a7fe",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "agent_id": "A003",
+        "input_data": {
+          "account_id": "100001",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 60000.00 and average monthly expenses of INR 42367.83. Average monthly surplus is INR 17632.17; EMI-to-income ratio is 78.15% and savings ratio is 29.39%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "input_hash": "2097b9f903d2cc00853d35cc1e978d9d11564f62ad12ee2f5d854777e95a96b5",
+        "output_hash": "7b45d61e55618a9cb1e72ec15e6580f93c1742d7029ce30d766674b1b866ec43",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "start_time": "2026-09-13T08:14:08.077810+00:00",
+        "end_time": "2026-09-13T08:14:08.077810+00:00",
+        "status": "completed",
+        "sequence_number": 1
+      },
+      "decision": {
+        "decision_id": "DEC-BANK-670f4ac0-16d1-4311-a608-d0df26c87fe7",
+        "execution_id": "EXEC-BANK-b61cb34a-1602-408c-b880-a42389c0a7fe",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 0.8,
+        "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 60000.00 and average monthly expenses of INR 42367.83. Average monthly surplus is INR 17632.17; EMI-to-income ratio is 78.15% and savings ratio is 29.39%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+        "timestamp": "2026-09-13T08:14:08.077810+00:00"
+      },
+      "evidence": [
+        {
+          "evidence_id": "EVID-BANK-d075b5b5-40c9-4991-94a7-0c921dc90f5f",
+          "execution_id": "EXEC-BANK-b61cb34a-1602-408c-b880-a42389c0a7fe",
+          "source": "bank_transactions_csv",
+          "document_reference": "bank_transactions.csv",
+          "retrieval_score": 1.0,
+          "evidence_data": {
+            "account_id": "100001",
+            "transaction_count": 60,
+            "months_active": 6,
+            "average_monthly_income": 60000.0,
+            "average_monthly_expense": 42367.833333333336,
+            "average_monthly_surplus": 17632.166666666664,
+            "emi_to_income_ratio": 0.7814666666666666,
+            "savings_ratio": 0.2938694444444444,
+            "income_stability": 1.0,
+            "cash_withdrawal_ratio": 0.04696959564449445,
+            "negative_surplus_flag": 0,
+            "low_surplus_flag": 0,
+            "high_emi_flag": 1,
+            "negative_savings_flag": 0,
+            "low_savings_flag": 0,
+            "excessive_expense_flag": 0,
+            "high_cash_withdrawal_flag": 0,
+            "financial_risk_flag_count": 1,
+            "financial_health": "MODERATE_RISK",
+            "agent_score": 80
+          },
+          "evidence_hash": "9f57508bb15d486f9d1f95965c2e68ad99e6a087e6e5b91fcd5db2b79303d2d7",
+          "timestamp": "2026-09-13T08:14:08.077810+00:00"
+        }
+      ],
+      "accountability": {
+        "score_id": "ACC-BANK-538f161d-e559-4014-85ef-8d35f19dc9ae",
+        "execution_id": "EXEC-BANK-b61cb34a-1602-408c-b880-a42389c0a7fe",
+        "impact_score": 8,
+        "irreversibility_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 5.5,
+        "risk_level": "Medium",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-13T08:14:08.077810+00:00"
+      },
+      "provenance": {
+        "record_id": "PROV-BANK-20590b6a-dc80-481d-ab48-f5efed8133c8",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "execution_id": "EXEC-BANK-b61cb34a-1602-408c-b880-a42389c0a7fe",
+        "event_type": "agent_decision",
+        "timestamp": "2026-09-13T08:14:08.077810+00:00",
+        "input_hash": "2097b9f903d2cc00853d35cc1e978d9d11564f62ad12ee2f5d854777e95a96b5",
+        "output_hash": "7b45d61e55618a9cb1e72ec15e6580f93c1742d7029ce30d766674b1b866ec43",
+        "previous_record_hash": null,
+        "input_data": {
+          "account_id": "100001",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 60000.00 and average monthly expenses of INR 42367.83. Average monthly surplus is INR 17632.17; EMI-to-income ratio is 78.15% and savings ratio is 29.39%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "record_hash": "dedb677f383fda6afb995cdca7e48edbe13143b75c5003d4d5a377b2de341820"
+      }
+    },
+    {
+      "execution": {
+        "execution_id": "EXEC-BANK-22cd88a1-bd95-4adb-a42e-4f319144fe17",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "agent_id": "A003",
+        "input_data": {
+          "account_id": "100002",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 70000.00 and average monthly expenses of INR 42861.33. Average monthly surplus is INR 27138.67; EMI-to-income ratio is 70.56% and savings ratio is 38.77%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "input_hash": "3e3fc4fb9a038d3b6733a6dca03da2ab8d5ab2bcc5f1097cd4359b483d05dd29",
+        "output_hash": "c59876a75aa608f0cb7a582edeb51d1261973164110c2caeeb8d6b560e3eb040",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "start_time": "2026-09-13T08:14:08.077810+00:00",
+        "end_time": "2026-09-13T08:14:08.094412+00:00",
+        "status": "completed",
+        "sequence_number": 1
+      },
+      "decision": {
+        "decision_id": "DEC-BANK-b25d2ec0-25a2-4eb9-a8f5-5503de7a5505",
+        "execution_id": "EXEC-BANK-22cd88a1-bd95-4adb-a42e-4f319144fe17",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 0.8,
+        "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 70000.00 and average monthly expenses of INR 42861.33. Average monthly surplus is INR 27138.67; EMI-to-income ratio is 70.56% and savings ratio is 38.77%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+        "timestamp": "2026-09-13T08:14:08.094412+00:00"
+      },
+      "evidence": [
+        {
+          "evidence_id": "EVID-BANK-e696c964-ac0d-4c85-b3e5-fa4194824a30",
+          "execution_id": "EXEC-BANK-22cd88a1-bd95-4adb-a42e-4f319144fe17",
+          "source": "bank_transactions_csv",
+          "document_reference": "bank_transactions.csv",
+          "retrieval_score": 1.0,
+          "evidence_data": {
+            "account_id": "100002",
+            "transaction_count": 60,
+            "months_active": 6,
+            "average_monthly_income": 70000.0,
+            "average_monthly_expense": 42861.333333333336,
+            "average_monthly_surplus": 27138.666666666664,
+            "emi_to_income_ratio": 0.7055857142857143,
+            "savings_ratio": 0.38769523809523804,
+            "income_stability": 1.0,
+            "cash_withdrawal_ratio": 0.04919741180862316,
+            "negative_surplus_flag": 0,
+            "low_surplus_flag": 0,
+            "high_emi_flag": 1,
+            "negative_savings_flag": 0,
+            "low_savings_flag": 0,
+            "excessive_expense_flag": 0,
+            "high_cash_withdrawal_flag": 0,
+            "financial_risk_flag_count": 1,
+            "financial_health": "MODERATE_RISK",
+            "agent_score": 80
+          },
+          "evidence_hash": "6a733cb99ac8a83f13e550123c969955288fb99bdc2c14515852aec71edb1af2",
+          "timestamp": "2026-09-13T08:14:08.094412+00:00"
+        }
+      ],
+      "accountability": {
+        "score_id": "ACC-BANK-f7d0e58c-5e10-40cb-982d-c3df952d2f36",
+        "execution_id": "EXEC-BANK-22cd88a1-bd95-4adb-a42e-4f319144fe17",
+        "impact_score": 8,
+        "irreversibility_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 5.5,
+        "risk_level": "Medium",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-13T08:14:08.094412+00:00"
+      },
+      "provenance": {
+        "record_id": "PROV-BANK-1a1e1668-5cfc-420e-a59f-b7e31b255bb6",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "execution_id": "EXEC-BANK-22cd88a1-bd95-4adb-a42e-4f319144fe17",
+        "event_type": "agent_decision",
+        "timestamp": "2026-09-13T08:14:08.094412+00:00",
+        "input_hash": "3e3fc4fb9a038d3b6733a6dca03da2ab8d5ab2bcc5f1097cd4359b483d05dd29",
+        "output_hash": "c59876a75aa608f0cb7a582edeb51d1261973164110c2caeeb8d6b560e3eb040",
+        "previous_record_hash": "dedb677f383fda6afb995cdca7e48edbe13143b75c5003d4d5a377b2de341820",
+        "input_data": {
+          "account_id": "100002",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 70000.00 and average monthly expenses of INR 42861.33. Average monthly surplus is INR 27138.67; EMI-to-income ratio is 70.56% and savings ratio is 38.77%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "record_hash": "74424e7f74ced5da3b379244a1d3272c7bcb041ef00dc1f4a4447e6232afb5ba"
+      }
+    },
+    {
+      "execution": {
+        "execution_id": "EXEC-BANK-3f05d0db-e0b1-447b-8d94-f8b80f81c784",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "agent_id": "A003",
+        "input_data": {
+          "account_id": "100003",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "NOT_ELIGIBLE",
+          "confidence_score": 0.55,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 45000.00 and average monthly expenses of INR 44466.00. Average monthly surplus is INR 534.00; EMI-to-income ratio is 111.00% and savings ratio is 1.19%. Income stability score is 1.00. The surplus provides a limited repayment buffer. The EMI burden exceeds the 30% risk threshold. The savings ratio is below the 10% threshold. The observed position does not support sufficient repayment affordability.",
+          "financial_health": "HIGH_RISK",
+          "agent_score": 55
+        },
+        "input_hash": "921f89eb71e22c52e2fb3622f82afcf9fd3d157425c472311c35efb8945b6cdc",
+        "output_hash": "7eb3af5d70c251825f17440d99a211009cb9edf282f90c1389441407ba7f3021",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "start_time": "2026-09-13T08:14:08.094412+00:00",
+        "end_time": "2026-09-13T08:14:08.094412+00:00",
+        "status": "completed",
+        "sequence_number": 1
+      },
+      "decision": {
+        "decision_id": "DEC-BANK-3edf74e2-d6c7-422a-b2fc-5618c257c619",
+        "execution_id": "EXEC-BANK-3f05d0db-e0b1-447b-8d94-f8b80f81c784",
+        "decision_output": "NOT_ELIGIBLE",
+        "confidence_score": 0.55,
+        "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 45000.00 and average monthly expenses of INR 44466.00. Average monthly surplus is INR 534.00; EMI-to-income ratio is 111.00% and savings ratio is 1.19%. Income stability score is 1.00. The surplus provides a limited repayment buffer. The EMI burden exceeds the 30% risk threshold. The savings ratio is below the 10% threshold. The observed position does not support sufficient repayment affordability.",
+        "timestamp": "2026-09-13T08:14:08.094412+00:00"
+      },
+      "evidence": [
+        {
+          "evidence_id": "EVID-BANK-5f2fc9dc-39ae-4b84-9f54-c1efadb2ea2b",
+          "execution_id": "EXEC-BANK-3f05d0db-e0b1-447b-8d94-f8b80f81c784",
+          "source": "bank_transactions_csv",
+          "document_reference": "bank_transactions.csv",
+          "retrieval_score": 1.0,
+          "evidence_data": {
+            "account_id": "100003",
+            "transaction_count": 60,
+            "months_active": 6,
+            "average_monthly_income": 45000.0,
+            "average_monthly_expense": 44466.0,
+            "average_monthly_surplus": 534.0,
+            "emi_to_income_ratio": 1.11,
+            "savings_ratio": 0.011866666666666666,
+            "income_stability": 1.0,
+            "cash_withdrawal_ratio": 0.056233976521387126,
+            "negative_surplus_flag": 0,
+            "low_surplus_flag": 1,
+            "high_emi_flag": 1,
+            "negative_savings_flag": 0,
+            "low_savings_flag": 1,
+            "excessive_expense_flag": 0,
+            "high_cash_withdrawal_flag": 0,
+            "financial_risk_flag_count": 3,
+            "financial_health": "HIGH_RISK",
+            "agent_score": 55
+          },
+          "evidence_hash": "040fc15b81b33b79400a92af297fdb52b4ff45f25a824133344e2b8cce1a17be",
+          "timestamp": "2026-09-13T08:14:08.094412+00:00"
+        }
+      ],
+      "accountability": {
+        "score_id": "ACC-BANK-a363be99-51fa-46b2-ba4a-a00b7476ec26",
+        "execution_id": "EXEC-BANK-3f05d0db-e0b1-447b-8d94-f8b80f81c784",
+        "impact_score": 8,
+        "irreversibility_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 7.5,
+        "risk_level": "High",
+        "review_required": true,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-13T08:14:08.094412+00:00"
+      },
+      "provenance": {
+        "record_id": "PROV-BANK-37a9a016-eaeb-44d2-8cf8-75b08afa4d91",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "execution_id": "EXEC-BANK-3f05d0db-e0b1-447b-8d94-f8b80f81c784",
+        "event_type": "agent_decision",
+        "timestamp": "2026-09-13T08:14:08.094412+00:00",
+        "input_hash": "921f89eb71e22c52e2fb3622f82afcf9fd3d157425c472311c35efb8945b6cdc",
+        "output_hash": "7eb3af5d70c251825f17440d99a211009cb9edf282f90c1389441407ba7f3021",
+        "previous_record_hash": "74424e7f74ced5da3b379244a1d3272c7bcb041ef00dc1f4a4447e6232afb5ba",
+        "input_data": {
+          "account_id": "100003",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "NOT_ELIGIBLE",
+          "confidence_score": 0.55,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 45000.00 and average monthly expenses of INR 44466.00. Average monthly surplus is INR 534.00; EMI-to-income ratio is 111.00% and savings ratio is 1.19%. Income stability score is 1.00. The surplus provides a limited repayment buffer. The EMI burden exceeds the 30% risk threshold. The savings ratio is below the 10% threshold. The observed position does not support sufficient repayment affordability.",
+          "financial_health": "HIGH_RISK",
+          "agent_score": 55
+        },
+        "record_hash": "af9af3b1df1c88211213d23957431995270d168c5adbb8363117184a3e1c88d9"
+      }
+    },
+    {
+      "execution": {
+        "execution_id": "EXEC-BANK-c49e59fd-aa58-4ded-9c0e-4556328ef59f",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "agent_id": "A003",
+        "input_data": {
+          "account_id": "100004",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 85000.00 and average monthly expenses of INR 45710.17. Average monthly surplus is INR 39289.83; EMI-to-income ratio is 63.69% and savings ratio is 46.22%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "input_hash": "1668ea9c97cb76c6882d8f7e722d5b61ad6964d46488e730f3d0c6eeb1c1dc5c",
+        "output_hash": "2e82c637dd810e94c5de4ef3eb1d73d7cfbf2b4452bf6063dcbd0f4fd73c26f2",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "start_time": "2026-09-13T08:14:08.094412+00:00",
+        "end_time": "2026-09-13T08:14:08.111162+00:00",
+        "status": "completed",
+        "sequence_number": 1
+      },
+      "decision": {
+        "decision_id": "DEC-BANK-ac328b8c-7a46-4de1-8fb8-9942cbc32294",
+        "execution_id": "EXEC-BANK-c49e59fd-aa58-4ded-9c0e-4556328ef59f",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 0.8,
+        "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 85000.00 and average monthly expenses of INR 45710.17. Average monthly surplus is INR 39289.83; EMI-to-income ratio is 63.69% and savings ratio is 46.22%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+        "timestamp": "2026-09-13T08:14:08.111162+00:00"
+      },
+      "evidence": [
+        {
+          "evidence_id": "EVID-BANK-74196696-0408-4243-82bd-7cfa7f77fc4c",
+          "execution_id": "EXEC-BANK-c49e59fd-aa58-4ded-9c0e-4556328ef59f",
+          "source": "bank_transactions_csv",
+          "document_reference": "bank_transactions.csv",
+          "retrieval_score": 1.0,
+          "evidence_data": {
+            "account_id": "100004",
+            "transaction_count": 60,
+            "months_active": 6,
+            "average_monthly_income": 85000.0,
+            "average_monthly_expense": 45710.166666666664,
+            "average_monthly_surplus": 39289.833333333336,
+            "emi_to_income_ratio": 0.6368823529411765,
+            "savings_ratio": 0.4622333333333334,
+            "income_stability": 1.0,
+            "cash_withdrawal_ratio": 0.05100980452926227,
+            "negative_surplus_flag": 0,
+            "low_surplus_flag": 0,
+            "high_emi_flag": 1,
+            "negative_savings_flag": 0,
+            "low_savings_flag": 0,
+            "excessive_expense_flag": 0,
+            "high_cash_withdrawal_flag": 0,
+            "financial_risk_flag_count": 1,
+            "financial_health": "MODERATE_RISK",
+            "agent_score": 80
+          },
+          "evidence_hash": "733b453345450f4e766dc3f46c1189b38e5ff9a8d88438ba5040fb67945c084f",
+          "timestamp": "2026-09-13T08:14:08.111162+00:00"
+        }
+      ],
+      "accountability": {
+        "score_id": "ACC-BANK-77b01541-d044-42a1-a2bb-a09e845c5a84",
+        "execution_id": "EXEC-BANK-c49e59fd-aa58-4ded-9c0e-4556328ef59f",
+        "impact_score": 8,
+        "irreversibility_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 5.5,
+        "risk_level": "Medium",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-13T08:14:08.111162+00:00"
+      },
+      "provenance": {
+        "record_id": "PROV-BANK-41038bce-3af5-4a71-9e22-a4263bb36357",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "execution_id": "EXEC-BANK-c49e59fd-aa58-4ded-9c0e-4556328ef59f",
+        "event_type": "agent_decision",
+        "timestamp": "2026-09-13T08:14:08.111162+00:00",
+        "input_hash": "1668ea9c97cb76c6882d8f7e722d5b61ad6964d46488e730f3d0c6eeb1c1dc5c",
+        "output_hash": "2e82c637dd810e94c5de4ef3eb1d73d7cfbf2b4452bf6063dcbd0f4fd73c26f2",
+        "previous_record_hash": "af9af3b1df1c88211213d23957431995270d168c5adbb8363117184a3e1c88d9",
+        "input_data": {
+          "account_id": "100004",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 85000.00 and average monthly expenses of INR 45710.17. Average monthly surplus is INR 39289.83; EMI-to-income ratio is 63.69% and savings ratio is 46.22%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "record_hash": "d025cb764f13156635a101c291b8151a154565904a5d1d0c58b9a49ad74201f4"
+      }
+    },
+    {
+      "execution": {
+        "execution_id": "EXEC-BANK-e43f2b66-cef0-4b05-a31d-3ad3bc778a47",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "agent_id": "A003",
+        "input_data": {
+          "account_id": "100005",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "REVIEW",
+          "confidence_score": 0.65,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 55000.00 and average monthly expenses of INR 45036.83. Average monthly surplus is INR 9963.17; EMI-to-income ratio is 96.01% and savings ratio is 18.11%. Income stability score is 1.00. The surplus provides a limited repayment buffer. The EMI burden exceeds the 30% risk threshold. Some financial concerns require further review.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 65
+        },
+        "input_hash": "379ddeb77bd9d5ffc444c3b291c038b85d35ec9e8c0128a49f2db31f8d6082bf",
+        "output_hash": "de0c2665bf884fc3f80846ef3ba046ed32c91fe8063caf3e257258d086498c1e",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "start_time": "2026-09-13T08:14:08.111162+00:00",
+        "end_time": "2026-09-13T08:14:08.111162+00:00",
+        "status": "completed",
+        "sequence_number": 1
+      },
+      "decision": {
+        "decision_id": "DEC-BANK-489b699d-a96f-40b9-bd97-3b5b39967ea3",
+        "execution_id": "EXEC-BANK-e43f2b66-cef0-4b05-a31d-3ad3bc778a47",
+        "decision_output": "REVIEW",
+        "confidence_score": 0.65,
+        "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 55000.00 and average monthly expenses of INR 45036.83. Average monthly surplus is INR 9963.17; EMI-to-income ratio is 96.01% and savings ratio is 18.11%. Income stability score is 1.00. The surplus provides a limited repayment buffer. The EMI burden exceeds the 30% risk threshold. Some financial concerns require further review.",
+        "timestamp": "2026-09-13T08:14:08.111162+00:00"
+      },
+      "evidence": [
+        {
+          "evidence_id": "EVID-BANK-aefe9fb2-a06e-4457-833f-679416bf0165",
+          "execution_id": "EXEC-BANK-e43f2b66-cef0-4b05-a31d-3ad3bc778a47",
+          "source": "bank_transactions_csv",
+          "document_reference": "bank_transactions.csv",
+          "retrieval_score": 1.0,
+          "evidence_data": {
+            "account_id": "100005",
+            "transaction_count": 60,
+            "months_active": 6,
+            "average_monthly_income": 55000.0,
+            "average_monthly_expense": 45036.833333333336,
+            "average_monthly_surplus": 9963.166666666664,
+            "emi_to_income_ratio": 0.9600545454545455,
+            "savings_ratio": 0.1811484848484848,
+            "income_stability": 1.0,
+            "cash_withdrawal_ratio": 0.054440624525851064,
+            "negative_surplus_flag": 0,
+            "low_surplus_flag": 1,
+            "high_emi_flag": 1,
+            "negative_savings_flag": 0,
+            "low_savings_flag": 0,
+            "excessive_expense_flag": 0,
+            "high_cash_withdrawal_flag": 0,
+            "financial_risk_flag_count": 2,
+            "financial_health": "MODERATE_RISK",
+            "agent_score": 65
+          },
+          "evidence_hash": "bb31e868ca9bddb5c2c0b330d38fbee014df9c65a5526e024ef15573ced6540a",
+          "timestamp": "2026-09-13T08:14:08.111162+00:00"
+        }
+      ],
+      "accountability": {
+        "score_id": "ACC-BANK-a8c20f41-edc8-4dac-9e13-c577eabded47",
+        "execution_id": "EXEC-BANK-e43f2b66-cef0-4b05-a31d-3ad3bc778a47",
+        "impact_score": 8,
+        "irreversibility_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 5.5,
+        "risk_level": "Medium",
+        "review_required": true,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-13T08:14:08.111162+00:00"
+      },
+      "provenance": {
+        "record_id": "PROV-BANK-dc5a0b08-b933-4e1c-aee9-6fe813a55398",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "execution_id": "EXEC-BANK-e43f2b66-cef0-4b05-a31d-3ad3bc778a47",
+        "event_type": "agent_decision",
+        "timestamp": "2026-09-13T08:14:08.111162+00:00",
+        "input_hash": "379ddeb77bd9d5ffc444c3b291c038b85d35ec9e8c0128a49f2db31f8d6082bf",
+        "output_hash": "de0c2665bf884fc3f80846ef3ba046ed32c91fe8063caf3e257258d086498c1e",
+        "previous_record_hash": "d025cb764f13156635a101c291b8151a154565904a5d1d0c58b9a49ad74201f4",
+        "input_data": {
+          "account_id": "100005",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "REVIEW",
+          "confidence_score": 0.65,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 55000.00 and average monthly expenses of INR 45036.83. Average monthly surplus is INR 9963.17; EMI-to-income ratio is 96.01% and savings ratio is 18.11%. Income stability score is 1.00. The surplus provides a limited repayment buffer. The EMI burden exceeds the 30% risk threshold. Some financial concerns require further review.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 65
+        },
+        "record_hash": "23518af53813d35c849d328d4c51a9b124b3b95e3e9f834aa5473d9101d40084"
+      }
+    },
+    {
+      "execution": {
+        "execution_id": "EXEC-BANK-633bb260-dcf5-4e84-9350-27e83ea297bb",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "agent_id": "A003",
+        "input_data": {
+          "account_id": "100006",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "REVIEW",
+          "confidence_score": 0.65,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 50000.00 and average monthly expenses of INR 42060.00. Average monthly surplus is INR 7940.00; EMI-to-income ratio is 105.21% and savings ratio is 15.88%. Income stability score is 1.00. The surplus provides a limited repayment buffer. The EMI burden exceeds the 30% risk threshold. Some financial concerns require further review.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 65
+        },
+        "input_hash": "0cf608d51ebdb9ab5f46e468297d2de1be11819908e44be3e34b470e2758bfe0",
+        "output_hash": "677aeaca79bfc812e5b5c86661476eaee31a46b2b7dc74a007bed57b7eec2950",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "start_time": "2026-09-13T08:14:08.111162+00:00",
+        "end_time": "2026-09-13T08:14:08.111162+00:00",
+        "status": "completed",
+        "sequence_number": 1
+      },
+      "decision": {
+        "decision_id": "DEC-BANK-cd81ae28-667c-4058-9a2e-4f156fdfe268",
+        "execution_id": "EXEC-BANK-633bb260-dcf5-4e84-9350-27e83ea297bb",
+        "decision_output": "REVIEW",
+        "confidence_score": 0.65,
+        "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 50000.00 and average monthly expenses of INR 42060.00. Average monthly surplus is INR 7940.00; EMI-to-income ratio is 105.21% and savings ratio is 15.88%. Income stability score is 1.00. The surplus provides a limited repayment buffer. The EMI burden exceeds the 30% risk threshold. Some financial concerns require further review.",
+        "timestamp": "2026-09-13T08:14:08.111162+00:00"
+      },
+      "evidence": [
+        {
+          "evidence_id": "EVID-BANK-140ba8df-c911-47ca-bd60-9b2b3772b4d8",
+          "execution_id": "EXEC-BANK-633bb260-dcf5-4e84-9350-27e83ea297bb",
+          "source": "bank_transactions_csv",
+          "document_reference": "bank_transactions.csv",
+          "retrieval_score": 1.0,
+          "evidence_data": {
+            "account_id": "100006",
+            "transaction_count": 60,
+            "months_active": 6,
+            "average_monthly_income": 50000.0,
+            "average_monthly_expense": 42060.0,
+            "average_monthly_surplus": 7940.0,
+            "emi_to_income_ratio": 1.05206,
+            "savings_ratio": 0.1588,
+            "income_stability": 1.0,
+            "cash_withdrawal_ratio": 0.04686162624821683,
+            "negative_surplus_flag": 0,
+            "low_surplus_flag": 1,
+            "high_emi_flag": 1,
+            "negative_savings_flag": 0,
+            "low_savings_flag": 0,
+            "excessive_expense_flag": 0,
+            "high_cash_withdrawal_flag": 0,
+            "financial_risk_flag_count": 2,
+            "financial_health": "MODERATE_RISK",
+            "agent_score": 65
+          },
+          "evidence_hash": "b270f92a60065b1b9a20e28f240c2dce97a713eb5409a587d0d552b0481d0393",
+          "timestamp": "2026-09-13T08:14:08.111162+00:00"
+        }
+      ],
+      "accountability": {
+        "score_id": "ACC-BANK-47d9d367-75fc-415a-b874-09b9afee8b00",
+        "execution_id": "EXEC-BANK-633bb260-dcf5-4e84-9350-27e83ea297bb",
+        "impact_score": 8,
+        "irreversibility_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 5.5,
+        "risk_level": "Medium",
+        "review_required": true,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-13T08:14:08.111162+00:00"
+      },
+      "provenance": {
+        "record_id": "PROV-BANK-40d19783-e111-463c-8926-42fb8c45c0e9",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "execution_id": "EXEC-BANK-633bb260-dcf5-4e84-9350-27e83ea297bb",
+        "event_type": "agent_decision",
+        "timestamp": "2026-09-13T08:14:08.111162+00:00",
+        "input_hash": "0cf608d51ebdb9ab5f46e468297d2de1be11819908e44be3e34b470e2758bfe0",
+        "output_hash": "677aeaca79bfc812e5b5c86661476eaee31a46b2b7dc74a007bed57b7eec2950",
+        "previous_record_hash": "23518af53813d35c849d328d4c51a9b124b3b95e3e9f834aa5473d9101d40084",
+        "input_data": {
+          "account_id": "100006",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "REVIEW",
+          "confidence_score": 0.65,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 50000.00 and average monthly expenses of INR 42060.00. Average monthly surplus is INR 7940.00; EMI-to-income ratio is 105.21% and savings ratio is 15.88%. Income stability score is 1.00. The surplus provides a limited repayment buffer. The EMI burden exceeds the 30% risk threshold. Some financial concerns require further review.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 65
+        },
+        "record_hash": "d10f91e0f47b85c51426750eafe838b99a204ffc8a65dfb55fa3391ec1a7f0ef"
+      }
+    },
+    {
+      "execution": {
+        "execution_id": "EXEC-BANK-654c5a65-2503-450f-81f9-2519bc582b66",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "agent_id": "A003",
+        "input_data": {
+          "account_id": "100007",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 90000.00 and average monthly expenses of INR 43080.67. Average monthly surplus is INR 46919.33; EMI-to-income ratio is 55.11% and savings ratio is 52.13%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "input_hash": "ce171e57ffd342e06efbac8d814c44bfa36248fefb3cd555bcda63f642cd7499",
+        "output_hash": "5c0d80fecf21b7b6ecf8e683991291d572a1b2fc25c36db947e3f7deeb73606a",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "start_time": "2026-09-13T08:14:08.127719+00:00",
+        "end_time": "2026-09-13T08:14:08.127719+00:00",
+        "status": "completed",
+        "sequence_number": 1
+      },
+      "decision": {
+        "decision_id": "DEC-BANK-8038d400-e105-4566-8eb1-9ceee406cdee",
+        "execution_id": "EXEC-BANK-654c5a65-2503-450f-81f9-2519bc582b66",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 0.8,
+        "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 90000.00 and average monthly expenses of INR 43080.67. Average monthly surplus is INR 46919.33; EMI-to-income ratio is 55.11% and savings ratio is 52.13%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+        "timestamp": "2026-09-13T08:14:08.127719+00:00"
+      },
+      "evidence": [
+        {
+          "evidence_id": "EVID-BANK-58f6bbd3-8fba-43d6-b2c1-a6a899dfe62e",
+          "execution_id": "EXEC-BANK-654c5a65-2503-450f-81f9-2519bc582b66",
+          "source": "bank_transactions_csv",
+          "document_reference": "bank_transactions.csv",
+          "retrieval_score": 1.0,
+          "evidence_data": {
+            "account_id": "100007",
+            "transaction_count": 60,
+            "months_active": 6,
+            "average_monthly_income": 90000.0,
+            "average_monthly_expense": 43080.666666666664,
+            "average_monthly_surplus": 46919.333333333336,
+            "emi_to_income_ratio": 0.5511444444444444,
+            "savings_ratio": 0.521325925925926,
+            "income_stability": 1.0,
+            "cash_withdrawal_ratio": 0.05341916714380774,
+            "negative_surplus_flag": 0,
+            "low_surplus_flag": 0,
+            "high_emi_flag": 1,
+            "negative_savings_flag": 0,
+            "low_savings_flag": 0,
+            "excessive_expense_flag": 0,
+            "high_cash_withdrawal_flag": 0,
+            "financial_risk_flag_count": 1,
+            "financial_health": "MODERATE_RISK",
+            "agent_score": 80
+          },
+          "evidence_hash": "f035f35cfcf5d8d025fe77b09bfc3e477c357ada1a50880bc8bb18e6adf32cff",
+          "timestamp": "2026-09-13T08:14:08.127719+00:00"
+        }
+      ],
+      "accountability": {
+        "score_id": "ACC-BANK-a1ece0e5-40da-4294-b746-5fe7e1664feb",
+        "execution_id": "EXEC-BANK-654c5a65-2503-450f-81f9-2519bc582b66",
+        "impact_score": 8,
+        "irreversibility_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 5.5,
+        "risk_level": "Medium",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-13T08:14:08.127719+00:00"
+      },
+      "provenance": {
+        "record_id": "PROV-BANK-758bdaeb-0a2c-4ea8-916e-6648efc567eb",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "execution_id": "EXEC-BANK-654c5a65-2503-450f-81f9-2519bc582b66",
+        "event_type": "agent_decision",
+        "timestamp": "2026-09-13T08:14:08.127719+00:00",
+        "input_hash": "ce171e57ffd342e06efbac8d814c44bfa36248fefb3cd555bcda63f642cd7499",
+        "output_hash": "5c0d80fecf21b7b6ecf8e683991291d572a1b2fc25c36db947e3f7deeb73606a",
+        "previous_record_hash": "d10f91e0f47b85c51426750eafe838b99a204ffc8a65dfb55fa3391ec1a7f0ef",
+        "input_data": {
+          "account_id": "100007",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 90000.00 and average monthly expenses of INR 43080.67. Average monthly surplus is INR 46919.33; EMI-to-income ratio is 55.11% and savings ratio is 52.13%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "record_hash": "7d712f4c3a30fb77b97f58d3bd3b2a39286da4b0c6db4369203d19ccd4f7582e"
+      }
+    },
+    {
+      "execution": {
+        "execution_id": "EXEC-BANK-e9f8b8a7-189d-4805-a476-a904c8a5aefd",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "agent_id": "A003",
+        "input_data": {
+          "account_id": "100008",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "NOT_ELIGIBLE",
+          "confidence_score": 0.0,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 40000.00 and average monthly expenses of INR 41972.83. Average monthly surplus is INR -1972.83; EMI-to-income ratio is 118.30% and savings ratio is -4.93%. Income stability score is 1.00. Expenses exceed income. The EMI burden exceeds the 30% risk threshold. The savings ratio is negative or zero. Monthly expenses exceed monthly income. The observed position does not support sufficient repayment affordability.",
+          "financial_health": "HIGH_RISK",
+          "agent_score": 0
+        },
+        "input_hash": "fb2c7c623bd837d7d1254a59f040e2aa2b9352c144f0c976f72f57bf3e45d0a8",
+        "output_hash": "7c60322112c5c95c38217d36df2facdbfcc055657c189edf82e55f44ad5d03f3",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "start_time": "2026-09-13T08:14:08.127719+00:00",
+        "end_time": "2026-09-13T08:14:08.127719+00:00",
+        "status": "completed",
+        "sequence_number": 1
+      },
+      "decision": {
+        "decision_id": "DEC-BANK-c1d9255d-d871-4f75-bc5b-2e52c8b8ec36",
+        "execution_id": "EXEC-BANK-e9f8b8a7-189d-4805-a476-a904c8a5aefd",
+        "decision_output": "NOT_ELIGIBLE",
+        "confidence_score": 0.0,
+        "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 40000.00 and average monthly expenses of INR 41972.83. Average monthly surplus is INR -1972.83; EMI-to-income ratio is 118.30% and savings ratio is -4.93%. Income stability score is 1.00. Expenses exceed income. The EMI burden exceeds the 30% risk threshold. The savings ratio is negative or zero. Monthly expenses exceed monthly income. The observed position does not support sufficient repayment affordability.",
+        "timestamp": "2026-09-13T08:14:08.127719+00:00"
+      },
+      "evidence": [
+        {
+          "evidence_id": "EVID-BANK-20ef3af5-66cd-41b8-b621-eaaa049b008d",
+          "execution_id": "EXEC-BANK-e9f8b8a7-189d-4805-a476-a904c8a5aefd",
+          "source": "bank_transactions_csv",
+          "document_reference": "bank_transactions.csv",
+          "retrieval_score": 1.0,
+          "evidence_data": {
+            "account_id": "100008",
+            "transaction_count": 60,
+            "months_active": 6,
+            "average_monthly_income": 40000.0,
+            "average_monthly_expense": 41972.833333333336,
+            "average_monthly_surplus": -1972.8333333333358,
+            "emi_to_income_ratio": 1.18305,
+            "savings_ratio": -0.0493208333333334,
+            "income_stability": 1.0,
+            "cash_withdrawal_ratio": 0.050766964345985696,
+            "negative_surplus_flag": 1,
+            "low_surplus_flag": 0,
+            "high_emi_flag": 1,
+            "negative_savings_flag": 1,
+            "low_savings_flag": 0,
+            "excessive_expense_flag": 1,
+            "high_cash_withdrawal_flag": 0,
+            "financial_risk_flag_count": 4,
+            "financial_health": "HIGH_RISK",
+            "agent_score": 0
+          },
+          "evidence_hash": "34c1f566b2eb0cdd86405ddce835326e7e0a62bb69686b56ceb3a3405f97a559",
+          "timestamp": "2026-09-13T08:14:08.127719+00:00"
+        }
+      ],
+      "accountability": {
+        "score_id": "ACC-BANK-76fef1ad-db9b-46a9-88ce-fd3a14d150b1",
+        "execution_id": "EXEC-BANK-e9f8b8a7-189d-4805-a476-a904c8a5aefd",
+        "impact_score": 8,
+        "irreversibility_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 7.5,
+        "risk_level": "High",
+        "review_required": true,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-13T08:14:08.127719+00:00"
+      },
+      "provenance": {
+        "record_id": "PROV-BANK-d66d85b1-4389-4398-940b-1d6806fbe9a2",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "execution_id": "EXEC-BANK-e9f8b8a7-189d-4805-a476-a904c8a5aefd",
+        "event_type": "agent_decision",
+        "timestamp": "2026-09-13T08:14:08.127719+00:00",
+        "input_hash": "fb2c7c623bd837d7d1254a59f040e2aa2b9352c144f0c976f72f57bf3e45d0a8",
+        "output_hash": "7c60322112c5c95c38217d36df2facdbfcc055657c189edf82e55f44ad5d03f3",
+        "previous_record_hash": "7d712f4c3a30fb77b97f58d3bd3b2a39286da4b0c6db4369203d19ccd4f7582e",
+        "input_data": {
+          "account_id": "100008",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "NOT_ELIGIBLE",
+          "confidence_score": 0.0,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 40000.00 and average monthly expenses of INR 41972.83. Average monthly surplus is INR -1972.83; EMI-to-income ratio is 118.30% and savings ratio is -4.93%. Income stability score is 1.00. Expenses exceed income. The EMI burden exceeds the 30% risk threshold. The savings ratio is negative or zero. Monthly expenses exceed monthly income. The observed position does not support sufficient repayment affordability.",
+          "financial_health": "HIGH_RISK",
+          "agent_score": 0
+        },
+        "record_hash": "b6d1feb41d6e6ec2f168b200209411abace821f404336c995829aa1acf21429a"
+      }
+    },
+    {
+      "execution": {
+        "execution_id": "EXEC-BANK-03349caa-558a-4196-9148-31127fe01df7",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "agent_id": "A003",
+        "input_data": {
+          "account_id": "100009",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 65000.00 and average monthly expenses of INR 44430.17. Average monthly surplus is INR 20569.83; EMI-to-income ratio is 76.46% and savings ratio is 31.65%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "input_hash": "d5695cb4e9b66eb6b221d11dc2ee9c994900bd8d3a92810eb92fedcabc3bef93",
+        "output_hash": "2ea53d4c3314a45158db8006bd4bbb778c81dd0e28f874b7b97ca16464817817",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "start_time": "2026-09-13T08:14:08.127719+00:00",
+        "end_time": "2026-09-13T08:14:08.144399+00:00",
+        "status": "completed",
+        "sequence_number": 1
+      },
+      "decision": {
+        "decision_id": "DEC-BANK-7b11b89e-b5fe-40a3-863f-eaf8e1c61003",
+        "execution_id": "EXEC-BANK-03349caa-558a-4196-9148-31127fe01df7",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 0.8,
+        "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 65000.00 and average monthly expenses of INR 44430.17. Average monthly surplus is INR 20569.83; EMI-to-income ratio is 76.46% and savings ratio is 31.65%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+        "timestamp": "2026-09-13T08:14:08.144399+00:00"
+      },
+      "evidence": [
+        {
+          "evidence_id": "EVID-BANK-c483bd03-144a-4b5e-a954-692e15ef8bbe",
+          "execution_id": "EXEC-BANK-03349caa-558a-4196-9148-31127fe01df7",
+          "source": "bank_transactions_csv",
+          "document_reference": "bank_transactions.csv",
+          "retrieval_score": 1.0,
+          "evidence_data": {
+            "account_id": "100009",
+            "transaction_count": 60,
+            "months_active": 6,
+            "average_monthly_income": 65000.0,
+            "average_monthly_expense": 44430.166666666664,
+            "average_monthly_surplus": 20569.833333333336,
+            "emi_to_income_ratio": 0.7645692307692308,
+            "savings_ratio": 0.3164589743589744,
+            "income_stability": 1.0,
+            "cash_withdrawal_ratio": 0.058995202208709546,
+            "negative_surplus_flag": 0,
+            "low_surplus_flag": 0,
+            "high_emi_flag": 1,
+            "negative_savings_flag": 0,
+            "low_savings_flag": 0,
+            "excessive_expense_flag": 0,
+            "high_cash_withdrawal_flag": 0,
+            "financial_risk_flag_count": 1,
+            "financial_health": "MODERATE_RISK",
+            "agent_score": 80
+          },
+          "evidence_hash": "d66c9cd577f3685d31ba31a446fd069372754fba23830c2f52c1f309745f4964",
+          "timestamp": "2026-09-13T08:14:08.144399+00:00"
+        }
+      ],
+      "accountability": {
+        "score_id": "ACC-BANK-f2910098-977d-4983-86c5-64f23cccbbc2",
+        "execution_id": "EXEC-BANK-03349caa-558a-4196-9148-31127fe01df7",
+        "impact_score": 8,
+        "irreversibility_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 5.5,
+        "risk_level": "Medium",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-13T08:14:08.144399+00:00"
+      },
+      "provenance": {
+        "record_id": "PROV-BANK-01b77e9a-53ce-425b-9832-a3cd8860c452",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "execution_id": "EXEC-BANK-03349caa-558a-4196-9148-31127fe01df7",
+        "event_type": "agent_decision",
+        "timestamp": "2026-09-13T08:14:08.144399+00:00",
+        "input_hash": "d5695cb4e9b66eb6b221d11dc2ee9c994900bd8d3a92810eb92fedcabc3bef93",
+        "output_hash": "2ea53d4c3314a45158db8006bd4bbb778c81dd0e28f874b7b97ca16464817817",
+        "previous_record_hash": "b6d1feb41d6e6ec2f168b200209411abace821f404336c995829aa1acf21429a",
+        "input_data": {
+          "account_id": "100009",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 65000.00 and average monthly expenses of INR 44430.17. Average monthly surplus is INR 20569.83; EMI-to-income ratio is 76.46% and savings ratio is 31.65%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "record_hash": "476a0a8bd055e300e8e0a4cf5add137edeb9cd3bb6b64b678b7f48da09245230"
+      }
+    },
+    {
+      "execution": {
+        "execution_id": "EXEC-BANK-930a3704-c34d-455b-9048-5570bac415da",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "agent_id": "A003",
+        "input_data": {
+          "account_id": "100010",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 75000.00 and average monthly expenses of INR 43926.33. Average monthly surplus is INR 31073.67; EMI-to-income ratio is 62.39% and savings ratio is 41.43%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "input_hash": "337222136e38376f6b2a4f077dea2fba7c586ccfb01dad7597fbc06cdf0ca312",
+        "output_hash": "36f5fde5176b225a8eb5ac772103d8aabf3994dfcc73edf3ceb781d32a27e7e1",
+        "model_id": "bank-statement-rules",
+        "model_version": "1.0",
+        "rule_id": "bank-affordability-rules-v1",
+        "start_time": "2026-09-13T08:14:08.144399+00:00",
+        "end_time": "2026-09-13T08:14:08.144399+00:00",
+        "status": "completed",
+        "sequence_number": 1
+      },
+      "decision": {
+        "decision_id": "DEC-BANK-e2f91361-d5f0-423a-a4fc-9e33521c7965",
+        "execution_id": "EXEC-BANK-930a3704-c34d-455b-9048-5570bac415da",
+        "decision_output": "ELIGIBLE",
+        "confidence_score": 0.8,
+        "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 75000.00 and average monthly expenses of INR 43926.33. Average monthly surplus is INR 31073.67; EMI-to-income ratio is 62.39% and savings ratio is 41.43%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+        "timestamp": "2026-09-13T08:14:08.144399+00:00"
+      },
+      "evidence": [
+        {
+          "evidence_id": "EVID-BANK-f3ca71bd-dd7c-4da2-aa36-0c7fdaeac09b",
+          "execution_id": "EXEC-BANK-930a3704-c34d-455b-9048-5570bac415da",
+          "source": "bank_transactions_csv",
+          "document_reference": "bank_transactions.csv",
+          "retrieval_score": 1.0,
+          "evidence_data": {
+            "account_id": "100010",
+            "transaction_count": 60,
+            "months_active": 6,
+            "average_monthly_income": 75000.0,
+            "average_monthly_expense": 43926.333333333336,
+            "average_monthly_surplus": 31073.666666666664,
+            "emi_to_income_ratio": 0.6239333333333333,
+            "savings_ratio": 0.41431555555555555,
+            "income_stability": 1.0,
+            "cash_withdrawal_ratio": 0.058886469012513376,
+            "negative_surplus_flag": 0,
+            "low_surplus_flag": 0,
+            "high_emi_flag": 1,
+            "negative_savings_flag": 0,
+            "low_savings_flag": 0,
+            "excessive_expense_flag": 0,
+            "high_cash_withdrawal_flag": 0,
+            "financial_risk_flag_count": 1,
+            "financial_health": "MODERATE_RISK",
+            "agent_score": 80
+          },
+          "evidence_hash": "c16601a6e66228a03bda75fb2ad66ff1b0eef42eaf65c1cbc56dd3b3f8164e8c",
+          "timestamp": "2026-09-13T08:14:08.144399+00:00"
+        }
+      ],
+      "accountability": {
+        "score_id": "ACC-BANK-f2f661c1-0d89-4396-9dc9-fa1135d64cf8",
+        "execution_id": "EXEC-BANK-930a3704-c34d-455b-9048-5570bac415da",
+        "impact_score": 8,
+        "irreversibility_score": 7,
+        "explainability_score": 9,
+        "composite_risk_score": 5.5,
+        "risk_level": "Medium",
+        "review_required": false,
+        "scoring_model_version": "tracechain-scoring-v1",
+        "calculated_at": "2026-09-13T08:14:08.144399+00:00"
+      },
+      "provenance": {
+        "record_id": "PROV-BANK-20211259-2579-45cb-ad28-a94e9b695d40",
+        "orchestration_id": "ORCH-BANK-abe9e2c8-2a56-4faf-838c-0a378dc9a0d3",
+        "execution_id": "EXEC-BANK-930a3704-c34d-455b-9048-5570bac415da",
+        "event_type": "agent_decision",
+        "timestamp": "2026-09-13T08:14:08.144399+00:00",
+        "input_hash": "337222136e38376f6b2a4f077dea2fba7c586ccfb01dad7597fbc06cdf0ca312",
+        "output_hash": "36f5fde5176b225a8eb5ac772103d8aabf3994dfcc73edf3ceb781d32a27e7e1",
+        "previous_record_hash": "476a0a8bd055e300e8e0a4cf5add137edeb9cd3bb6b64b678b7f48da09245230",
+        "input_data": {
+          "account_id": "100010",
+          "transactions_file": "bank_transactions.csv",
+          "transaction_count": 60,
+          "date_range": [
+            "2022-01-01",
+            "2022-06-25"
+          ]
+        },
+        "output_data": {
+          "decision_output": "ELIGIBLE",
+          "confidence_score": 0.8,
+          "reasoning": "Transaction analysis across 6 active month(s) shows average monthly income of INR 75000.00 and average monthly expenses of INR 43926.33. Average monthly surplus is INR 31073.67; EMI-to-income ratio is 62.39% and savings ratio is 41.43%. Income stability score is 1.00. The EMI burden exceeds the 30% risk threshold. Overall indicators support repayment affordability.",
+          "financial_health": "MODERATE_RISK",
+          "agent_score": 80
+        },
+        "record_hash": "89820d5fdea3817c19f42861a1a4d71ebb77f4610bd0d78706b150e1a9315930"
+      }
+    }
+  ]
+}
