@@ -1,9 +1,17 @@
 import os
 import json
 import logging
+from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load shared orchestrator env first, then CIBIL-local overrides.
+for _env in (
+    Path(__file__).resolve().parents[2] / "orchestrator" / ".env",
+    Path(__file__).resolve().parents[1] / ".env",
+    Path(__file__).resolve().parent / ".env",
+):
+    if _env.exists():
+        load_dotenv(_env, override=True)
 
 _client = None
 
@@ -11,12 +19,26 @@ def get_client():
     global _client
     if _client is not None:
         return _client
-    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    api_key = (
+        os.getenv("CIBIL_GEMINI_API_KEY")
+        or os.getenv("GEMINI_API_KEY")
+        or os.getenv("GOOGLE_API_KEY")
+    )
     if not api_key:
         return None
     try:
         from google import genai
-        _client = genai.Client(api_key=api_key)
+        saved = {
+            k: os.environ.pop(k)
+            for k in ("GOOGLE_API_KEY", "GEMINI_API_KEY")
+            if k in os.environ
+        }
+        try:
+            os.environ["GOOGLE_API_KEY"] = api_key
+            _client = genai.Client(api_key=api_key)
+        finally:
+            os.environ.pop("GOOGLE_API_KEY", None)
+            os.environ.update(saved)
         return _client
     except Exception as exc:
         logging.warning("Could not initialize CIBIL genai Client: %s", exc)
@@ -60,7 +82,7 @@ Return ONLY valid JSON, no other text, in this exact shape:
   "explainability": <int 0-10, how clearly this decision can be justified from the score/utilization/precedent alone>
 }}"""
             response = client.models.generate_content(
-                model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
+                model=os.getenv("GEMINI_MODEL", "gemini-3.6-flash"),
                 contents=prompt,
             )
             text = response.text.strip().replace("```json", "").replace("```", "").strip()

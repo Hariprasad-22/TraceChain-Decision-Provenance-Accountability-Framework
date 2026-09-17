@@ -1,12 +1,12 @@
 {
-  "applications_started": 22,
-  "queries_answered": 8,
+  "applications_started": 29,
+  "queries_answered": 32,
   "reasonings_given": 15,
-  "decisions_total": 20,
-  "chain_verified_count": 20,
+  "decisions_total": 27,
+  "chain_verified_count": 27,
   "decision_counts": {
-    "Approved": 3,
-    "Rejected": 12,
+    "Approved": 5,
+    "Rejected": 17,
     "Manual Review": 5
   }
 }

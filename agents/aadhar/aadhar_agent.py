@@ -180,16 +180,24 @@ def aadhar_verification_agent(state: dict, orchestration_id: str = None) -> dict
     retrieved_text = "\n\n".join(f"[{r['id']}] {r['text']}" for r in retrieved)
 
     # --- LLM reasoning, grounded in retrieved policy clauses ---
-    system = ("You are an Aadhaar verification agent for a personal loan pipeline. "
-              "Decide 'verified', 'needs_review', or 'rejected' based on the extracted data, "
-              "any flagged concerns, and the retrieved policy clauses. Cite the specific clause "
-              "ID(s) you relied on in your reasoning.")
+    system = (
+        "You are an Aadhaar verification agent for a personal loan pipeline. "
+        "Decide 'verified', 'needs_review', or 'rejected' based on the extracted data, "
+        "any flagged concerns, and the retrieved policy clauses. "
+        "In reasoning you MUST write 3-5 audit sentences that explicitly name: "
+        "(1) the extracted Aadhaar name and DOB, (2) the application name, "
+        "(3) whether checksum/format checks passed, (4) the specific policy clause "
+        "ID(s) you relied on. Do NOT use a generic one-liner like "
+        "'Aadhaar verification completed successfully'."
+    )
     user = (
         f"Extracted Aadhaar data: {extracted}\n"
         f"Application name: {scoped['applicant_name']}\n"
         f"Loan amount: {scoped['loan_amount']}\n"
         f"Concerns flagged: {concerns or 'none'}\n\n"
-        f"Retrieved policy clauses:\n{retrieved_text}"
+        f"Retrieved policy clauses:\n{retrieved_text}\n\n"
+        "Return JSON with decision_output, confidence_score, reasoning, risk_factors. "
+        "The reasoning must be unique to this applicant's extracted fields."
     )
     llm_result = call_agent_llm(system, user)
     validate_llm_output(llm_result, REQUIRED_FIELDS)

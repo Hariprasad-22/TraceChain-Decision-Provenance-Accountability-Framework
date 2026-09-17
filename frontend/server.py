@@ -159,7 +159,7 @@ app.add_middleware(
 
 # ─── Gemini (general loan/credit Q&A, out of the orchestrator's scope) ────────
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
 # Keep both env names populated so agent LLM clients (aadhaar/cibil) see the key.
 if GEMINI_API_KEY:
     os.environ.setdefault("GEMINI_API_KEY", GEMINI_API_KEY)
@@ -167,14 +167,67 @@ if GEMINI_API_KEY:
     os.environ.setdefault("GEMINI_MODEL", GEMINI_MODEL)
 
 LOAN_SYSTEM_PROMPT = (
-    "You are the general-knowledge assistant embedded inside TraceChain, a bank "
-    "loan platform. Answer ONLY questions about loans, credit, EMIs, interest "
-    "rates, CIBIL/credit scores, loan eligibility, documentation, and personal "
-    "finance/banking in general terms. Keep answers under 100 words, factual and "
-    "neutral, and never give specific individualized financial or legal advice. "
-    "If the user's message is NOT about loans, credit, or banking/personal "
-    "finance, reply with exactly the single token OUT_OF_SCOPE and nothing else."
+    "You are TraceChain's loan assistant. Answer ONLY using TraceChain's process below. "
+    "Keep answers to 2-4 short sentences. Plain language. No generic bank marketing.\n\n"
+    "TraceChain facts:\n"
+    "- Personal loan flow: name → Aadhaar image → payslip → bank statement (CSV/Excel) "
+    "→ loan amount → tenure (1–60 months).\n"
+    "- Four agents check: Aadhaar identity, payslip income, bank statement, CIBIL score.\n"
+    "- CIBIL is a 300–900 credit score; higher is better for approval.\n"
+    "- Documents needed here: Aadhaar image, payslip, and bank statement file.\n"
+    "- Affordability rule: EMI should be 30%–50% of verified net monthly salary "
+    "(below 30% or above 50% → rejected).\n"
+    "- Demo interest assumption for EMI: 12% p.a.\n"
+    "- Final result is Approved or Rejected; Trace shows each agent's outcome.\n"
+    "If the question is unrelated to loans/credit/TraceChain, reply with exactly OUT_OF_SCOPE."
 )
+
+# Fast path for common chips — no Gemini round-trip.
+_TRACECHAIN_FAQ = {
+    "cibil": (
+        "A CIBIL score is a credit score from 300 to 900. TraceChain uses it in the "
+        "CIBIL agent check — a higher score supports approval; a very low score increases rejection risk."
+    ),
+    "documents": (
+        "For TraceChain you need three uploads: an Aadhaar image, a payslip (PDF or image), "
+        "and a bank statement (CSV or Excel). Then enter loan amount and tenure (1–60 months)."
+    ),
+    "emi": (
+        "EMI is your monthly repayment. TraceChain checks that EMI is between 30% and 50% of "
+        "your verified payslip net salary (demo rate 12% p.a.). Outside that range, the payslip agent rejects."
+    ),
+    "eligibility": (
+        "TraceChain approves when Aadhaar, payslip, bank statement, and CIBIL checks pass, "
+        "and EMI is within 30%–50% of net salary. Any hard fail from an agent leads to Rejected."
+    ),
+    "apply": (
+        "Say **Apply for a loan**. You'll give your name, upload Aadhaar, payslip, and bank statement, "
+        "then enter loan amount and tenure. Agents verify everything and return Approved or Rejected."
+    ),
+    "tenure": (
+        "Tenure is the repayment period in months. In TraceChain you can choose 1 to 60 months; "
+        "it is used with the loan amount to calculate EMI for the affordability check."
+    ),
+}
+
+
+def _faq_answer(question: str) -> Optional[str]:
+    """Return a short TraceChain-grounded answer for common questions."""
+    t = (question or "").lower()
+    if "cibil" in t or "credit score" in t:
+        return _TRACECHAIN_FAQ["cibil"]
+    if "document" in t or "papers" in t or "what do i need" in t or "upload" in t:
+        return _TRACECHAIN_FAQ["documents"]
+    if re.search(r"\bemi\b", t) or "installment" in t or "affordab" in t:
+        return _TRACECHAIN_FAQ["emi"]
+    if "eligib" in t or "qualify" in t or "how.*approv" in t:
+        return _TRACECHAIN_FAQ["eligibility"]
+    if "how.*apply" in t or "start.*application" in t:
+        return _TRACECHAIN_FAQ["apply"]
+    if "tenure" in t or "repayment period" in t or "how many months" in t:
+        return _TRACECHAIN_FAQ["tenure"]
+    return None
+
 
 LOAN_KEYWORDS = {
     "loan", "loans", "cibil", "credit", "emi", "interest", "bank", "aadhaar",
@@ -271,15 +324,22 @@ def ask_gemini(question: str) -> Optional[str]:
         return None
 
     models = [GEMINI_MODEL]
-    for fallback in ("gemini-2.5-flash", "gemini-flash-latest"):
+    for fallback in ("gemini-3.6-flash", "gemini-flash-latest", "gemini-2.5-flash"):
         if fallback not in models:
             models.append(fallback)
 
-    payload = {
-        "system_instruction": {"parts": [{"text": LOAN_SYSTEM_PROMPT}]},
-        "contents": [{"role": "user", "parts": [{"text": question}]}],
-        "generationConfig": {"maxOutputTokens": 220, "temperature": 0.4},
-    }
+    # gemini-3.6-flash spends a large share of maxOutputTokens on internal
+    # "thoughts"; a low cap (e.g. 220) left almost no room for the visible
+    # answer and truncated mid-sentence. Disable thinking when supported and
+    # keep a high token budget as a safety net.
+    gen_configs = [
+        {
+            "maxOutputTokens": 2048,
+            "temperature": 0.4,
+            "thinkingConfig": {"thinkingBudget": 0},
+        },
+        {"maxOutputTokens": 2048, "temperature": 0.4},
+    ]
 
     last_error = None
     for model in models:
@@ -287,31 +347,45 @@ def ask_gemini(question: str) -> Optional[str]:
             f"https://generativelanguage.googleapis.com/v1beta/models/"
             f"{model}:generateContent?key={GEMINI_API_KEY}"
         )
-        req = urllib.request.Request(
-            url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
-        try:
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-            parts = (
-                data.get("candidates", [{}])[0]
-                .get("content", {})
-                .get("parts", [])
+        for gen_cfg in gen_configs:
+            payload = {
+                "system_instruction": {"parts": [{"text": LOAN_SYSTEM_PROMPT}]},
+                "contents": [{"role": "user", "parts": [{"text": question}]}],
+                "generationConfig": gen_cfg,
+            }
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
             )
-            texts = [p.get("text", "").strip() for p in parts if p.get("text")]
-            text = "\n".join(t for t in texts if t).strip()
-            if text:
-                if model != GEMINI_MODEL:
-                    logger.info("Gemini answered via fallback model %s", model)
-                return text
-            last_error = f"empty response from {model}"
-        except Exception as exc:  # noqa: BLE001
-            last_error = f"{model}: {exc}"
-            logger.warning("Gemini call failed (%s)", last_error)
-            continue
+            try:
+                with urllib.request.urlopen(req, timeout=45) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                candidate = (data.get("candidates") or [{}])[0]
+                finish = (candidate.get("finishReason") or "").upper()
+                parts = candidate.get("content", {}).get("parts", []) or []
+                # Skip internal thought parts; only keep the visible answer text.
+                texts = [
+                    (p.get("text") or "").strip()
+                    for p in parts
+                    if p.get("text") and not p.get("thought")
+                ]
+                text = "\n".join(t for t in texts if t).strip()
+                if text and finish not in {"MAX_TOKENS", "LENGTH"}:
+                    if model != GEMINI_MODEL:
+                        logger.info("Gemini answered via fallback model %s", model)
+                    return text
+                if text and finish in {"MAX_TOKENS", "LENGTH"}:
+                    # Truncated — try next config/model with more room / no thinking.
+                    last_error = f"truncated response from {model} ({finish})"
+                    logger.warning("Gemini truncated on %s (%s); retrying", model, finish)
+                    continue
+                last_error = f"empty response from {model} ({finish or 'no finishReason'})"
+            except Exception as exc:  # noqa: BLE001
+                last_error = f"{model}: {exc}"
+                logger.warning("Gemini call failed (%s)", last_error)
+                continue
 
     logger.warning("All Gemini model attempts failed: %s", last_error)
     return None
@@ -325,6 +399,9 @@ def general_loan_answer(question: str, assume_relevant: bool = False) -> str:
     documents do I need?"), so we skip the out-of-scope refusal in that context.
     """
     bump_stat("queries_answered")
+    faq = _faq_answer(question)
+    if faq:
+        return faq
     reply = ask_gemini(question)
     if reply is not None:
         if reply.strip().upper().startswith("OUT_OF_SCOPE") and not assume_relevant:
@@ -340,10 +417,9 @@ def general_loan_answer(question: str, assume_relevant: bool = False) -> str:
     # Gemini unavailable — degrade gracefully.
     if assume_relevant or _looks_loan_related(question):
         return (
-            "I'd normally look that up for you 🔍, but the general knowledge assistant "
-            "isn't reachable right now (check `GEMINI_API_KEY` in your `.env`). "
-            "I can still help you **apply for a loan** and explain your decision "
-            "once it's processed."
+            "In TraceChain: upload Aadhaar, payslip, and bank statement, then enter loan amount "
+            "and tenure (1–60 months). Agents check identity, income, bank activity, and CIBIL; "
+            "EMI must be 30%–50% of net salary for approval."
         )
     return (
         "I can only help with loan, credit, and banking-related questions here 🙂. "

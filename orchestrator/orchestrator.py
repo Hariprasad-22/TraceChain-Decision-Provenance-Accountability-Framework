@@ -54,7 +54,12 @@ _gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 if _gemini_key:
     os.environ.setdefault("GEMINI_API_KEY", _gemini_key)
     os.environ.setdefault("GOOGLE_API_KEY", _gemini_key)
-os.environ.setdefault("GEMINI_MODEL", os.getenv("GEMINI_MODEL", "gemini-2.5-flash"))
+# Per-agent keys (optional overrides from .env)
+if os.getenv("AADHAAR_GEMINI_API_KEY"):
+    os.environ["AADHAAR_GEMINI_API_KEY"] = os.getenv("AADHAAR_GEMINI_API_KEY")
+if os.getenv("CIBIL_GEMINI_API_KEY"):
+    os.environ["CIBIL_GEMINI_API_KEY"] = os.getenv("CIBIL_GEMINI_API_KEY")
+os.environ.setdefault("GEMINI_MODEL", os.getenv("GEMINI_MODEL", "gemini-3.6-flash"))
 
 ORCHESTRATOR_VERSION = os.getenv("ORCHESTRATOR_VERSION", "v1.0.0")
 

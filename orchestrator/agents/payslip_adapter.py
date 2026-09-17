@@ -48,29 +48,31 @@ try:
 except ImportError:  # pragma: no cover
     from name_match import annotate_name_mismatch
 
-# Load the real payslip module directly from its source file to avoid legacy
-# folder path assumptions and namespace collisions.
 _ORCH_DIR = Path(__file__).resolve().parent.parent
 _PAYSLIP_DIR = _ORCH_DIR.parent / "agents" / "payslip"
 _PAYSLIP_FILE = _PAYSLIP_DIR / "main.py"
 
-prepare_agent_import(_PAYSLIP_DIR)
-try:
-    if not _PAYSLIP_FILE.exists():
-        raise FileNotFoundError(f"Payslip agent file not found at {_PAYSLIP_FILE}")
-
-    _spec = importlib.util.spec_from_file_location("tracechain_payslip_agent", _PAYSLIP_FILE)
-    if _spec is None or _spec.loader is None:
-        raise ImportError(f"Could not create import spec for {_PAYSLIP_FILE}")
-
-    _payslip_module = importlib.util.module_from_spec(_spec)
-    _spec.loader.exec_module(_payslip_module)
-    _payslip_build_execution = _payslip_module.build_execution
-finally:
-    restore_orchestrator_path(_ORCH_DIR)
-
 AGENT_ID        = "A002"
 SEQUENCE_NUMBER = 2
+
+
+def _load_payslip_build_execution():
+    """Reload payslip main.py so reasoning changes apply without stale imports."""
+    prepare_agent_import(_PAYSLIP_DIR)
+    try:
+        if not _PAYSLIP_FILE.exists():
+            raise FileNotFoundError(f"Payslip agent file not found at {_PAYSLIP_FILE}")
+        for key in list(sys.modules):
+            if key in {"tracechain_payslip_agent"} or key.startswith("tracechain_payslip"):
+                del sys.modules[key]
+        _spec = importlib.util.spec_from_file_location("tracechain_payslip_agent", _PAYSLIP_FILE)
+        if _spec is None or _spec.loader is None:
+            raise ImportError(f"Could not create import spec for {_PAYSLIP_FILE}")
+        _payslip_module = importlib.util.module_from_spec(_spec)
+        _spec.loader.exec_module(_payslip_module)
+        return _payslip_module.build_execution
+    finally:
+        restore_orchestrator_path(_ORCH_DIR)
 
 
 def _scope(state: dict) -> dict:
@@ -173,6 +175,7 @@ def run(state: dict, orchestration_id: str) -> dict:
         scoped.get("repayment_period_months"),
     )
 
+    _payslip_build_execution = _load_payslip_build_execution()
     raw = _payslip_build_execution(
         account_id=account_id,
         aadhaar_record=aadhaar_record,
@@ -196,8 +199,9 @@ def run(state: dict, orchestration_id: str) -> dict:
         logger.warning("[A002] Name mismatch annotated (decision left as agent returned)")
 
     logger.info(
-        "[A002] Done — decision=%s confidence=%.2f",
+        "[A002] Done — decision=%s confidence=%.2f reasoning=%s",
         result["decision"]["decision_output"],
         result["decision"]["confidence_score"],
+        (result["decision"].get("reasoning") or "")[:160],
     )
     return result

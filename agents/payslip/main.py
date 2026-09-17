@@ -525,6 +525,155 @@ def verify_identity(
 
 
 # =========================================================
+# EMI / AFFORDABILITY (original payslip agent rules)
+# =========================================================
+
+MIN_EMI_PERCENT = 30.0
+MAX_EMI_PERCENT = 50.0
+ANNUAL_INTEREST_RATE = 12.0  # Demo/project assumption
+
+
+def calculate_emi(loan_amount, repayment_months, annual_interest_rate=ANNUAL_INTEREST_RATE):
+    monthly_rate = annual_interest_rate / 12 / 100
+    if monthly_rate == 0:
+        return round(loan_amount / repayment_months, 2)
+    factor = (1 + monthly_rate) ** repayment_months
+    return round(loan_amount * monthly_rate * factor / (factor - 1), 2)
+
+
+def classify_emi(emi, net_salary):
+    percent = (emi / net_salary) * 100
+    if percent < MIN_EMI_PERCENT:
+        return percent, "below_30_percent"
+    if percent <= MAX_EMI_PERCENT:
+        return percent, "within_30_to_50_percent"
+    return percent, "above_50_percent"
+
+
+def build_original_agent_decision(
+    aadhaar_record,
+    payslip_data,
+    declared_income,
+    loan_amount=None,
+    repayment_period_months=None,
+):
+    """
+    Produce the original payslip-agent decision + reasoning used by the
+    DYNAMIC / LLM agent scripts (identity → salary math → EMI affordability).
+    """
+    identity = verify_identity(aadhaar_record, payslip_data)
+    salary_math_valid = verify_salary_math(payslip_data)
+    verified_net = payslip_data.get("net_salary")
+    emp = (payslip_data.get("employee_name") or "unknown").strip()
+    ref = (aadhaar_record.get("name") or "unknown").strip()
+    gross = payslip_data.get("gross_salary")
+    deductions = payslip_data.get("total_deductions")
+
+    if not identity["identity_verified"]:
+        return {
+            "decision": "needs_review",
+            "confidence": 0.90,
+            "reasoning": (
+                f"Payslip employee '{emp}' does not match Aadhaar reference '{ref}' "
+                f"(name_match={identity.get('name_match')}, "
+                f"dob_match={identity.get('dob_match')}). Manual review is required "
+                f"before using this payslip for the loan."
+            ),
+        }
+
+    if not salary_math_valid:
+        return {
+            "decision": "needs_review",
+            "confidence": 0.85,
+            "reasoning": (
+                f"For '{emp}', gross ₹{gross:,.2f} minus deductions ₹{deductions:,.2f} "
+                f"does not match stated net ₹{verified_net:,.2f}. The salary components "
+                f"are not mathematically consistent."
+            ),
+        }
+
+    # Optional declared-income consistency check when provided.
+    if (
+        declared_income is not None
+        and verified_net is not None
+        and not same_money(declared_income, verified_net)
+    ):
+        return {
+            "decision": "rejected",
+            "confidence": 0.97,
+            "reasoning": (
+                f"Declared income of ₹{declared_income:,.2f} is higher than the "
+                f"payslip-supported income of ₹{verified_net:,.2f} for employee '{emp}'."
+            ),
+        }
+
+    # Original agent path: EMI affordability when loan + tenure are available.
+    if (
+        isinstance(loan_amount, (int, float))
+        and loan_amount > 0
+        and isinstance(repayment_period_months, int)
+        and repayment_period_months > 0
+        and isinstance(verified_net, (int, float))
+        and verified_net > 0
+    ):
+        emi = calculate_emi(float(loan_amount), int(repayment_period_months))
+        ratio, status = classify_emi(emi, float(verified_net))
+        max_affordable = verified_net * MAX_EMI_PERCENT / 100
+
+        if status == "above_50_percent":
+            return {
+                "decision": "rejected",
+                "confidence": 0.96,
+                "reasoning": (
+                    f"The employee identity matches the Aadhaar reference ({emp}), "
+                    f"the salary calculation is internally consistent "
+                    f"(gross ₹{gross:,.2f} − deductions ₹{deductions:,.2f} = net "
+                    f"₹{verified_net:,.2f}), but the calculated EMI of ₹{emi:,.2f} "
+                    f"is {ratio:.2f}% of the verified net salary, which is above the "
+                    f"maximum allowed 50% affordability limit of ₹{max_affordable:,.2f}."
+                ),
+            }
+        if status == "below_30_percent":
+            return {
+                "decision": "rejected",
+                "confidence": 0.95,
+                "reasoning": (
+                    f"The employee identity matches the Aadhaar reference ({emp}), "
+                    f"the salary calculation is internally consistent, but the "
+                    f"calculated EMI of ₹{emi:,.2f} is {ratio:.2f}% of the verified "
+                    f"net salary (loan ₹{loan_amount:,.2f} / {repayment_period_months} months), "
+                    f"which is below the configured 30% minimum affordability threshold. "
+                    f"Therefore the loan application is rejected under the configured "
+                    f"project policy."
+                ),
+            }
+        return {
+            "decision": "verified",
+            "confidence": 0.95,
+            "reasoning": (
+                f"The employee identity matches the Aadhaar reference ({emp}), the salary "
+                f"calculation is internally consistent (gross ₹{gross:,.2f} − deductions "
+                f"₹{deductions:,.2f} = net ₹{verified_net:,.2f}), and the calculated EMI of "
+                f"₹{emi:,.2f} is {ratio:.2f}% of the verified net salary for loan "
+                f"₹{loan_amount:,.2f} over {repayment_period_months} months, which is within "
+                f"the configured 30%-50% affordability range."
+            ),
+        }
+
+    # No loan/tenure: still return the original identity+salary explanation.
+    return {
+        "decision": "verified",
+        "confidence": 0.95,
+        "reasoning": (
+            f"The employee identity matches the Aadhaar reference ({emp}), the payslip "
+            f"salary calculation is internally consistent (gross ₹{gross:,.2f} − deductions "
+            f"₹{deductions:,.2f} = net ₹{verified_net:,.2f}), and the declared income matches "
+            f"the payslip-supported net salary."
+        ),
+    }
+
+
+# =========================================================
 # SALARY MATHEMATICAL CHECK
 # =========================================================
 
@@ -613,6 +762,24 @@ def create_decision(
             and salary_math_valid
             and income_valid
         ):
+            emp = (payslip_data.get("employee_name") or "unknown").strip()
+            ref = (aadhaar_record.get("name") or "unknown").strip()
+            net = payslip_data.get("net_salary")
+            gross = payslip_data.get("gross_salary")
+            deductions = payslip_data.get("total_deductions")
+            emp_id = payslip_data.get("employee_id") or "n/a"
+            net_txt = f"₹{net:,.2f}" if isinstance(net, (int, float)) else str(net)
+            gross_txt = f"₹{gross:,.2f}" if isinstance(gross, (int, float)) else str(gross)
+            ded_txt = (
+                f"₹{deductions:,.2f}"
+                if isinstance(deductions, (int, float))
+                else str(deductions)
+            )
+            declared_txt = (
+                f"₹{declared_income:,.2f}"
+                if isinstance(declared_income, (int, float))
+                else str(declared_income)
+            )
 
             return {
 
@@ -624,11 +791,10 @@ def create_decision(
 
                 "reasoning":
                     (
-                        "The Aadhaar reference matches the "
-                        "employee identity on the payslip, "
-                        "the salary calculation is consistent, "
-                        "and the declared income matches the "
-                        "payslip-supported net income."
+                        f"Payslip verified for employee '{emp}' (ID {emp_id}) against "
+                        f"application reference '{ref}'. Gross {gross_txt} minus "
+                        f"deductions {ded_txt} matches net {net_txt}; declared income "
+                        f"{declared_txt} aligns with the payslip-supported net salary."
                     ),
             }
 
@@ -652,11 +818,14 @@ def create_decision(
             )
 
         if problems:
+            emp = (payslip_data.get("employee_name") or "unknown").strip()
+            net = payslip_data.get("net_salary")
+            net_txt = f"₹{net:,.2f}" if isinstance(net, (int, float)) else str(net)
             return {
                 "decision": "manual_review",
                 "confidence": 0.70,
                 "reasoning": (
-                    "Payslip verification needs review because "
+                    f"Payslip verification for '{emp}' (net {net_txt}) needs review because "
                     + "; ".join(problems)
                     + "."
                 ),
@@ -1025,19 +1194,30 @@ def build_execution(
     )
 
     # -----------------------------------------------------
-    # Decision
+    # Decision — use original DYNAMIC agent reasoning when
+    # running the live chat/orchestrator path (loan+tenure).
+    # Scenario demos still use create_decision templates.
     # -----------------------------------------------------
 
-    decision_data = create_decision(
-
-        scenario=scenario,
-
-        aadhaar_record=aadhaar_record,
-
-        payslip_data=payslip_data,
-
-        declared_income=declared_income,
-    )
+    if (
+        loan_amount is not None
+        or repayment_period_months is not None
+        or scenario == "everything_correct"
+    ):
+        decision_data = build_original_agent_decision(
+            aadhaar_record=aadhaar_record,
+            payslip_data=payslip_data,
+            declared_income=declared_income,
+            loan_amount=loan_amount,
+            repayment_period_months=repayment_period_months,
+        )
+    else:
+        decision_data = create_decision(
+            scenario=scenario,
+            aadhaar_record=aadhaar_record,
+            payslip_data=payslip_data,
+            declared_income=declared_income,
+        )
 
     # -----------------------------------------------------
     # Input data

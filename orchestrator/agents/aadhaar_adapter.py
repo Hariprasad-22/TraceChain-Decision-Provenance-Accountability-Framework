@@ -29,29 +29,32 @@ try:
 except ImportError:  # pragma: no cover - script-style execution from orchestrator/
     from agents.import_isolation import prepare_agent_import, restore_orchestrator_path
 
-# Load the real Aadhaar agent module directly from its source file, avoiding
-# package-name collisions caused by legacy agent folder layouts.
 _ORCH_DIR = Path(__file__).resolve().parent.parent
 _AADHAAR_DIR = _ORCH_DIR.parent / "agents" / "aadhar"
 _AADHAAR_FILE = _AADHAAR_DIR / "aadhar_agent.py"
 
-prepare_agent_import(_AADHAAR_DIR)
-try:
-    if not _AADHAAR_FILE.exists():
-        raise FileNotFoundError(f"Aadhaar agent file not found at {_AADHAAR_FILE}")
-
-    _spec = importlib.util.spec_from_file_location("tracechain_aadhar_agent", _AADHAAR_FILE)
-    if _spec is None or _spec.loader is None:
-        raise ImportError(f"Could not create import spec for {_AADHAAR_FILE}")
-
-    _aadhar_module = importlib.util.module_from_spec(_spec)
-    _spec.loader.exec_module(_aadhar_module)
-    aadhar_verification_agent = _aadhar_module.aadhar_verification_agent
-finally:
-    restore_orchestrator_path(_ORCH_DIR)
-
 AGENT_ID       = "A001"
 SEQUENCE_NUMBER = 1
+
+
+def _load_aadhaar_agent():
+    """Load (or reload) the Aadhaar agent so env/model fixes apply without stale imports."""
+    prepare_agent_import(_AADHAAR_DIR)
+    try:
+        if not _AADHAAR_FILE.exists():
+            raise FileNotFoundError(f"Aadhaar agent file not found at {_AADHAAR_FILE}")
+        # Drop cached agent-side modules so llm_client picks up new model/keys.
+        for key in list(sys.modules):
+            if key in {"llm_client", "aadhar_extraction", "aadhar_agent", "tracechain_aadhar_agent"} or key.startswith("tracechain_aadhar"):
+                del sys.modules[key]
+        _spec = importlib.util.spec_from_file_location("tracechain_aadhar_agent", _AADHAAR_FILE)
+        if _spec is None or _spec.loader is None:
+            raise ImportError(f"Could not create import spec for {_AADHAAR_FILE}")
+        _aadhar_module = importlib.util.module_from_spec(_spec)
+        _spec.loader.exec_module(_aadhar_module)
+        return _aadhar_module.aadhar_verification_agent
+    finally:
+        restore_orchestrator_path(_ORCH_DIR)
 
 
 def _scope(state: dict) -> dict:
@@ -82,6 +85,7 @@ def run(state: dict, orchestration_id: str) -> dict:
     scoped = _scope(state)
     logger.info("[A001] Running Aadhaar agent for application_id=%s", state["application_id"])
 
+    aadhar_verification_agent = _load_aadhaar_agent()
     raw = aadhar_verification_agent(scoped, orchestration_id=orchestration_id)
 
     # The agent returns plain dicts already for execution/decision/accountability/provenance
@@ -103,8 +107,9 @@ def run(state: dict, orchestration_id: str) -> dict:
     # Pass Aadhaar agent decision through unchanged — no name-match overlay.
 
     logger.info(
-        "[A001] Done — decision=%s confidence=%.2f",
+        "[A001] Done — decision=%s confidence=%.2f reasoning=%s",
         result["decision"]["decision_output"],
         result["decision"]["confidence_score"],
+        (result["decision"].get("reasoning") or "")[:160],
     )
     return result
