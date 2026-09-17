@@ -1,11 +1,91 @@
 import json
 import uuid
+import os
 from pathlib import Path
 from datetime import datetime, timezone
 
 from pypdf import PdfReader
 
 from chroma_retriever import retrieve_policy
+
+# =========================================================
+# OPENAI LLM REASONING
+# =========================================================
+
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
+
+OPENAI_MODEL = "gpt-5.6-luna"
+
+
+def generate_llm_reasoning(facts, chroma_results):
+    """
+    The rule engine makes the final decision.
+    OpenAI only explains the deterministic result using the
+    verified facts and retrieved ChromaDB policy evidence.
+    """
+    if OpenAI is None:
+        return (
+            "LLM unavailable: OpenAI SDK is not installed. "
+            "Run: python -m pip install openai"
+        )
+
+    api_key = os.getenv("OPENAI_API_KEY")
+
+    if not api_key:
+        return (
+            "LLM unavailable: OPENAI_API_KEY is not set. "
+            "Set it in the PyCharm Terminal or Run Configuration."
+        )
+
+    policy_evidence = []
+    for result in chroma_results:
+        policy_evidence.append({
+            "source": result.get("source"),
+            "document": result.get("document"),
+            "distance": result.get("distance"),
+        })
+
+    prompt_data = {
+        "deterministic_facts": facts,
+        "policy_evidence": policy_evidence,
+        "instruction": (
+            "Explain the deterministic decision. Do not change or override "
+            "the decision. Do not invent facts. Mention identity verification, "
+            "salary consistency, loan amount, tenure, EMI, EMI percentage, "
+            "and the affordability rule. The configured project rule is: "
+            "EMI below 30% = REJECTED, EMI from 30% through 50% = VERIFIED, "
+            "EMI above 50% = REJECTED."
+        ),
+    }
+
+    try:
+        client = OpenAI(api_key=api_key)
+
+        response = client.responses.create(
+            model=OPENAI_MODEL,
+            instructions=(
+                "You are the explanation component of a payslip verification "
+                "agent. The deterministic rule engine has already made the "
+                "decision. Your job is only to produce a concise, factual, "
+                "audit-friendly explanation grounded in the supplied facts "
+                "and policy evidence. Never override the decision."
+            ),
+            input=json.dumps(prompt_data, ensure_ascii=False, indent=2),
+        )
+
+        explanation = response.output_text.strip()
+
+        if not explanation:
+            return "LLM returned an empty explanation."
+
+        return explanation
+
+    except Exception as error:
+        return f"LLM unavailable: {error}"
+
 from execution_record import (
     ExecutionMetadata,
     AgentDecision,
@@ -49,7 +129,7 @@ ACCOUNT_PAYSLIP_MAP = {
 # TIME
 # =========================================================
 
-VERSION = "DYNAMIC-AFFORDABILITY-V3"
+VERSION = "PAYSLIP-LLM-REASONING-REJECT-BELOW-30"
 def now_iso():
     return datetime.now(timezone.utc).isoformat()
 
@@ -449,7 +529,7 @@ def run_single_test(account_id):
     if affordability_status == "within_30_to_50_percent":
         print("  Affordability Status   : PASSED")
     elif affordability_status == "below_30_percent":
-        print("  Affordability Status   : BELOW 30% (affordable, but below target range)")
+        print("  Affordability Status   : REJECTED - BELOW 30%")
     else:
         print("  Affordability Status   : FAILED - ABOVE 50%")
 
@@ -489,13 +569,14 @@ def run_single_test(account_id):
             f"50% affordability limit of ₹{max_affordable_monthly_payment:,.2f}."
         )
     elif affordability_status == "below_30_percent":
-        decision_output = "verified"
+        decision_output = "rejected"
         confidence = 0.95
         reasoning = (
-            f"The identity and salary checks passed. The calculated EMI of "
+            f"The identity and salary checks passed, but the calculated EMI of "
             f"₹{estimated_monthly_repayment:,.2f} is {affordability_ratio:.2f}% "
-            f"of the verified net salary. It is below the 30%-50% target range "
-            f"but remains affordable under the maximum 50% repayment limit."
+            f"of the verified net salary, which is below the configured "
+            f"30% minimum affordability threshold. Therefore, the loan "
+            f"application is rejected under the configured project policy."
         )
     else:
         decision_output = "verified"
@@ -655,8 +736,14 @@ def run_single_test(account_id):
         "confidence_score":
             confidence,
 
-        "reasoning":
+        "deterministic_reasoning":
             reasoning,
+
+        "llm_reasoning":
+            llm_reasoning,
+
+        "reasoning":
+            llm_reasoning,
 
         "validation_results": {
 
@@ -754,6 +841,44 @@ def run_single_test(account_id):
         n_results=3
     )
 
+    # -----------------------------------------------------
+    # LLM REASONING
+    # -----------------------------------------------------
+
+    llm_facts = {
+        "employee_name": payslip["employee_name"],
+        "payslip_dob": payslip["dob"],
+        "aadhaar_name": aadhaar_record["name"],
+        "aadhaar_dob": aadhaar_record["dob"],
+        "name_match": identity["name_match"],
+        "dob_match": identity["dob_match"],
+        "identity_verified": identity["identity_verified"],
+        "gross_salary": payslip["gross_salary"],
+        "total_deductions": payslip["total_deductions"],
+        "stated_net_salary": payslip["net_salary"],
+        "calculated_net_salary": salary["calculated_net_salary"],
+        "salary_math_valid": salary_valid,
+        "loan_amount": loan_amount,
+        "repayment_months": repayment_months,
+        "annual_interest_rate": ANNUAL_INTEREST_RATE,
+        "monthly_emi": estimated_monthly_repayment,
+        "emi_percent_of_salary": affordability_ratio,
+        "minimum_emi_percent": MIN_EMI_PERCENT,
+        "maximum_emi_percent": MAX_EMI_PERCENT,
+        "affordability_status": affordability_status,
+        "final_decision": decision_output,
+    }
+
+    print("\nGenerating LLM reasoning...")
+
+    llm_reasoning = generate_llm_reasoning(
+        llm_facts,
+        chroma_results
+    )
+
+    print("\nLLM Reasoning:")
+    print(f"  {llm_reasoning}")
+
     evidence_records = []
 
     for result in chroma_results:
@@ -799,7 +924,7 @@ def run_single_test(account_id):
         output_data=output_data,
 
         model_id=
-            "rule-engine+llm-reasoning-v1",
+            f"rule-engine+{OPENAI_MODEL}",
 
         rule_id=
             "payslip_policy_v1",
@@ -830,7 +955,7 @@ def run_single_test(account_id):
             confidence,
 
         reasoning=
-            reasoning,
+            llm_reasoning,
     )
 
     # -----------------------------------------------------
@@ -956,7 +1081,7 @@ def run_single_test(account_id):
 
 if __name__ == "__main__":
 
-    print("[VERSION] PAYSLIP-EMI-RANGE-V4")
+    print("[VERSION] PAYSLIP-LLM-REASONING-REJECT-BELOW-30")
 
     try:
 
